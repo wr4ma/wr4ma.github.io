@@ -8,7 +8,7 @@
 <meta name="viewport" 
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
-  <title>i3Arc Apps</title>
+  <title>Netmod User Pendukung</title>
   
   
   <link rel='stylesheet' href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'>
@@ -182,8 +182,8 @@ z-index:99;
 {
 z-index:5;
 position:absolute;
-left:1em;
-top:0.4em;
+left:0.8em;
+top:0.4em; by
 }
 
 .offdata
@@ -191,7 +191,7 @@ top:0.4em;
 position:absolute;
 right:1em;
 top:0.3em;
-color:#009BA3;
+color:#FF001C;
 font-size:1.1em;
 }
 #listlink li div
@@ -209,14 +209,12 @@ border-radius:5px 0px 0px 5px;
 transition:0.5s;
 }
 
-#listlink li:nth-child(1) div{background:#fe7559;}
-#listlink li:nth-child(2) div{background:#fe7559;}
-#listlink li:nth-child(3) div{background:#fe7559;}
-#listlink li:nth-child(4) div{background:#e3aa12;}
+#listlink li:nth-child(1) div{background:#CC0019;}
+#listlink li:nth-child(2) div{background:#CC0019;}
+#listlink li:nth-child(3) div{background:#0200FF;}
+#listlink li:nth-child(4) div{background:#76f361;}
 #listlink li:nth-child(5) div{background:#e3aa12;}
-#listlink li:nth-child(6) div{background:#e3aa12;}
-#listlink li:nth-child(7) div{background:#e3aa12;}
-#listlink li:nth-child(8) div{background:#e3aa12;}
+#listlink li:nth-child(6) div{background:#12e392;}
 
 #listlink li span
 {
@@ -338,6 +336,47 @@ padding:5px 10px;
 color:#f36175;
 }
 
+form {
+        background-color: #00465D;
+        width: 90%;
+        height: 44px;
+        border-radius: 5px;
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+      }
+
+      input {
+        all: unset;
+        font: 16px system-ui;
+        color: #fff;
+        height: 100%;
+        width: 100%;
+        padding: 6px 10px;
+      }
+
+      ::placeholder {
+        color: #fff;
+        opacity: 0.7; 
+      }
+      svg {
+        color: #fff;
+        fill: currentColor;
+        width: 24px;
+        height: 24px;
+        padding: 10px;
+      }
+
+      button {
+        all: unset;
+        cursor: pointer;
+        width: 44px;
+        height: 44px;
+      }
+      
+      blink {
+      	
+
 </style>
 
   
@@ -353,41 +392,57 @@ color:#f36175;
     <nav id="mainmenu">
       <h2>Menu</h2>
       <ul>
-         <li onclick="location.href='index2.html';"><i class="fa fa-home"></i> Menu Utama</li>
-        
-        
+        <li onclick="location.href='index2.html';"><i class="fa fa-home"></i> Menu Utama</li>
+        <li onclick="location.href='cek-kuota.html';"><i class="fa fa-plus"></i> Cek Masa Aktif</li>
+        <li onclick="location.href='download.html';"><i class="fa fa-download"></i> Download</li>
+        <li onclick="location.href='tutorial.html';"><i class="fa fa-pencil"></i> Tutorial</li>
+        <li onclick="location.href='server.html';"><i class="fa fa-cogs"></i> Status Server</li>
       </ul>
     </nav>
+    
     <section id="mainscreen">
       <header>
         <i class="fa fa-align-justify" id="menu"></i>
-        <h1>Speedtest CBN Lokal</h1>
+        <h1>i3Arc Network</h1>
       </header>
       <section id="container">
-      	<center>
-        
-
-
-
-
-
-<iframe width="100%" height="500" style="border:none;" src="https://speedtest.cbn.id"></iframe>
-		
+        <p class="intro"> </p>
         
         
-      </section>
+        <center>
+<img src="https://i.postimg.cc/wxrkgGtn/Picsart-22-10-25-05-31-23-182.png" alt="google" style="width:100%;height:40%;"></center>
+        
+ <p class="intro">Silahkan Pilih Menu Dibawah</p>
+    
+     <ul id="listlink">
+     	<li>
+       <div></div><span onclick="window.location.href='/cek-kuota.html'" class="titles"><i class="fa fa-plus"></i>Cek Masa Aktif Kuota</span><span class="offdata">*</span>
+          </li>
+          <li>
+       <div></div><span onclick="window.location.href='/download.html'" class="titles"><i class="fa fa-download"></i>Download Config/Aplikasi</span>
+          </li>
+          <li>
+       <div></div><span onclick="window.location.href='/tutorial.html'" class="titles"><i class="fa fa-pencil"></i>Tutorial</span>
+          </li>
+          <li>
+       <div></div><span onclick="window.location.href='/server.html'" class="titles"><i class="fa fa-cogs"></i>Cek Status Server</span>
+                 <li>
+       <div></div><span onclick="window.location.href='/speed.html'" class="titles"><i class="fa fa-dashboard"></i>Speedtest</span>
+          </li>
+          </li>
+          
+        </ul>
+      </footer>
     </section>
   </section>
 </section>
-
-<p><p><p><center>
-<font size="2" color="white">made with ❤️ by wr4ma</font></center>
-
+<center>
+<font size="2" color="white">made with ❤️ by wr4ma</font><p>
+	
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
       <script id="rendered-js" >
 $("#menu").click(function(){
   $("#mainmenu").toggleClass("showmenu");
-  
   $("#mainscreen").toggleClass("movemaincontainer");
 });
 
@@ -399,7 +454,21 @@ $("#menu").click(function(){
 });
     </script>
 
-  
+  <script>
+      const f = document.getElementById('form');
+      const q = document.getElementById('query');
+      const google = 'https://www.google.com/search?q=';
+      const site = '';
+
+      function submitted(event) {
+        event.preventDefault();
+        const url = google + site + '+' + q.value;
+        const win = window.open(url, '_blank');
+        win.focus();
+      }
+
+      f.addEventListener('submit', submitted);
+    </script>
 
 </body>
 
