@@ -366,7 +366,8 @@ color:#f36175;
   <form>
     <label alt='Placeholder' placeholder='Adaptive Placeholder' for="pswd">.......</label>
     <input type="password" id="pswd">
-    <input type="button" class="custom-btn btn-6" value="Login" onclick="checkPswd();" />
+    <audio id="sound1" src="ok.mp3" preload="auto"></audio>
+    <input type="button" class="custom-btn btn-6" value="Login" onclick="checkPswd();"/>
 </form>
 <!--Function to check password the already set password is admin-->
 <script type="text/javascript">
@@ -377,7 +378,11 @@ color:#f36175;
              window.location="bookmark.html";
         }
         else{
+        	document.getElementById('sound1').play(); 
             alert("Passwords do not match.");
+            document.getElementById('sound1').play(); 
+            alert("Please Enter Correct Password.");
+            
         }
     }
 </script>
