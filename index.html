@@ -1,528 +1,110 @@
+
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-  <title>Wil's</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-  <link href="https://fonts.googleapis.com/css?family=DM+Sans:400,500|Jost:400,500,600&display=swap" rel="stylesheet">
-  
-  <style>
-    :root {
-      /* Slate Dark Theme Palette */
-      --bg-color: #0f172a;       /* Slate 900 */
-      --card-bg: #1e293b;        /* Slate 800 */
-      --text-primary: #f1f5f9;   /* Slate 100 */
-      --text-secondary: #94a3b8; /* Slate 400 */
-      
-      --accent-color: #38bdf8;   /* Sky 400 */
-      --accent-light: #0ea5e9;   /* Sky 500 */
-      
-      --tag-bg: #334155;         /* Slate 700 */
-      --tag-text: #e0f2fe;       /* Sky 100 */
-      
-      --btn-hover-bg: #334155;   /* Slate 700 */
-      --divider-color: #334155;  /* Slate 700 */
-      --shadow-color: rgba(0, 0, 0, 0.4);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      color: var(--text-primary);
-      font-family: "Jost", sans-serif;
-      background-color: var(--bg-color);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      margin: 0;
-    }
-
-    .card {
-      width: 100%;
-      max-width: 380px;
-      margin: auto;
-      position: relative;
-      z-index: 1;
-      background-color: var(--card-bg);
-      display: flex;
-      flex-direction: column;
-      border-radius: 24px;
-      box-shadow: 0 20px 40px var(--shadow-color);
-      overflow: hidden;
-      transition: height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      border: 1px solid #334155;
-    }
-
-    /* Dynamic Height States - Adjusted for compactness */
-    .card[data-state="#about"] { height: 480px; } /* Lebih pendek & ringkas */
-    .card[data-state="#contact"] { height: 500px; }
-    .card[data-state="#projects"] { height: 650px; }
-
-    /* --- HEADER STYLING & TRANSITIONS --- */
-    .card-header {
-      position: relative;
-      display: flex;
-      height: 160px;
-      flex-shrink: 0;
-      width: 100%;
-      transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      background-color: var(--card-bg);
-      z-index: 10;
-    }
-
-    /* ANIMASI BACKGROUND DASAR */
-    @keyframes gradientBanner {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* ANIMASI OBJEK MENGAMBANG (FLOATING OBJECTS) */
-    @keyframes floatObject1 {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(20px, 15px) scale(1.1); }
-      100% { transform: translate(0, 0) scale(1); }
-    }
-    
-    @keyframes floatObject2 {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(-25px, 10px) scale(1.15); }
-      100% { transform: translate(0, 0) scale(1); }
-    }
-
-    .card-cover {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      /* Background Utama */
-      background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #0ea5e9, #0f172a);
-      background-size: 400% 400%;
-      animation: gradientBanner 12s ease infinite;
-      
-      transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      border-radius: 0 0 20px 20px;
-      border-bottom: 1px solid #334155;
-      overflow: hidden; 
-    }
-
-    .card-cover::before {
-      content: "";
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, rgba(255,255,255,0) 70%);
-      top: -80px;
-      left: -50px;
-      border-radius: 50%;
-      animation: floatObject1 8s ease-in-out infinite;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .card-cover::after {
-      content: "";
-      position: absolute;
-      width: 160px;
-      height: 160px;
-      background: radial-gradient(circle, rgba(14, 165, 233, 0.25) 0%, rgba(255,255,255,0) 70%);
-      bottom: -40px;
-      right: -30px;
-      border-radius: 50%;
-      animation: floatObject2 10s ease-in-out infinite reverse;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .card-avatar {
-      width: 100px;
-      height: 100px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-      border: 4px solid var(--card-bg);
-      border-radius: 50%;
-      object-fit: cover;
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%) translateY(30px);
-      z-index: 2; 
-      transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    .card-fullname {
-      position: absolute;
-      bottom: 0;
-      font-size: 20px;
-      font-weight: 700;
-      text-align: center;
-      white-space: nowrap;
-      transform: translateY(65px) translateX(-50%);
-      left: 50%;
-      color: var(--text-primary);
-      transition: 0.4s;
-    }
-
-    .card-jobtitle {
-      position: absolute;
-      bottom: 0;
-      font-size: 11px;
-      white-space: nowrap;
-      font-weight: 600;
-      opacity: 0.8;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      transform: translateX(-50%) translateY(88px);
-      left: 50%;
-      color: var(--text-secondary);
-      transition: 0.4s;
-    }
-
-    /* --- ACTIVE STATE --- */
-    .card.is-active .card-header { height: 90px; }
-    .card.is-active .card-cover { height: 100px; top: -50px; opacity: 0; }
-    .card.is-active .card-avatar {
-      transform: none;
-      left: 20px;
-      width: 54px;
-      height: 54px;
-      bottom: 18px;
-      border-width: 2px;
-    }
-    .card.is-active .card-fullname,
-    .card.is-active .card-jobtitle {
-      left: 90px;
-      transform: none;
-      text-align: left;
-    }
-    .card.is-active .card-fullname { bottom: 34px; font-size: 18px; }
-    .card.is-active .card-jobtitle { bottom: 20px; letter-spacing: 1px; font-size: 10px; }
-
-    /* --- MAIN CONTENT AREA --- */
-    .card-main {
-      position: relative;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      transition: padding-top 0.4s ease;
-      padding-top: 10px; 
-      min-height: 0;
-    }
-
-    /* Adjusted padding for compactness */
-    .card[data-state="#about"] .card-main {
-      padding-top: 100px; /* Jarak aman dari header */
-    }
-
-    .card-section {
-      display: none;
-    }
-    
-    .card-section.is-active {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-      animation: fadeIn 0.4s ease-out forwards;
-    }
-
-    .card-content {
-      padding: 0 25px 10px 25px; /* Reduced bottom padding */
-      /* Disabled scrolling for concise look */
-      overflow-y: hidden; 
-      flex: 1;
-    }
-
-    .card-subtitle {
-      font-weight: 700;
-      font-size: 12px;
-      margin-bottom: 10px; /* Reduced margin */
-      color: var(--accent-color);
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      flex-shrink: 0;
-      text-align: center;
-    }
-
-    /* --- SPECIAL TEXT EFFECT FOR PROJECTS HEADER --- */
-    #projects .card-subtitle {
-      background: linear-gradient(90deg, #38bdf8, #818cf8, #34d399, #38bdf8);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shineText 3s linear infinite;
-      font-weight: 800;
-    }
-
-    @keyframes shineText {
-      to {
-        background-position: 200% center;
-      }
-    }
-
-    .card-desc {
-      line-height: 1.6; /* Tighter line height */
-      color: var(--text-secondary);
-      font-size: 14px; /* Slightly smaller font for compactness */
-      margin: 0;
-      font-weight: 400;
-      font-family: "DM Sans", sans-serif;
-      text-align: center;
-    }
-
-    /* Social Icons */
-    .card-social {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 20px;
-      margin-top: 20px; /* Reduced top margin */
-      margin-bottom: 0;
-      flex-shrink: 0;
-    }
-    .card-social a {
-      color: var(--text-secondary);
-      height: 38px; /* Slightly smaller icons */
-      width: 38px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.3s;
-      background-color: var(--tag-bg);
-      margin: 0 6px;
-    }
-    .card-social a:hover {
-      background-color: var(--accent-color);
-      color: #0f172a;
-    }
-    .card-social a:hover svg {
-      fill: #0f172a;
-    }
-    .card-social svg {
-      fill: currentColor;
-      width: 16px;
-      display: block;
-      transition: 0.3s;
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(10px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Project List Styling */
-    .project-list { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-right: 5px; }
-    /* Enable scroll only for project list inside project section if needed */
-    #projects .card-content { overflow-y: auto; }
-
-    .project-item {
-      background-color: #273549;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 16px;
-      transition: all 0.2s;
-    }
-    .project-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      border-color: var(--accent-color);
-    }
-
-    .project-top {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
-    }
-    .project-name { font-weight: 600; font-size: 14px; color: var(--text-primary); }
-    
-    .project-status {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px;
-    }
-    .project-status.ongoing { background-color: rgba(56, 189, 248, 0.2); color: #38bdf8; }
-    .project-status.beta { background-color: rgba(52, 211, 153, 0.2); color: #34d399; }
-    .project-status.planning { background-color: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-    .project-status.maint { background-color: rgba(148, 163, 184, 0.2); color: #94a3b8; }
-    .project-status.active { background-color: rgba(74, 222, 128, 0.2); color: #4ade80; }
-
-    .project-desc {
-      font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0 0 12px 0;
-      font-family: "DM Sans", sans-serif;
-    }
-
-    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .project-tags span {
-      font-size: 10px; background-color: #334155; border: 1px solid #475569;
-      color: #cbd5e1; padding: 3px 8px; border-radius: 4px; font-weight: 500;
-    }
-
-    /* Contact Section */
-    .card-contact-wrapper { margin-top: 10px; }
-    .card-contact {
-      display: flex; align-items: center; font-size: 14px; color: var(--text-secondary);
-      font-family: "DM Sans", sans-serif; margin-bottom: 18px;
-    }
-    .card-contact svg {
-      flex-shrink: 0; width: 20px; height: 20px; margin-right: 15px;
-      stroke: var(--accent-color); stroke-width: 2;
-    }
-    .contact-me {
-      border: 0; outline: none; background: var(--accent-color);
-      box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.3);
-      color: #0f172a; 
-      padding: 14px; width: 100%; border-radius: 12px;
-      margin-top: 20px; cursor: pointer; font-size: 14px; font-weight: 700;
-      font-family: "Jost", sans-serif; transition: 0.3s; letter-spacing: 0.5px;
-    }
-    .contact-me:hover {
-      background: var(--accent-light); transform: translateY(-2px);
-      box-shadow: 0 15px 25px -5px rgba(56, 189, 248, 0.4);
-    }
-
-    /* Buttons */
-    .card-buttons {
-      display: flex; 
-      background-color: var(--card-bg); 
-      flex-shrink: 0;
-      border-top: 1px solid var(--divider-color); 
-      padding: 10px;
-      z-index: 20;
-    }
-    .card-buttons button {
-      flex: 1; background: transparent; border: none; font-size: 12px;
-      padding: 12px; cursor: pointer; color: var(--text-secondary); transition: 0.3s;
-      font-family: "Jost", sans-serif; font-weight: 600; border-radius: 12px;
-      letter-spacing: 0.5px;
-    }
-    .card-buttons button:hover { color: var(--text-primary); background-color: var(--btn-hover-bg); }
-    .card-buttons button.is-active { color: var(--accent-color); background-color: rgba(56, 189, 248, 0.1); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farewell - Mode Mager, Fast STO & Others</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712; /* gray-950 */
+            color: #d1d5db; /* gray-300 */
+        }
+        .quote-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #f97316, #db2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(55, 65, 81, 0.4);
+        }
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        .animate-sunset {
+            animation: pulse-soft 3s infinite ease-in-out;
+        }
+    </style>
 </head>
-<body>
+<!-- Perbaikan: Menghilangkan overflow-hidden agar bisa di-scroll -->
+<body class="min-h-screen w-full relative overflow-x-hidden selection:bg-orange-500/30 selection:text-orange-100 flex flex-col items-center">
 
-<div class="card" data-state="#about">
-  <div class="card-header">
-    <div class="card-cover"></div>
-    <img class="card-avatar" src="https://i.ibb.co.com/ymD90hb5/image.png" alt="avatar" />
-    <h1 class="card-fullname">Wildhan Ramadhani A</h1>
-    <h2 class="card-jobtitle">Web Developer | Data Specialist</h2>
-  </div>
-  
-  <div class="card-main">
-    
-    <!-- Section: ABOUT -->
-    <div class="card-section is-active" id="about">
-      <div class="card-content">
-        <div class="card-subtitle">ABOUT ME</div>
-        <p class="card-desc">
-          A curious and intelligent individual, Passionate about Web Development and Google Workspace Automation.</p>
+    <!-- Latar Belakang Sunset Glow yang tetap di posisinya -->
+    <div class="fixed top-[-10%] left-1/2 -translate-x-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-gradient-to-br from-orange-600/20 via-rose-600/10 to-purple-600/20 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none z-0"></div>
+
+    <!-- Container Utama dengan padding atas & bawah agar tidak terpotong -->
+    <main class="relative z-10 w-full max-w-2xl px-6 py-12 sm:py-20 flex flex-col items-center">
         
-        <div class="card-social">
-          <a href="https://facebook.com/wr4ma"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.997 3.985h2.191V.169C17.81.117 16.51 0 14.996 0c-3.159 0-5.323 1.987-5.323 5.639V9H6.187v4.266h3.486V24h4.274V13.267h3.345l.531-4.266h-3.877V6.062c.001-1.233.333-2.077 2.051-2.077z"/></svg></a>
-          <a href="https://instagram.com/wr4ma"><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M301 256c0 24.852-20.148 45-45 45s-45-20.148-45-45 20.148-45 45-45 45 20.148 45 45zm0 0"/><path d="M332 120H180c-33.086 0-60 26.914-60 60v152c0 33.086 26.914 60 60 60h152c33.086 0 60-26.914 60-60V180c0-33.086-26.914-60-60-60zm-76 211c-41.355 0-75-33.645-75-75s33.645-75 75-75 75 33.645 75 75-33.645 75-75 75zm86-146c-8.285 0-15-6.715-15-15s6.715-15 15-15 15 6.715 15 15-6.715 15-15 15zm0 0"/><path d="M377 0H135C60.562 0 0 60.563 0 135v242c0 74.438 60.563 135 135 135h242c74.438 0 135-60.563 135-135V135C512 60.562 451.437 0 377 0zm45 332c0 49.625-40.375 90-90 90H180c-49.625 0-90-40.375-90-90V180c0-49.625 40.375-90 90-90h152c49.625 0 90 40.375 90 90zm0 0"/></svg></a>
-          
-          <a href="https://www.linkedin.com/wr4ma"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.994 24v-.001H24v-8.802c0-4.306-.927-7.623-5.961-7.623-2.42 0-4.044 1.328-4.707 2.587h-.07V7.976H8.489v16.023h4.97v-7.934c0-2.089.396-4.109 2.983-4.109 2.549 0 2.587 2.384 2.587 4.243V24zM.396 7.977h4.976V24H.396zM2.882 0C1.291 0 0 1.291 0 2.882s1.291 2.909 2.882 2.909 2.882-1.318 2.882-2.909A2.884 2.884 0 002.882 0z"/></svg></a>
-        </div>
-      </div>
-    </div>
+        <div class="glass-panel w-full rounded-3xl p-8 sm:p-14 text-center shadow-2xl">
+            
+            <!-- Icon -->
+            <div class="flex justify-center mb-8">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center shadow-lg shadow-orange-500/20 animate-sunset">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 10V2"/>
+                        <path d="m4.93 10.93 1.41 1.41"/>
+                        <path d="M2 18h2"/>
+                        <path d="M20 18h2"/>
+                        <path d="m19.07 10.93-1.41 1.41"/>
+                        <path d="M22 22H2"/>
+                        <path d="m8 6 4-4 4 4"/>
+                        <path d="M16 18a4 4 0 0 0-8 0"/>
+                    </svg>
+                </div>
+            </div>
 
-    <!-- Section: PROJECTS -->
-    <div class="card-section" id="projects">
-      <div class="card-content">
-        <div class="card-subtitle">ACTIVE PROJECTS</div>
+            <!-- Judul -->
+            <h1 class="text-3xl sm:text-4xl font-semibold text-white mb-4 tracking-tight">
+                Thank you for everything.
+            </h1>
+            
+            <p class="text-lg font-medium mb-8">
+                <span class="text-gradient">Mode Mager, Fast STO, and other projects</span> are officially closing down.
+            </p>
+
+            <!-- Pesan Utama -->
+            <div class="space-y-5 text-gray-400 text-base sm:text-lg leading-relaxed">
+                <p>
+                    Building and maintaining these projects has been an absolute privilege. What started as simple ideas grew into something special, and none of it would have been possible without your support.
+                </p>
+                <p>
+                    Thank you to everyone who used the tools, shared their feedback, and walked this journey with me. Your enthusiasm is what kept everything running for as long as it did.
+                </p>
+            </div>
+
+            <!-- Divider -->
+            <div class="w-16 h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent mx-auto my-10"></div>
+
+            <!-- Kata-kata Perpisahan Kustom -->
+            <div class="flex flex-col items-center justify-center">
+                <p class="quote-font text-xl sm:text-2xl text-gray-300 leading-relaxed italic mb-8">
+                    "I think it’s time for me to step back and find some stillness. I sincerely apologize for all the noise I make. I’m taking my leave to find better clarity."
+                </p>
+                
+                <div class="text-gray-400 font-medium space-y-1">
+                    <p>Your Beloved Partner,</p>
+                    <p class="text-white text-lg font-semibold tracking-wide mt-2">Will's.</p>
+                    <p class="text-orange-400 text-sm tracking-widest uppercase mt-4">Peace Out ;)</p>
+                </div>
+            </div>
+        </div>
         
-        <div class="project-list">
-          <!-- Project 1: Stock Opname Web App -->
-          <a href="https://wr4ma.github.io/CinamboDC/AdminTools/STO/" target="_blank" style="text-decoration: none;">
-            <div class="project-item">
-              <div class="project-top">
-                <span class="project-name">Stock Opname Web App</span>
-                <span class="project-status ongoing">Ongoing</span>
-              </div>
-              <p class="project-desc">Web app integrated with Google Sheets/Drive featuring barcode scanning and timestamped photo uploads.</p>
-              <div class="project-tags"><span>Apps Script</span><span>HTML/JS</span><span>Data Viz</span></div>
-            </div>
-          </a>
-           <!-- Project 2: Mode Mager -->
-           <a href="https://github.com/wr4ma/ModeMager/raw/refs/heads/main/mode-mager.zip" target="_blank" style="text-decoration: none;">
-             <div class="project-item">
-              <div class="project-top">
-                <span class="project-name">Mode Mager</span>
-                <span class="project-status active">Active</span>
-              </div>
-              <p class="project-desc">Chrome extension for automating page interactions and data extraction.</p>
-              <div class="project-tags"><span>Chrome Ext</span><span>Automation</span></div>
-            </div>
-          </a>
+        <!-- Footer Tambahan -->
+        <div class="mt-12 text-gray-600 text-xs tracking-widest uppercase opacity-50">
+            End of an era • 2024
         </div>
-      </div>
-    </div>
-
-    <!-- Section: CONTACT -->
-    <div class="card-section" id="contact">
-      <div class="card-content">
-        <div class="card-subtitle">GET IN TOUCH</div>
-        <div class="card-contact-wrapper">
-          <div class="card-contact">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
-            Bandung, Indonesia
-          </div>
-          <div class="card-contact">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg>
-            0878-9960-4277
-          </div>
-          <div class="card-contact">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><path d="M22 6l-10 7L2 6" /></svg>
-            wildan.ramadhani.a@gmail.com
-          </div>
-          <a href="mailto:wildan.ramadhani.a@gmail.com" style="text-decoration:none;"><button class="contact-me">SEND EMAIL</button></a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Navigation Buttons -->
-    <div class="card-buttons">
-      <button data-section="#about" class="is-active">ABOUT</button>
-      <button data-section="#projects">PROJECTS</button>
-      <button data-section="#contact">CONTACT</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  const buttons = document.querySelectorAll(".card-buttons button");
-  const sections = document.querySelectorAll(".card-section");
-  const card = document.querySelector(".card");
-
-  const handleButtonClick = e => {
-    const targetSection = e.target.getAttribute("data-section");
-    const section = document.querySelector(targetSection);
-    
-    // Change card state (active/inactive for animation purposes)
-    targetSection !== "#about" ?
-      card.classList.add("is-active") :
-      card.classList.remove("is-active");
-      
-    // Set data-state attribute to control height
-    card.setAttribute("data-state", targetSection);
-    
-    // Manage active classes for sections and buttons
-    sections.forEach(s => s.classList.remove("is-active"));
-    buttons.forEach(b => b.classList.remove("is-active"));
-    
-    e.target.classList.add("is-active");
-    section.classList.add("is-active");
-  };
-
-  buttons.forEach(btn => {
-    btn.addEventListener("click", handleButtonClick);
-  });
-</script>
+    </main>
 
 </body>
-
 </html>
-
-
