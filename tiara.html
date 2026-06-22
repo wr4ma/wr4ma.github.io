@@ -241,7 +241,6 @@
         /* ==========================================
            4. EFEK ANIMASI KHUSUS TEKS ENDING
            ========================================== */
-        
         @keyframes fadeInUpScale {
             0% { opacity: 0; transform: translateY(20px) scale(0.95); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -261,14 +260,50 @@
             display: inline-block;
             animation: goldenGlow 2s infinite alternate ease-in-out;
         }
+
+        /* Tombol Musik Melayang */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            backdrop-filter: blur(5px);
+            color: #d4af37;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .music-btn:hover {
+            transform: scale(1.1);
+            background: rgba(15, 23, 42, 0.8);
+        }
+        .spin-slow {
+            animation: spin 4s linear infinite;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="font-body flex items-center justify-center min-h-screen">
 
-    <!-- PEMUTAR AUDIO DARI GOOGLE DRIVE MP3 -->
-    <audio id="bgMusic" loop>
-        <source src="https://drive.google.com/uc?export=download&id=1IbbkRSOcBCyXZwTMfIOqV8Auo9Y8hcme" type="audio/mp3">
+    <!-- PEMUTAR AUDIO (Dibuat crossorigin agar tidak diblok Google Drive) -->
+    <audio id="bgMusic" loop preload="auto" crossorigin="anonymous">
+        <source src="https://drive.google.com/uc?export=download&id=1IbbkRSOcBCyXZwTMfIOqV8Auo9Y8hcme" type="audio/mpeg">
     </audio>
+
+    <!-- Tombol Musik (Muncul otomatis jika autoplay diblokir browser) -->
+    <button id="music-toggle" class="music-btn hidden opacity-0 transition-opacity duration-1000" onclick="toggleMusic()">
+        <span id="music-icon" class="text-xl">🎵</span>
+    </button>
 
     <!-- LAYER 1: LAPISAN BACKGROUND & EFEK -->
     <div id="slideshow-container" class="hidden opacity-0 transition-opacity duration-1000"></div>
@@ -277,9 +312,10 @@
 
     <!-- LAYER 2: HALAMAN AMPLOP -->
     <div id="envelope-screen">
-        <div id="animated-envelope" class="env-wrapper opacity-0 translate-y-12 scale-90 duration-1000 ease-out transition-all" onclick="openEnvelope()">
+        
+        <!-- PENTING: Diubah menjadi <button> agar interaksi klik HP sah untuk memutar audio -->
+        <button id="animated-envelope" class="env-wrapper opacity-0 translate-y-12 scale-90 duration-1000 ease-out transition-all appearance-none bg-transparent border-none p-0 outline-none focus:outline-none" onclick="openEnvelope()">
             
-            <!-- Beruang Putih -->
             <div class="absolute -top-[150px] left-1/2 -translate-x-1/2 w-56 h-56 z-0">
                 <div id="animated-bear" class="hide-on-open w-full h-full transition-all duration-700 ease-out translate-y-24 opacity-0">
                     
@@ -351,7 +387,7 @@
                 </svg>
                 <div class="env-seal">✨</div>
             </div>
-        </div>
+        </button>
     </div>
 
 
@@ -369,7 +405,7 @@
             </div>
 
             <!-- TEKS AKHIR DENGAN EFEK ANIMASI -->
-            <div id="final-message" class="hidden text-center text-white text-shadow-custom font-light">
+            <div id="final-message" class="hidden text-center text-white text-shadow-custom font-light w-full">
                 <p id="final-p1" class="text-base md:text-xl leading-relaxed mb-6 opacity-0">
                     Selamat ulang tahun Cantik, semoga semua hal baik pelan-pelan datang menghampiri kamu. 🎂🌷✨
                 </p>
@@ -388,7 +424,52 @@
          LOGIC JAVASCRIPT
          ======================================================== -->
     <script>
-        // --- 1. DATA FOTO GOOGLE DRIVE ---
+        // --- 1. SETUP AUDIO MP3 JAVASCRIPT ---
+        let isMusicPlaying = false;
+
+        function playMusic() {
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.8;
+            
+            let playPromise = music.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Audio berhasil diputar!
+                    isMusicPlaying = true;
+                    document.getElementById('music-icon').classList.add('spin-slow');
+                    
+                    // Tampilkan tombol musik kecil di pojok agar pengguna tahu
+                    const musicBtn = document.getElementById('music-toggle');
+                    musicBtn.classList.remove('hidden', 'opacity-0');
+                }).catch(error => {
+                    console.log("Audio diblokir oleh browser:", error);
+                    // JIKA DIBLOKIR: Munculkan tombol yang melompat-lompat agar diklik pengguna
+                    const musicBtn = document.getElementById('music-toggle');
+                    musicBtn.classList.remove('hidden', 'opacity-0');
+                    musicBtn.classList.add('animate-bounce'); 
+                });
+            }
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const musicBtn = document.getElementById('music-toggle');
+            
+            if (isMusicPlaying) {
+                music.pause();
+                isMusicPlaying = false;
+                document.getElementById('music-icon').classList.remove('spin-slow');
+                musicBtn.classList.remove('animate-bounce'); 
+            } else {
+                music.play();
+                isMusicPlaying = true;
+                document.getElementById('music-icon').classList.add('spin-slow');
+                musicBtn.classList.remove('animate-bounce'); 
+            }
+        }
+
+        // --- 2. DATA FOTO GOOGLE DRIVE ---
         const drivePhotoIDs = [
             "11NnSMTJ-7Q63XCI4ERRAwqs7D3UHhsXE",
             "1ebXr0vmXdfVYviNwMLhfxK5_AI5wUfRc",
@@ -406,7 +487,6 @@
         ];
         const imageUrls = drivePhotoIDs.map(id => `https://drive.google.com/thumbnail?id=${id}&sz=w1600`);
 
-        // Pesan Utama yang diketik
         const pesanUlangTahun = 
             "Aku tau akhir-akhir ini hidup kamu lagi berat. Banyak hal yang datang sekaligus, banyak pikiran yang harus kamu hadapi, dan kadang rasanya capek banget buat terus kuat setiap hari. Aku mungkin belum bisa jadi orang yang menyelesaikan semua masalah yang kamu hadapi, dan aku sadar kehadiran aku belum banyak mengubah keadaan. Tapi satu hal yang ingin kamu tau, aku akan tetap ada dan tetap berjuang buat nemenin kamu melewati semuanya. 🤍\n\n" +
             "Terima kasih karena sampai hari ini kamu masih bertahan. Aku tau nggak semua orang bisa melihat seberapa keras kamu berusaha, tapi aku liat. Aku tau kamu sering menyimpan banyak hal sendirian dan tetap mencoba tersenyum meskipun hati lagi engga baik-baik saja. 🫂❤️\n\n" +
@@ -443,15 +523,8 @@
             }, 2200);
         }
 
-        function playBackgroundMusic() {
-            const music = document.getElementById('bgMusic');
-            // Menurunkan volume sedikit agar nyaman dibaca sambil mendengarkan
-            music.volume = 0.8; 
-            music.play().catch(e => console.log("Menunggu interaksi pengguna untuk memutar audio..."));
-        }
-
         function openEnvelope() {
-            const wrapper = document.querySelector('.env-wrapper');
+            const wrapper = document.getElementById('animated-envelope');
             const envScreen = document.getElementById('envelope-screen');
             const mainContent = document.getElementById('main-content');
             const slideContainer = document.getElementById('slideshow-container');
@@ -460,8 +533,8 @@
             if (wrapper.classList.contains('open')) return;
             wrapper.classList.add('open');
             
-            // PUTAR MUSIK AUDIO MP3 SAAT AMPLOP DIKLIK!
-            playBackgroundMusic();
+            // PUTAR MUSIK SAAT AMPLOP DIKLIK
+            playMusic();
 
             setTimeout(() => {
                 envScreen.style.transform = 'scale(1.2)';
@@ -473,6 +546,7 @@
                     mainContent.classList.remove('hidden');
                     slideContainer.classList.remove('hidden');
                     overlay.classList.remove('hidden');
+                    
                     void mainContent.offsetWidth; 
                     
                     mainContent.classList.remove('opacity-0');
@@ -483,7 +557,7 @@
                     
                     setTimeout(() => {
                         document.getElementById('greeting').classList.remove('opacity-0');
-                        setTimeout(startTyping, 1000);
+                        setTimeout(typeWriter, 1000);
                     }, 1200);
 
                 }, 1000); 
@@ -533,7 +607,7 @@
                 scrollContainer.scrollTop = scrollContainer.scrollHeight;
                 setTimeout(typeWriter, kecepatanMengetik);
             } else {
-                // TUNGGU TEPAT 3 DETIK (3000 ms) SEBELUM ANIMASI MENGECIL
+                // TUNGGU TEPAT 3 DETIK (3000 ms) SEBELUM MENGECIL
                 setTimeout(triggerFinalAnimation, 3000);
             }
         }
@@ -565,17 +639,11 @@
                 finalMessage.style.display = 'block';
                 
                 // 5. Memicu Animasi Khusus secara berurutan
-                setTimeout(() => { p1.classList.add('animate-final-text'); }, 200);   // Paragraf 1 muncul
-                setTimeout(() => { p2.classList.add('animate-final-text'); }, 1200);  // Paragraf 2 muncul
-                setTimeout(() => { name.classList.add('animate-final-text'); }, 2200); // Nama "Wil's" muncul dan berdenyut
+                setTimeout(() => { p1.classList.add('animate-final-text'); }, 200);   
+                setTimeout(() => { p2.classList.add('animate-final-text'); }, 1200);  
+                setTimeout(() => { name.classList.add('animate-final-text'); }, 2200); 
 
-            }, 1000); // Tunggu sampai teks lama benar-benar pudar
-        }
-
-        function startTyping() {
-            textElement.innerHTML = '';
-            index = 0;
-            setTimeout(typeWriter, 800);
+            }, 1000); 
         }
 
         window.onload = () => {
