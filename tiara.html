@@ -1,1 +1,589 @@
-test
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Untuk Wanita Hebatku</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Elegan -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Font Custom */
+        .font-heading { font-family: 'Playfair Display', serif; }
+        .font-body { font-family: 'Lora', serif; }
+
+        body {
+            margin: 0;
+            overflow: hidden; 
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #2e1065, #172554);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            color: #f3f4f6;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ==========================================
+           1. LAPISAN LATAR BELAKANG
+           ========================================== */
+        #slideshow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            background-color: #000;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            transform: scale(1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1.05);
+            transition: opacity 2s ease-in-out, transform 10s linear;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.9));
+            z-index: 2; 
+        }
+
+        #sparkles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 3; 
+            pointer-events: none;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #d4af37, 0 0 12px #d4af37;
+            animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        /* ==========================================
+           2. ANIMASI AMPLOP & BERUANG
+           ========================================== */
+        #envelope-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 50; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+        }
+
+        .env-wrapper {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            cursor: pointer;
+            perspective: 1200px;
+            z-index: 10;
+        }
+        
+        #animated-envelope { transition: transform 0.3s ease; }
+        #animated-envelope:hover { transform: translateY(-5px) scale(1.02); }
+
+        @keyframes waveBear {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(35deg); }
+        }
+        .animate-bear-wave {
+            animation: waveBear 1.5s ease-in-out infinite;
+            transform-origin: 170px 90px;
+        }
+
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bubble { animation: floatBubble 2s ease-in-out infinite; }
+
+        #polkadot-pattern circle { fill: #fff; }
+        .polkadot-fill { fill: url(#polkadot-pattern); }
+        .polkadot-stroke { stroke: url(#polkadot-pattern); }
+
+        .env-letter {
+            position: absolute;
+            left: 5%;
+            right: 5%;
+            bottom: 5px;
+            height: 90%;
+            background: linear-gradient(to bottom, #fffbeb, #fef3c7);
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4) inset;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 30px;
+            z-index: 2;
+            transition: transform 0.8s ease-in-out 0.2s;
+            border: 1px solid #d4af37;
+        }
+
+        .env-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 140px;
+            z-index: 4;
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .env-seal {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #facc15, #a16207);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            border: 2px solid #fef08a;
+            color: #451a03;
+            font-size: 1.5rem;
+            transition: opacity 0.4s ease;
+        }
+
+        .env-wrapper.open .env-flap { transform: rotateX(180deg); z-index: 1; }
+        .env-wrapper.open .env-seal { opacity: 0; }
+        .env-wrapper.open .env-letter { transform: translateY(-80px); z-index: 3; }
+        .env-wrapper.open .hide-on-open { transform: translateY(50px); opacity: 0; transition: all 0.5s ease; }
+
+        /* ==========================================
+           3. PANEL KONTEN UTAMA & ANIMASI SHRINK
+           ========================================== */
+        #main-content { z-index: 10; }
+        
+        .glass-panel {
+            z-index: 20; 
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .text-shadow-custom {
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 0px 0px 10px rgba(0,0,0,0.6);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: #fff;
+            vertical-align: middle;
+            margin-left: 4px;
+            animation: blink 0.8s infinite;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* SCROLLBAR CUSTOM ELEGAN */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.5); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.8); }
+
+        #greeting, #text-scroll-container { transition: opacity 1s ease-in-out; }
+        
+        /* ==========================================
+           4. EFEK ANIMASI KHUSUS TEKS ENDING
+           ========================================== */
+        
+        @keyframes fadeInUpScale {
+            0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        @keyframes goldenGlow {
+            0% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.4), 0 0 20px rgba(212, 175, 55, 0.2); transform: scale(1); }
+            100% { text-shadow: 0 0 15px rgba(212, 175, 55, 0.9), 0 0 30px rgba(212, 175, 55, 0.6); transform: scale(1.05); }
+        }
+
+        .animate-final-text {
+            opacity: 0; 
+            animation: fadeInUpScale 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .animate-glow {
+            display: inline-block;
+            animation: goldenGlow 2s infinite alternate ease-in-out;
+        }
+    </style>
+</head>
+<body class="font-body flex items-center justify-center min-h-screen">
+
+    <!-- PEMUTAR AUDIO DARI GOOGLE DRIVE MP3 -->
+    <audio id="bgMusic" loop>
+        <source src="https://drive.google.com/uc?export=download&id=1IbbkRSOcBCyXZwTMfIOqV8Auo9Y8hcme" type="audio/mp3">
+    </audio>
+
+    <!-- LAYER 1: LAPISAN BACKGROUND & EFEK -->
+    <div id="slideshow-container" class="hidden opacity-0 transition-opacity duration-1000"></div>
+    <div id="overlay" class="hidden opacity-0 transition-opacity duration-1000"></div>
+    <div id="sparkles-container"></div>
+
+    <!-- LAYER 2: HALAMAN AMPLOP -->
+    <div id="envelope-screen">
+        <div id="animated-envelope" class="env-wrapper opacity-0 translate-y-12 scale-90 duration-1000 ease-out transition-all" onclick="openEnvelope()">
+            
+            <!-- Beruang Putih -->
+            <div class="absolute -top-[150px] left-1/2 -translate-x-1/2 w-56 h-56 z-0">
+                <div id="animated-bear" class="hide-on-open w-full h-full transition-all duration-700 ease-out translate-y-24 opacity-0">
+                    
+                    <div id="animated-bubble" class="absolute -top-[70px] -right-[60px] md:-right-[100px] bg-white text-[#0f172a] text-sm md:text-base font-bold py-3 px-5 rounded-2xl shadow-xl border-2 border-[#d4af37] z-20 w-52 text-center opacity-0 scale-50 transition-all duration-500 ease-out origin-bottom-left">
+                        <span class="block mb-1 text-pink-600">Halo Tiara,</span>
+                        Ada pesan nih buat kamu! ✨
+                        <div class="absolute -bottom-3 left-8 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[12px] border-transparent border-t-[#d4af37]"></div>
+                        <div class="absolute -bottom-[9px] left-[9px] w-0 h-0 border-l-[7px] border-r-[7px] border-t-[10px] border-transparent border-t-white"></div>
+                    </div>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="w-full h-full drop-shadow-xl">
+                        <defs>
+                            <pattern id="polkadot-pattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                                <circle cx="5" cy="5" r="2" />
+                            </pattern>
+                        </defs>
+                        <g class="animate-bear-wave">
+                            <path d="M 140 100 Q 180 70 170 35" stroke="#111827" stroke-width="16" stroke-linecap="round" fill="none"/>
+                            <circle cx="170" cy="35" r="9" fill="#f8fafc"/>
+                        </g>
+                        <path d="M 60 100 Q 20 120 30 150" stroke="#111827" stroke-width="16" stroke-linecap="round" fill="none"/>
+                        <circle cx="30" cy="150" r="9" fill="#f8fafc"/>
+                        <path d="M 70 90 Q 100 70 130 90 L 145 180 L 55 180 Z" fill="#111827"/>
+                        <path d="M 78 85 L 78 120" stroke="#111827" stroke-width="8" class="polkadot-stroke" stroke-linecap="round"/>
+                        <path d="M 122 85 L 122 120" stroke="#111827" stroke-width="8" class="polkadot-stroke" stroke-linecap="round"/>
+                        <circle cx="78" cy="115" r="4" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+                        <circle cx="122" cy="115" r="4" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+                        <circle cx="100" cy="60" r="40" fill="#f8fafc"/>
+                        <circle cx="65" cy="30" r="14" fill="#f8fafc"/>
+                        <circle cx="135" cy="30" r="14" fill="#f8fafc"/>
+                        <circle cx="65" cy="30" r="9" fill="#111827"/>
+                        <circle cx="65" cy="30" r="9" class="polkadot-fill" fill-opacity="0.8"/>
+                        <circle cx="135" cy="30" r="9" fill="#111827"/>
+                        <circle cx="135" cy="30" r="9" class="polkadot-fill" fill-opacity="0.8"/>
+                        <circle cx="84" cy="55" r="4.5" fill="#0f172a"/>
+                        <circle cx="116" cy="55" r="4.5" fill="#0f172a"/>
+                        <circle cx="86" cy="53" r="1.5" fill="#fff"/>
+                        <circle cx="118" cy="53" r="1.5" fill="#fff"/>
+                        <ellipse cx="72" cy="65" rx="7" ry="3.5" fill="#fecaca" opacity="0.7"/>
+                        <ellipse cx="128" cy="65" rx="7" ry="3.5" fill="#fecaca" opacity="0.7"/>
+                        <circle cx="100" cy="68" r="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+                        <ellipse cx="100" cy="64" rx="5" ry="3.5" fill="#0f172a"/>
+                        <path d="M 95 72 Q 100 78 105 72" stroke="#0f172a" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        <g transform="translate(100, 88)">
+                            <path d="M 0 0 L -10 -8 Q -14 -10 -10 -14 Q -6 -18 -2 -14 L 0 -10 L 2 -14 Q 6 -18 10 -14 Q 14 -10 10 -8 L 0 0 Z" fill="#111827"/>
+                            <path d="M 0 0 L -10 -8 Q -14 -10 -10 -14 Q -6 -18 -2 -14 L 0 -10 L 2 -14 Q 6 -18 10 -14 Q 14 -10 10 -8 L 0 0 Z" class="polkadot-fill" fill-opacity="0.8"/>
+                            <circle cx="0" cy="-10" r="3" fill="#111827"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <svg class="absolute inset-0 w-full h-full text-[#0f172a]" fill="currentColor" viewBox="0 0 320 220">
+                <rect width="320" height="220" rx="8" />
+            </svg>
+            
+            <div class="env-letter">
+                <span class="font-heading text-[#0f172a] text-lg md:text-xl font-bold tracking-wide text-center px-4 mt-2">Untuk Wanita Hebat aku ❤️</span>
+            </div>
+
+            <svg class="absolute inset-0 w-full h-full text-[#1e1b4b] drop-shadow-2xl" viewBox="0 0 320 220" style="z-index: 3;">
+                <path d="M0 0 L160 120 L320 0 L320 212 Q320 220 312 220 L8 220 Q0 220 0 212 Z" fill="currentColor" stroke="#d4af37" stroke-width="1.5"/>
+            </svg>
+
+            <div class="env-flap">
+                <svg class="w-full h-full text-[#2e1065]" viewBox="0 0 320 140" preserveAspectRatio="none">
+                    <filter id="shadow"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity="0.5"/></filter>
+                    <path d="M0 0 L160 120 L320 0 Z" fill="currentColor" filter="url(#shadow)" stroke="#d4af37" stroke-width="2"/>
+                </svg>
+                <div class="env-seal">✨</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- LAYER 3: KONTEN TEKS & PANEL UTAMA -->
+    <div id="main-content" class="hidden opacity-0 transition-opacity duration-1000 fixed inset-0 flex items-center justify-center w-full h-full pointer-events-none py-6">
+        
+        <div id="main-panel" class="glass-panel pointer-events-auto relative p-6 md:p-10 rounded-2xl max-w-2xl w-11/12 mx-auto flex flex-col justify-center max-h-[90vh]">
+            
+            <h1 id="greeting" class="font-heading text-3xl md:text-5xl mb-4 md:mb-6 text-[#d4af37] opacity-0 tracking-wide text-shadow-custom flex-shrink-0 text-center md:text-left">
+                Happy Birthday Tiara Sayang
+            </h1>
+            
+            <div id="text-scroll-container" class="text-sm md:text-lg leading-relaxed md:leading-loose font-light text-white text-shadow-custom overflow-y-auto custom-scrollbar pr-2 flex-grow text-left opacity-100">
+                <span id="typing-text"></span><span class="cursor" id="cursor"></span>
+            </div>
+
+            <!-- TEKS AKHIR DENGAN EFEK ANIMASI -->
+            <div id="final-message" class="hidden text-center text-white text-shadow-custom font-light">
+                <p id="final-p1" class="text-base md:text-xl leading-relaxed mb-6 opacity-0">
+                    Selamat ulang tahun Cantik, semoga semua hal baik pelan-pelan datang menghampiri kamu. 🎂🌷✨
+                </p>
+                <p id="final-p2" class="text-base md:text-xl leading-relaxed mb-8 opacity-0">
+                    Aku sayang kamu, hari ini, besok, dan seterusnya. ❤️✨
+                </p>
+                <p id="final-name" class="font-heading text-2xl md:text-4xl text-[#d4af37] font-bold tracking-widest opacity-0 mt-6">
+                    <span class="animate-glow">- Wil's</span>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================
+         LOGIC JAVASCRIPT
+         ======================================================== -->
+    <script>
+        // --- 1. DATA FOTO GOOGLE DRIVE ---
+        const drivePhotoIDs = [
+            "11NnSMTJ-7Q63XCI4ERRAwqs7D3UHhsXE",
+            "1ebXr0vmXdfVYviNwMLhfxK5_AI5wUfRc",
+            "1z2mHguk1ZhFWp1P0ZC9QqqLLXVKKWrBe",
+            "1Hz9uE6vBubM19Ki4p0Zqb1n_WQFNfG2d",
+            "17v2-DEbD5oT4V2ILDGeWIahaDk8vvQ73",
+            "1-SfPbcU7DpWTJqkHATDMW0MA1Rp3zUvO",
+            "1kdNkq8sHUeUbVTuRHwJkRnn3caTM2RBb",
+            "1jkgt-qXWfROCKI0gUwmCRcRdSt4bBlOx",
+            "1CsbIhO48bqjnE_Fm33HJQqyrcz4WjX-I",
+            "1oTlnsW4F6xYIfKQSmkypujSjDEtdVJdG",
+            "1qGeKe0WVp3Vhx85h9ZD4iI9TJLBYdcI0",
+            "1vNFVsUPvwraMPb4m5vk2fx-BMR-9IFeO",
+            "1eNj_judMsBea-nsP099SiRSfc8_U_EYq"
+        ];
+        const imageUrls = drivePhotoIDs.map(id => `https://drive.google.com/thumbnail?id=${id}&sz=w1600`);
+
+        // Pesan Utama yang diketik
+        const pesanUlangTahun = 
+            "Aku tau akhir-akhir ini hidup kamu lagi berat. Banyak hal yang datang sekaligus, banyak pikiran yang harus kamu hadapi, dan kadang rasanya capek banget buat terus kuat setiap hari. Aku mungkin belum bisa jadi orang yang menyelesaikan semua masalah yang kamu hadapi, dan aku sadar kehadiran aku belum banyak mengubah keadaan. Tapi satu hal yang ingin kamu tau, aku akan tetap ada dan tetap berjuang buat nemenin kamu melewati semuanya. 🤍\n\n" +
+            "Terima kasih karena sampai hari ini kamu masih bertahan. Aku tau nggak semua orang bisa melihat seberapa keras kamu berusaha, tapi aku liat. Aku tau kamu sering menyimpan banyak hal sendirian dan tetap mencoba tersenyum meskipun hati lagi engga baik-baik saja. 🫂❤️\n\n" +
+            "Di umur yang baru ini, aku engga berharap hidup kamu langsung jadi mudah. Tapi aku berharap kamu diberi lebih banyak kekuatan, ketenangan, dan alasan untuk tersenyum lagi. Jangan terlalu keras sama diri sendiri ya. Kamu sudah melakukan yang terbaik, dan itu lebih dari cukup. 🌷✨\n\n" +
+            "Kalau suatu hari kamu merasa lelah, engga apa-apa istirahat sebentar. Kamu engga harus kuat terus setiap saat. Aku akan tetap ada di samping kamu, mendengarkan, menemani, dan berusaha jadi tempat yang nyaman buat kamu pulang ketika dunia terasa terlalu berat. Walaupun terkadang aku malah bikin keadaan jadi buruk karena ya aku juga manusia kadang aku juga ngerasain sakit hati entah dari kata atau ucapan kamu jadi engga bisa jaga sikap aku but it’s okay aku coba berusaha lebih kuat lagi ya, sekali lagi aku minta maaf. 🥺🤍\n\n" +
+            "Semoga tahun ini membawa lebih banyak kebahagiaan daripada kesedihan, lebih banyak harapan daripada kekecewaan, dan lebih banyak tawa daripada air mata. 🌈✨\n\n" +
+            "Semoga apa yang sedang kita jalani sekarang bisa terus bertahan, tumbuh menjadi hubungan yang semakin kuat, semakin dewasa, dan suatu hari nanti membawa kita ke jenjang yang lebih serius. 💍🤍 Aku ingin tetap berjuang, memperbaiki diri, dan menyiapkan masa depan yang layak untuk kita berdua. Mungkin jalannya tidak selalu mudah, tapi aku berharap kita bisa melewati semuanya bersama-sama. 🫶✨\n";
+
+        const pesanArray = Array.from(pesanUlangTahun);
+
+        function createSparkles() {
+            const container = document.getElementById('sparkles-container');
+            for(let i = 0; i < 60; i++) {
+                let sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.style.left = Math.random() * 100 + 'vw';
+                sparkle.style.top = Math.random() * 100 + 'vh';
+                sparkle.style.animationDuration = (Math.random() * 3 + 1.5) + 's';
+                sparkle.style.animationDelay = (Math.random() * 3) + 's';
+                container.appendChild(sparkle);
+            }
+        }
+
+        function runIntroAnimations() {
+            const envelope = document.getElementById('animated-envelope');
+            const bear = document.getElementById('animated-bear');
+            const bubble = document.getElementById('animated-bubble');
+
+            setTimeout(() => { envelope.classList.remove('opacity-0', 'translate-y-12', 'scale-90'); }, 500);
+            setTimeout(() => { bear.classList.remove('translate-y-24', 'opacity-0'); }, 1500);
+            setTimeout(() => {
+                bubble.classList.remove('opacity-0', 'scale-50');
+                setTimeout(() => { bubble.classList.add('animate-bubble'); }, 500);
+            }, 2200);
+        }
+
+        function playBackgroundMusic() {
+            const music = document.getElementById('bgMusic');
+            // Menurunkan volume sedikit agar nyaman dibaca sambil mendengarkan
+            music.volume = 0.8; 
+            music.play().catch(e => console.log("Menunggu interaksi pengguna untuk memutar audio..."));
+        }
+
+        function openEnvelope() {
+            const wrapper = document.querySelector('.env-wrapper');
+            const envScreen = document.getElementById('envelope-screen');
+            const mainContent = document.getElementById('main-content');
+            const slideContainer = document.getElementById('slideshow-container');
+            const overlay = document.getElementById('overlay');
+
+            if (wrapper.classList.contains('open')) return;
+            wrapper.classList.add('open');
+            
+            // PUTAR MUSIK AUDIO MP3 SAAT AMPLOP DIKLIK!
+            playBackgroundMusic();
+
+            setTimeout(() => {
+                envScreen.style.transform = 'scale(1.2)';
+                envScreen.style.opacity = '0';
+                
+                setTimeout(() => {
+                    envScreen.style.display = 'none';
+                    
+                    mainContent.classList.remove('hidden');
+                    slideContainer.classList.remove('hidden');
+                    overlay.classList.remove('hidden');
+                    void mainContent.offsetWidth; 
+                    
+                    mainContent.classList.remove('opacity-0');
+                    slideContainer.classList.remove('opacity-0');
+                    overlay.classList.remove('opacity-0');
+                    
+                    initSlideshow(); 
+                    
+                    setTimeout(() => {
+                        document.getElementById('greeting').classList.remove('opacity-0');
+                        setTimeout(startTyping, 1000);
+                    }, 1200);
+
+                }, 1000); 
+            }, 1800); 
+        }
+
+        const slideDuration = 4500; 
+        const slideshowContainer = document.getElementById('slideshow-container');
+        let currentSlide = 0;
+        let slides = [];
+
+        function initSlideshow() {
+            if(slides.length > 0) return;
+            imageUrls.forEach((url) => {
+                const slide = document.createElement('div');
+                slide.className = 'slide';
+                slide.style.backgroundImage = `url('${url}')`;
+                slideshowContainer.appendChild(slide);
+                slides.push(slide);
+            });
+            if(slides.length > 0) {
+                setTimeout(() => { slides[0].classList.add('active'); }, 100);
+            }
+            setInterval(nextSlide, slideDuration);
+        }
+
+        function nextSlide() {
+            if(slides.length === 0) return;
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        const kecepatanMengetik = 75; 
+        const textElement = document.getElementById('typing-text');
+        const scrollContainer = document.getElementById('text-scroll-container');
+        let index = 0;
+
+        function typeWriter() {
+            if (index < pesanArray.length) {
+                if (pesanArray[index] === '\n') {
+                    textElement.innerHTML += '<br>'; 
+                } else {
+                    textElement.innerHTML += pesanArray[index];
+                }
+                index++;
+                scrollContainer.scrollTop = scrollContainer.scrollHeight;
+                setTimeout(typeWriter, kecepatanMengetik);
+            } else {
+                // TUNGGU TEPAT 3 DETIK (3000 ms) SEBELUM ANIMASI MENGECIL
+                setTimeout(triggerFinalAnimation, 3000);
+            }
+        }
+
+        function triggerFinalAnimation() {
+            const mainPanel = document.getElementById('main-panel');
+            const greeting = document.getElementById('greeting');
+            const scroller = document.getElementById('text-scroll-container');
+            const finalMessage = document.getElementById('final-message');
+            
+            const p1 = document.getElementById('final-p1');
+            const p2 = document.getElementById('final-p2');
+            const name = document.getElementById('final-name');
+
+            // 1. Pudarkan teks lama
+            greeting.style.opacity = '0';
+            scroller.style.opacity = '0';
+
+            setTimeout(() => {
+                // 2. Hilangkan teks lama
+                greeting.style.display = 'none';
+                scroller.style.display = 'none';
+
+                // 3. Mengecilkan kotak kaca
+                mainPanel.classList.remove('max-w-2xl', 'md:p-10', 'p-6');
+                mainPanel.classList.add('max-w-xl', 'p-8', 'md:p-12');
+
+                // 4. Siapkan teks final
+                finalMessage.style.display = 'block';
+                
+                // 5. Memicu Animasi Khusus secara berurutan
+                setTimeout(() => { p1.classList.add('animate-final-text'); }, 200);   // Paragraf 1 muncul
+                setTimeout(() => { p2.classList.add('animate-final-text'); }, 1200);  // Paragraf 2 muncul
+                setTimeout(() => { name.classList.add('animate-final-text'); }, 2200); // Nama "Wil's" muncul dan berdenyut
+
+            }, 1000); // Tunggu sampai teks lama benar-benar pudar
+        }
+
+        function startTyping() {
+            textElement.innerHTML = '';
+            index = 0;
+            setTimeout(typeWriter, 800);
+        }
+
+        window.onload = () => {
+            createSparkles(); 
+            runIntroAnimations(); 
+        };
+    </script>
+</body>
+</html>
+
+```
