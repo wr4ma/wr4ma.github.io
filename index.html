@@ -4,7 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Untuk Wanita Hebatku</title>
+    
+    <!-- ==========================================
+         CLICKBAIT META TAGS (UNTUK PREVIEW WA/LINE/DLL)
+         ========================================== -->
+    <title>Kita Berdua</title>
+    <meta name="description" content="Kenangan kita di 2025">
+    
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Kita Berdua">
+    <meta property="og:description" content="Kenangan kita di 2025">
+    <meta property="og:image" content="https://drive.google.com/thumbnail?id=10u8eWdEmP2dHiShdQQ8N6EkhIFkl33hn&sz=w1200">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kita Berdua">
+    <meta name="twitter:description" content="Kenangan kita di 2025">
+    <meta name="twitter:image" content="https://drive.google.com/thumbnail?id=10u8eWdEmP2dHiShdQQ8N6EkhIFkl33hn&sz=w1200">
+    <!-- ========================================== -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Font Elegan -->
@@ -295,7 +314,7 @@
 
     <!-- PEMUTAR AUDIO LOKAL (Satu Folder) -->
     <audio id="bgMusic" loop preload="auto">
-        <!-- src diubah menjadi lagu.mp3 yang harus ada di folder yang sama -->
+        <!-- src menggunakan file yang ditaruh di Github -->
         <source src="lagu.mp3" type="audio/mpeg">
     </audio>
 
@@ -590,7 +609,6 @@
                 scrollContainer.scrollTop = scrollContainer.scrollHeight;
                 setTimeout(typeWriter, kecepatanMengetik);
             } else {
-                // TUNGGU TEPAT 3 DETIK (3000 ms)
                 setTimeout(triggerFinalAnimation, 3000);
             }
         }
