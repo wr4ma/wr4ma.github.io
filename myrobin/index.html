@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Database Hub</title>
+<style>
+:root{--ink:#f4f7ff;--mut:rgba(226,232,255,.62);--gl:rgba(255,255,255,.075);--gl2:rgba(255,255,255,.14);--hi:rgba(255,255,255,.34);--ac:#7cc4ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#070b18}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font:400 15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;background:#070b18;position:relative}
+.orbs{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.orbs i{position:absolute;border-radius:50%;filter:blur(80px);opacity:.6}
+.orbs i:nth-child(1){width:420px;height:420px;background:#2a37c4;top:-120px;left:-100px}
+.orbs i:nth-child(2){width:380px;height:380px;background:#0d8a7c;top:30%;right:-140px}
+.orbs i:nth-child(3){width:340px;height:340px;background:#8a2cc4;bottom:-120px;left:18%}
+.glass{background:var(--gl);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);border:1px solid var(--gl2);box-shadow:inset 0 1px 0 var(--hi),inset 0 -1px 0 rgba(255,255,255,.05),0 10px 30px rgba(0,0,0,.35)}
+main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 2px}
+.sub{color:var(--mut);margin:0 0 18px}
+.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;border-radius:24px;padding:12px;margin-bottom:18px;display:grid;gap:10px}
+.srch{display:flex;gap:10px;flex-wrap:wrap}
+input,select{font:inherit;color:var(--ink);background:rgba(255,255,255,.08);border:1px solid var(--gl2);border-radius:999px;padding:11px 16px;outline:0;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+input{flex:1;min-width:200px}
+select{max-width:100%}select option{color:#111}
+input:focus-visible,select:focus-visible,.chip:focus-visible,.go:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;font:inherit;font-size:14px;font-weight:600;color:var(--mut);background:rgba(255,255,255,.07);border:1px solid var(--gl2);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chip b{font-weight:600;opacity:.7;margin-left:4px}
+.chip.on{color:#06101f;background:linear-gradient(180deg,#fff,#cfe4ff);border-color:#fff;box-shadow:0 4px 16px rgba(124,196,255,.45)}
+.cnt{color:var(--mut);font-size:13px;margin:0 4px 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{border-radius:26px;padding:18px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:60%;background:linear-gradient(180deg,rgba(255,255,255,.11),transparent);pointer-events:none}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card h3{margin:0;font-size:18px;font-weight:700;line-height:1.25;letter-spacing:-.01em}
+.pic{flex-shrink:0;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;background:hsla(var(--h),85%,65%,.2);color:hsl(var(--h),95%,82%);border:1px solid hsla(var(--h),90%,75%,.4)}
+.dist{color:var(--ac);font-size:13px;margin:-4px 0 0}
+.addr{color:var(--mut);font-size:14px;margin:0;flex:1}
+.cour{font-size:13px;color:var(--mut);margin:0}
+.go{display:block;text-align:center;text-decoration:none;color:#fff;font-weight:700;padding:11px;border-radius:999px;background:linear-gradient(180deg,rgba(124,196,255,.55),rgba(60,110,255,.5));border:1px solid rgba(255,255,255,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.go.off{background:rgba(255,255,255,.06);color:var(--mut);box-shadow:none}
+.empty{text-align:center;color:var(--mut);padding:40px 16px;border-radius:26px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{border-radius:22px;padding:14px 16px}.kpi b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em}.kpi span{color:var(--mut);font-size:13px}
+.st{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.st div{background:rgba(255,255,255,.06);border:1px solid var(--gl2);border-radius:12px;padding:6px 4px;text-align:center}
+.st b{display:block;font-size:16px}.st small{display:block;font-size:10.5px;color:var(--mut);line-height:1.2}
+.ft{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tot b{font-size:22px}
+.ng{color:#ff9f6b}.ps{color:#6ee7b7}.zr{color:var(--mut)}
+.badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(255,159,107,.18);color:#ffb68a;border:1px solid rgba(255,159,107,.4)}
+.badge.ok{background:rgba(110,231,183,.12);color:#8be9c4;border-color:rgba(110,231,183,.3)}
+[hidden]{display:none!important}
+.hero,.region{font-family:inherit}
+.hero{font-size:clamp(24px,5.6vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:6px 0 12px}
+.region{display:inline-block;font-size:clamp(14px,3.4vw,17px);font-weight:600;letter-spacing:.04em;color:var(--ac);margin:0 0 10px;padding:6px 18px;border-radius:999px;border:1px solid var(--gl2);background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 var(--hi),0 0 22px rgba(124,196,255,.18)}
+.credit{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:4;font-size:13px;color:var(--mut);white-space:nowrap}
+.back{display:inline-block;color:var(--ac);text-decoration:none;font-weight:600;margin-bottom:6px;padding:4px 0}
+.back:focus-visible,.tile:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.menu{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:8px}
+.tile{display:flex;gap:16px;align-items:center;padding:20px;border-radius:28px;text-decoration:none;color:var(--ink);position:relative;overflow:hidden}
+.tile::before{content:'';position:absolute;inset:0 0 auto 0;height:55%;background:linear-gradient(180deg,rgba(255,255,255,.1),transparent);pointer-events:none}
+.ico{flex-shrink:0;width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.1);border:1px solid var(--gl2);box-shadow:inset 0 1px 0 var(--hi)}
+.ico svg{width:28px;height:28px;stroke:var(--ac);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tile b{display:block;font-size:17px;font-weight:700;letter-spacing:-.01em}
+.tile span{display:block;color:var(--mut);font-size:13px;margin-top:2px}
+.soon{padding:44px 20px;border-radius:26px;text-align:center;color:var(--mut)}
+@media(prefers-reduced-motion:no-preference){.tile{transition:transform .15s}.tile:active{transform:scale(.97)}}
+@media(max-width:560px){h1{font-size:26px}.grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:no-preference){
+.orbs{background:linear-gradient(125deg,#060912,#0b1238,#071f26,#170a2e,#060912);background-size:320% 320%;animation:gshift 22s ease-in-out infinite}
+.orbs i:nth-child(1){animation:d1 24s ease-in-out infinite alternate}
+.orbs i:nth-child(2){animation:d2 28s ease-in-out infinite alternate}
+.orbs i:nth-child(3){animation:d3 32s ease-in-out infinite alternate}
+@keyframes gshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes d1{to{transform:translate(35vw,22vh) scale(1.15)}}
+@keyframes d2{to{transform:translate(-30vw,-18vh) scale(.9)}}
+@keyframes d3{to{transform:translate(25vw,-28vh) scale(1.2)}}
+@keyframes vin{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+section:not([hidden]){animation:vin .4s cubic-bezier(.2,.8,.2,1) backwards}
+.tile{animation:vin .5s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*70ms)}
+.tile:nth-child(2){--i:1}.tile:nth-child(3){--i:2}
+.card{animation:vin .4s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*35ms)}
+.chip,.go,.back{transition:transform .2s,background .25s,color .25s,box-shadow .25s}
+.chip:hover,.go:hover{transform:translateY(-1px)}
+.chip:active,.go:active{transform:scale(.95)}
+.tile:hover{transform:translateY(-3px)}
+}
+</style>
+</head>
+<body>
+<div class="orbs"><i></i><i></i><i></i></div>
+<main>
+<section id="v-home">
+<h1 class="hero">MyRobin Courier Monitoring &amp; Database</h1>
+<p class="region">Jawa Barat 1 &amp; 2</p>
+<p class="sub">Pilih menu untuk melihat data</p>
+<nav class="menu" aria-label="Menu utama">
+<a class="tile glass" href="#hub"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div><div><b>Lokasi Semua Hub</b><span>Alamat, PIC, dan link Google Maps</span></div></a>
+<a class="tile glass" href="#lm"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><div><b>Lm Needs &amp; Backlog Status</b><span>Kebutuhan kurir dan status backlog</span></div></a>
+<a class="tile glass" href="#roster"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><div><b>Jadwal Roster Onsite</b><span>Jadwal tugas onsite per hub</span></div></a>
+</nav>
+</section>
+<section id="v-lm" hidden>
+<a class="back" href="#home">‹ Menu</a>
+<h1>Lm Needs &amp; Backlog Status</h1>
+<p class="sub">Realtime Data Hub Needs &amp; Backlog</p>
+<div class="kpis" id="lk"></div>
+<div class="tools glass">
+<div class="srch">
+<input id="lq" type="search" placeholder="Cari nama hub atau kota" aria-label="Cari hub">
+<select id="ls" aria-label="Filter status backlog"><option value="">Semua status</option><option value="1">Hypercare</option><option value="0">Normal</option></select>
+<select id="lb" aria-label="Filter PIC BPO"><option value="">Semua PIC BPO</option><option value="M">Mochamad Aqshal Revikasyah</option><option value="W">Wildhan Ramdhani A</option><option value="-">Belum ada PIC BPO</option></select>
+<select id="lo" aria-label="Urutkan"><option value="t">Kekurangan terbesar</option><option value="p">Pipeline ready terbanyak</option><option value="n">Nama hub A-Z</option></select>
+</div>
+<div class="chips" id="lchips" role="group" aria-label="Filter PIC BPOM"></div>
+</div>
+<p class="cnt" id="lcnt"></p>
+<div class="grid" id="lgrid"></div>
+</section>
+<section id="v-roster" hidden>
+<a class="back" href="#home">‹ Menu</a>
+<h1>Jadwal Roster Onsite</h1>
+<div class="soon glass">Data Belum Diupdate</div>
+</section>
+<section id="v-hub" hidden>
+<a class="back" href="#home">‹ Menu</a>
+<h1>Lokasi Semua Hub</h1>
+<p class="sub">Lokasi Terupdate HUB Jabar 1 &amp; 2</p>
+<div class="tools glass">
+<div class="srch">
+<input id="q" type="search" placeholder="Cari nama hub, wilayah, atau alamat" aria-label="Cari hub">
+<select id="cs" aria-label="Filter Courier PIC"><option value="">Semua Courier PIC</option><option value="M">Mochamad Aqshal Revikasyah</option><option value="W">Wildhan Ramdhani A</option></select>
+</div>
+<div class="chips" id="chips" role="group" aria-label="Filter PIC BPOM"></div>
+</div>
+<p class="cnt" id="cnt"></p>
+<div class="grid" id="grid"></div>
+</section>
+</main>
+<div class="credit" id="credit">made with &lt;3 by wr4ma</div>
+<script>
+var CN={M:"Mochamad Aqshal Revikasyah",W:"Wildhan Ramdhani A"};
+var PN={R:"Regy",I:"Ikhsan",A:"Aci",S:"Shafa",L:"Lily",H:"Hafazh",F:"Fadhila"};
+var HUE={R:200,I:150,A:35,S:320,L:270,H:10,F:55};
+// [courier, hub, wilayah, alamat, maps, pic]  (g: = goo.gl/maps/)
+var D=[
+["M","Baleendah Hub","Baleendah (Baleendah, Malakasari)","Jl siliwangi no 48a rt 07 rw 22 kel baleendah kec baleendah kabupaten bandung","r5MeTgKXXu3sLUhp9","R"],
+["W","Cicalengka Hub","Narawita, Margaasih, Nagrog, Cicalengka Wetan, Waluya & Nagreg","Kp Nyalindung 03/17, Des. Nagrog, Kec. Cicalengka, Kabupaten Bandung, Jawa Barat 40395","xPFvUudAHWDBb4yYA","I"],
+["W","Pacet Bandung Hub","Pacet","Jl Kabupaten Kampung Cibodas Maruyung Lebat RT 001 RW 001 Kecamatan Pacet, Kabupaten Bandung, Jawa Barat","Udcn7ajg7ivnV3BN9","A"],
+["W","Rancaekek Hub","Rancaekek","Jl. Cipasir RT 001 RW 09, Desa Linggar, Kecamatan Rancaekek, Kabupaten Bandung, Jawa Barat 40394","KzcMUAYgQhezCeDy5","I"],
+["W","Solokan Jeruk Hub","Paseh & Solokan Jeruk","Kp. Lalareun RT001/003 Kec. Solokan Jeruk, Kab Bandung","g:SW7PjecjFKXp6LyH6","I"],
+["W","Bojongsoang Hub","Bojongsoang","Jl. Saung Bandrek No.3, Lengkong, Kec. Bojongsoang, Kabupaten Bandung 40287","5ehmnNm9gwde7mi88","A"],
+["W","Majalaya Hub","Majalaya & Ibun","Jalan Raya Majalaya - Rancaekek Kp. Majasetra Blok Babakan 177 RT 03/04, Kel. Majasetra, Kec. Majalaya, Kabupaten Bandung","gU7sFHYpn8BYvaLB7","I"],
+["W","Cileunyi Hub","Cileunyi","Jl. Panyawungan No.9, Cileunyi Wetan, Kec. Cileunyi, Kabupaten Bandung 40622 (kawasan gudang CKJ, seberang pabrik Toyobo)","w5M51VCm86oxMmsp6","I"],
+["M","Balonggede Hub","Kel. Cijagra, Lingkar Selatan, & Turangga","Jl. Pungkur No.219, Balonggede, Kec. Regol, Kota Bandung 40252","3GhpC7sDGhfqnHCs9","S"],
+["W","Bandung Timur Hub","Cinambo & Gedebage","Jl. Gedebage Selatan No. 132, Cisaranten Kidul, Gedebage, Bandung","EW2TXLm8sRpaAniy7","I"],
+["W","Bojongloa Kidul Hub","Bojongloa Kidul","Jl Soekarno Hatta No. 94, Kb Lega, Bojongloa Kidul, Kota Bandung","LMZ1z9WiPALasnMn8","L"],
+["M","Banjaran Hub","Cimaung & Banjaran","Jalan Paturunan, Margahurip, Kec. Banjaran, Kabupaten Bandung 40377","g:16EtxLtTRbdfp6iw9","S"],
+["M","Ciwidey Hub","Ciwidey","Kp Cikaray Sindang Sari, Ciwidey, Kec. Ciwidey, Kabupaten Bandung 40973","RvAnTY5AeQ7Zf9dj7","R"],
+["W","Pangalengan Hub","","Kp. Tani Mukti RT02 RW17, Des. Pangalengan, Kec. Pangalengan","H6C4yEc2t2xZDTzy5","L"],
+["M","Soreang Hub","Cangkuang, Soreang","Jl. Gandasari no.168, Kec. Cangkuang (seberang kampung sawah)","g:i9ifSC64HoHWNSbE6","R"],
+["M","Arjasari Hub","Arjasari","WMGH+4RQ, Rancakole, Arjasari, Bandung Regency, West Java 40379","iaSSx43ETXMesHBB7","R"],
+["M","Dayeuhkolot 2 Hub","Dayeuhkolot","Jalan Mengger 98, Jl. Moch. Toha KM 5, Pasawahan, Kec. Dayeuhkolot, Kabupaten Bandung 40256","7EcaEmSe9dPWuzmr6","S"],
+["M","Katapang Hub","Katapang","Katapang, Cilampeni, Katapang, Bandung Regency, West Java 40921","patcVj8ma28jDMo18","R"],
+["M","Dayeuhkolot Hub","Margahayu","Jl. Sukamenak Raya No. 149B RT.002 RW.003 Desa Sukamenak, Kec. Margahayu, Kab. Bandung (samping Jasmine Dental)","g:QJVWwHnBWQXyhRF86","R"],
+["M","Margaasih Hub","Margaasih (Margaasih, Mekarrahayu, Rahayu, Cigondewah)","Jl. Nanjung Industrial Residence, Nanjung, Kec. Margaasih, Kabupaten Bandung 40217","94KEmMxByMLd3vCU8","R"],
+["M","Bandung Kulon Hub","","Jl. Holis No.246, Caringin, Kec. Bandung Kulon, Kota Bandung 40212","theMUh5VsLPKdi9Q6","H"],
+["W","Bandung Utara Hub","Bandung Wetan & Cicendo","Jalan Aruna no 15 Kel. Husein Sastranegara Kec. Cicendo Kota Bandung","g:8dDCzFYf2jDpjspc9","L"],
+["M","Cibabat Hub","Parongpong (Cihanjuang, Sariwangi, Ciwaruga, Cihanjuang Rahayu, Cigugur Girang, Cihideung)","Jl. Cihanjuang no 223 Blok Babut Girang RT03/11 Cibabat, Cimahi Utara, Cimahi","zbmSYQc5KpBCCszNA","F"],
+["M","Ngamprah Hub","Cisarua & Ngamprah","Jl Raya Gadobangkong No. 200, RT 002 RW 04, Kel. Cimareme, Kec. Ngamprah, Kabupaten Bandung Barat","g:CqrCYmNwqrtVvh8M8","H"],
+["M","Bandung Barat Hub","Padalarang","Jl Raya Batujajar No 160 Laksanamekar, samping Alfamart - Perdana","Xs2tZJNKgaohqqE86","H"],
+["M","Sindangkerta Hub","Sindangkerta & Cililin","Jl. Raya Sindangkerta Blok Cipataruman, RT.02 RW.07, Kel. Sindangkerta, Kabupaten Bandung Barat","g:ztWPGQ5fQXDfLLcF9","H"],
+["M","Batujajar Hub","Batujajar","Jl. Raya Batujajar No.45 01/17 Giriasih Batujajar, Kab. Bandung Barat","FE7sEyF3RFS3nmUf9","H"],
+["M","Gununghalu Hub","Rongga & Gununghalu","Jl. Raya Gununghalu Km. 47 Kp. Pasirwaru, Celak, Kec. Gununghalu, Kabupaten Bandung Barat 40565","MMiJfXke6nRsUbs46","H"],
+["M","Cipatat Hub","Cipatat","59HV+GVJ Citatah, West Bandung Regency, West Java","xu5su2Zrq4VqywJJ8","H"],
+["M","Cimahi Hub","Melong, Cibereum","Jl. HMS Mintareja No.1, Baros, Kec. Cimahi Tengah, Kota Cimahi 40521 (PT KCIC HMS Mintareja Baros)","WmvmHrst7XhwDVk47","F"],
+["M","Cimahi Tengah Hub","Kelurahan Padasuka & Cimahi","Jalan Babakan No 41 Kec. Cimahi Tengah, Cimahi","curkRKjYUz8XmoK47","F"],
+["M","Cimahi Utara Hub","Kel. Pasirkaliki & Cibabat","Jl. Cihanjuang Kp. Babut Girang Rt 003 Rw 011 Desa Cibabat Kec. Cimahi Utara (masuk ke bengkel Alfath Motor)","gXjREjxUmPgjfTR27","F"],
+["M","Cipeundeuy Kab. Bandung Barat Hub","Cikalong Wetan & Cipeundeuy","798R+655, Sukahaji, Kec. Cipeundeuy, Kabupaten Bandung Barat, Jawa Barat","ACvrLyCUcrF7HBC37","F"],
+["W","Antapani Hub","Antapani & Mandalajati","Jl. A. H. Nasution no. 926, Kel. Antapani Wetan, Kec. Antapani, Kota Bandung 40291","szo4HBzzkHWVPNaN6","A"],
+["M","Lembang Hub","Lembang","Jl. Maribaya No.143a, Langensari, Kec. Lembang, Kabupaten Bandung Barat 40391","cd9B8cDLdkHmQq817","F"],
+["W","Astana Anyar Hub","Astana Anyar","Intra Sari Raya PT, Jl. Soekarno Hatta, Karasak, Kec. Astanaanyar, Kota Bandung 40243","jg7vC43hwWR6ethd8","L"],
+["W","Bojongloa Kaler Hub","Bojongloa Kaler","Jl. Babakan Ciparay 223 (gerbang masuk di jalan besar Soekarno Hatta, lihat di Maps)","aGU99M5gMqviuPjn7","L"],
+["W","Bandung Hub","Bandung Kidul & Buah Batu","Jl Mandala No 617, Kb. Kangkung, Kec. Kiaracondong, Kota Bandung 40284","3QufemgKchCfdCiL8","L"],
+["W","Kiaracondong Hub","Kiaracondong & Batununggal","Jl. Cidurian Utara No.183, Sukapura, Kec. Kiaracondong, Kota Bandung 40285","YuSjvdkNEsLt82yN6","L"],
+["W","Coblong Hub","Coblong & Cimenyan","Jalan Ir. H. Juanda No. 315 RT 008/RW 009, Kel. Dago, Kec. Coblong, Kota Bandung","dyYfsXg87hquwRoh9","A"],
+["W","Cibeunying Kidul Hub","Cibeunying Kidul, Batununggal","Jl Jakarta No 19, Kel. Kacapiring, Kec. Batununggal, Kota Bandung","CczJXtdCAD6658Vn9","A"],
+["W","Sukajadi Hub","Sukajadi & Sukasari","Jl. Prof. drg. Soeria Soemantri 108, Bandung, West Java","CHpoh4tHDW4MjBq77","L"],
+["W","Panyileukan Hub","Cibiru & Panyileukan","Jalan Persada No.7 Kel Cipadung Kidul Kec. Panyileukan Kota Bandung","zqLsSqemZTymvERA9","I"],
+["M","Cipadung Kulon Hub","Ujungberung & Cilengkrang","Jl. Pangaritan No.1, Cipadung Kulon, Kec. Panyileukan, Kota Bandung 40614","a6iEKA9Ukw1bYDdQ7","S"],
+["W","Cidadap Hub","Cidadap","Jl. Dr Setiabudi No.18 Hegarmanah, Kec. Cidadap, Kota Bandung","oYK5bXhnkwWcsNSY8","A"],
+["W","Regol 2 Hub","Regol","Jl. Soekarno Hatta No.447, Ciseureuh, Kec. Regol, Kota Bandung 40255","jjyQ1XdwVPfdiaWAA","L"],
+["W","Babakan Ciparay 3 Hub","Babakan Ciparay","Jl. Cibolerang Baru No 9, Margasuka, Babakan Ciparay, Bandung","NqgCgkzmXzqR6qPC6","L"],
+["W","Cikancung Hub","Cikancung","Jl Raya Cicalengka - Majalaya Hegarmanah RT.002 RW.009, Kec. Cikancung, Kabupaten Bandung (gudang)","Hgiihr5vK3K9V4uz7","A"],
+["M","Pasirjambu 2 Hub","Pasirjambu","Jl. Propinsi No.61, Cisondari, Kec. Pasirjambu, Kabupaten Bandung 40972","kc44SQLw8zNqs1Ab8","R"],
+["M","Andir Hub","Andir & Sumur Bandung","Jl. Garuda 3HMG+5QR Dungus Cariang, Bandung City, West Java","DkTUpK36csixFPqT6","S"],
+["M","Cihampelas Hub","Cihampelas","Jl. Raya Cihampelas RT 01 / RW 02 Desa Cihampelas, Kabupaten Bandung Barat","MCwGPG8SKwyFvYHPA","F"],
+["M","Arcamanik Hub","Arcamanik","Jl. Cingised No. 531, Kel. Cisaranten Endah, Kec. Arcamanik, Kota Bandung 40293","6nQC55VJU61GrwuRA","S"],
+["M","Cipongkor Hub","Cipongkor","Kp. Nanggewer - Cipari 28 Desa Cijambu Kec. Cipongkor, Kabupaten Bandung Barat","f1MCaEF2tJq8BthV7","H"],
+["W","Ciparay Hub","Ciparay","Jl. Paledang 6-4, Pakutandang, Kec. Ciparay, Kab. Bandung 40381","mctyLDM3rGxLB2U4A","A"],
+["W","Rancasari Hub","Rancasari","Jl. Cipamokolan 89 RT. 004 RW. 007 Kel. Derwati, Kec. Rancasari, Kota Bandung","JcY1H8AkF5jkJBqu5","I"],
+["M","Cimahi Tengah 2 Hub","Kelurahan Cigugur Tengah, Baros, Karang Mekar, Setiamanah","Jl. Raya Cibabat 323 RT 003 RW 16, Kel. Cigugur Tengah, Kec. Cimahi Tengah, Kota Cimahi","EjbJpFvS5BSS6y8s5","F"],
+["W","Ciparay 2 Hub","Kertasari","Jalan Raya Cikoneng RT 001 RW 015 Desa Cikoneng, Kec. Ciparay, Kab. Bandung","5hAwrCPMAgHTwuP76","A"],
+["M","Cimahi Selatan Hub","Utama, Leuwigajah, Cibeber","Jl. Maharmartanegara, Cimahi Selatan, Kota Cimahi (Daikin, seberang SMK 1)","eLq6XYuRTPn3oTe5A","S"],
+["M","Lengkong Kota Bandung Hub","Kel. Burangrang, Cikawao, Malabar, Paledang","Jl. Soekarno-Hatta No.533, Turangga, Kec. Lengkong, Kota Bandung 40264","3gDkKadKgCfD3wjo7","S"],
+["M","Rancabali Hub","Rancabali","Kampung Datar Puspa RT 01 RW 03, Kel. Alam Endah, Kec. Rancabali, Kab. Bandung","7C3CcE8pYLYxThjQ9","R"],
+["M","Cisarua Kab. Bandung Barat Hub","","Cipeusing No.2, Kertawangi, Kec. Cisarua, Kabupaten Bandung Barat 40551","cycFvJFJKuHjBcz5A","F"],
+["W","Bojongsoang 2 Hub","Tegalluar, Buahbatu","Jl. Batusari RT 04 RW 01, Kel. Batusari, Kec. Bojongsoang, Kabupaten Bandung 40287","RRDMJo2PsTFrB5tm7","A"],
+["M","Cimahi Utara 2 Hub","Kel. Cipageran & Citeureup","Jl. Kolonel Masturi No.161-163, Cipageran, Kec. Cimahi Utara, Kota Cimahi 40511","FwT5NbeCopsapZZq7","F"],
+["W","Ibun Hub","Ibun","Jl Muhammad Ramdhan Lampegan RT 01 RW 04, Desa Lampegan, Kec. Ibun, Kabupaten Bandung 40384","CUHosabsPHtGmvve9","I"],
+["M","Kutawaringin 2 Hub","Kutawaringin","Kp. Bunisari No.10, Padasuka, Kec. Kutawaringin, Kabupaten Bandung 40911","bcPyCRQREYtz6Lk88","R"],
+["M","Arjasari 2 Hub","Arjasari, Pameungpeuk","XJ22+C9Q, Jl. Kapten Sarwono, Batukarut, Kec. Arjasari, Kabupaten Bandung 40379","rG6A1TTQ8fUpXeJq5","R"],
+["W","Paseh 3 Hub","","XQ58+2WX, Jl. Panyadap Majalaya, Sukamanah, Kec. Paseh, Kabupaten Bandung 40392","C6gd7HEFYr7eHzmr9","I"],
+["M","Banjaran 3 Hub","Cimaung","Jl. Raya Pangalengan Kp. Gegerbeas, Cimaung (depan kantor desa Cimaung)","6oF5NuDTV9KtzXfx8","S"],
+["W","Cicalengka 2 Hub","Panenjoan, Cicalengka Kulon, Babakan Peuteuy, Dampit, Tanjungwangi, Tenjolaya, Cikuya","Jl. Raya Bandung-Garut Bypass no 20 KM 32 Desa Cicalengka Wetan, Kec. Cicalengka, Kabupaten Bandung 40395","","I"],
+["W","Cibeunying Kidul 2 Hub","Cibeunying Kaler, Cimenyan","Jl. A. Yani No.747-751, Padasuka, Kec. Cibeunying Kidul, Kota Bandung 40121","N7U3UU9NFuUA2xcp9","A"],
+["M","Pangalengan 2 Hub","","QHXR+FJG Sukamanah, Kabupaten Bandung, Jawa Barat","8qUsHjpmbZyY5orbA","S"],
+["W","Regol 4 Hub","Bandung Kidul","Jl. Mengger Girang No.5, Pasirluyu, Kec. Regol, Kota Bandung 40254","2J5pZd6LNRLkLpK77","L"],
+["M","Baleendah 4 Hub","","Jl siliwangi no 48a rt 07 rw 22 kel baleendah kec baleendah kabupaten bandung","UH2sUG9YhT3XPXDh8","F"],
+["M","Baleendah 5 Hub","Baleendah (Manggahang, Jelekong, Wargamekar)","XMJ3+Q2G, Manggahang, Baleendah, Bandung Regency, West Java 40376","rmYjh3xk6BZ2sjC4A","R"],
+["M","Margaasih 4 Hub","","2GWM+GMV, Nanjung, Margaasih, Bandung Regency, West Java 40217","b8YDchyQrhoGWEJ69","H"],
+["M","Cimahi Tengah 3 Hub","","4H22+HM8, Central Cigugur, Cimahi Tengah, Cimahi City, West Java 40533","y6v19HUYU86FW1xK8","S"],
+["M","Kutawaringin Hub","Kutawaringin (Jelegong)","Jl. Cisaat No.90, RT.03/RW.04, Jelegong, Kec. Kutawaringin, Kabupaten Bandung 40971","un7WPVM1F8zh3EoX7","R"]
+];
+var pic="",q="",cs="";
+function $(i){return document.getElementById(i)}
+function esc(x){var d=document.createElement("div");d.textContent=x;return d.innerHTML}
+function url(m){return m?(m.indexOf("g:")===0?"https://goo.gl/maps/"+m.slice(2):"https://maps.app.goo.gl/"+m):""}
+function chips(){
+var h='<button class="chip'+(pic?'':' on')+'" data-p="">Semua<b>'+D.length+'</b></button>';
+Object.keys(PN).forEach(function(k){var n=D.filter(function(r){return r[5]===k}).length;h+='<button class="chip'+(pic===k?' on':'')+'" data-p="'+k+'">'+PN[k]+'<b>'+n+'</b></button>'});
+$("chips").innerHTML=h;
+$("chips").querySelectorAll(".chip").forEach(function(b){b.onclick=function(){pic=b.dataset.p;chips();draw()}})}
+function draw(){
+var t=q.toLowerCase();
+var L=D.filter(function(r){return(!pic||r[5]===pic)&&(!cs||r[0]===cs)&&(r[1]+" "+r[2]+" "+r[3]).toLowerCase().indexOf(t)>-1});
+$("cnt").textContent=L.length+" dari "+D.length+" hub";
+$("grid").innerHTML=L.length?L.map(function(r,i){
+var u=url(r[4]);
+return '<article class="card glass" style="--i:'+Math.min(i,10)+'"><div class="top"><h3>'+esc(r[1])+'</h3><span class="pic" style="--h:'+HUE[r[5]]+'">'+PN[r[5]]+'</span></div>'+
+(r[2]?'<p class="dist">'+esc(r[2])+'</p>':'')+
+'<p class="addr">'+esc(r[3])+'</p><p class="cour">Courier PIC: '+CN[r[0]]+'</p>'+
+(u?'<a class="go" href="'+u+'" target="_blank" rel="noopener">Buka di Google Maps</a>':'<span class="go off">Link Maps belum diisi</span>')+'</article>'}).join(""):
+'<div class="empty glass" style="grid-column:1/-1">Tidak ada hub yang cocok. Ubah kata kunci atau pilih Semua.</div>'}
+$("q").oninput=function(){q=this.value;draw()};
+$("cs").onchange=function(){cs=this.value;draw()};
+var LR=`Andir Hub|S|B|M|0|-1,0,0,0,-25,1
+Antapani Hub|A|B|W|0|0,0,0,0,-1,0
+Arcamanik Hub|S|B|M|0|0,0,0,0,0,2
+Astana Anyar Hub|L|B|W|0|-2,0,0,-1,-15,6
+Babakan Ciparay 3 Hub|L|B|W|1|-1,-1,0,-1,-16,0
+Balonggede Hub|S|B|M|0|0,0,0,-1,-14,0
+Bandung Barat Hub|H|BB|M|0|-1,-2,0,0,-23,7
+Bandung Hub|L|B|W|0|-1,0,0,0,-5,0
+Bandung Kulon Hub|H|B|M|0|-1,0,0,-1,-31,3
+Bandung Timur Hub|I|B|W|0|-1,0,0,0,-11,0
+Bandung Utara Hub|L|B|W|0|0,0,0,0,-28,1
+Batujajar Hub|H|BB|M|0|0,0,0,0,-9,2
+Bojongloa Kaler Hub|L|B|W|0|-1,0,0,-1,-25,2
+Bojongloa Kidul Hub|L|B|W|0|-1,0,0,0,-32,0
+Cibabat Hub|F|BB|M|0|0,0,0,0,-10,1
+Cibeunying Kidul Hub|A|B|W|0|0,0,0,0,-23,5
+Cidadap Hub|A|B|W|0|0,0,0,0,-18,1
+Cihampelas Hub|F|BB|M|0|0,0,0,0,0,2
+Cimahi Hub|F|C|M|0|0,0,0,0,0,2
+Cimahi Selatan Hub|S|C|M|0|-1,0,0,0,-8,3
+Cimahi Tengah 2 Hub|F|C|M|0|0,0,0,-1,-1,1
+Cimahi Tengah Hub|F|C|M|0|0,0,0,0,0,2
+Cimahi Utara 2 Hub|F|C|M|0|0,0,0,0,-14,1
+Cimahi Utara Hub|F|C|M|0|0,0,0,0,-8,6
+Cipadung Kulon Hub|S|B|M|0|-1,0,0,0,-5,3
+Cipatat Hub|H|BB|M|0|0,0,0,0,0,2
+Cipeundeuy Kab. Bandung Barat Hub|F|BB|M|0|-1,0,0,-1,-2,0
+Cipongkor Hub|H|BB|M|0|0,0,0,-1,-1,0
+Cisarua Kab. Bandung Barat Hub|F|K|M|0|0,0,0,0,-10,0
+Coblong Hub|A|B|W|0|-2,0,0,0,-7,1
+Gununghalu Hub|H|BB|M|0|0,0,0,-1,-1,0
+Kiaracondong Hub|L|B|W|0|0,0,0,0,0,0
+Lembang Hub|F|BB|M|0|0,0,0,-1,-1,5
+Lengkong Kota Bandung Hub|S|B|M|0|-1,-2,0,0,-20,0
+Ngamprah Hub|H|BB|M|0|-1,0,0,-1,-2,1
+Panyileukan Hub|I|B|W|0|0,0,0,0,-8,0
+Rancasari Hub|I|B|W|0|0,0,0,0,0,0
+Regol 2 Hub|L|B|W|0|0,0,0,0,-14,0
+Sindangkerta Hub|H|BB|M|0|0,0,0,-1,-1,0
+Sukajadi Hub|L|B|W|1|-1,0,0,0,-2,1
+Arjasari 2 Hub|R|K|M|0|0,0,0,0,-4,0
+Arjasari Hub|R|K|M|0|0,0,0,-1,-1,0
+Baleendah Hub|R|K|M|0|0,0,0,0,0,0
+Banjaran Hub|S|K|M|0|0,0,0,0,0,2
+Bojongsoang 2 Hub|A|K|W|0|0,0,0,0,-15,0
+Bojongsoang Hub|A|K|W|1|-1,0,0,0,-10,0
+Cicalengka Hub|I|K|W|0|-1,0,0,-3,-14,0
+Cikancung Hub|A|K|W|0|0,0,0,0,0,0
+Cileunyi Hub|I|B|W|0|0,0,0,0,-2,0
+Ciparay 2 Hub|A|K|W|1|0,0,0,-1,-1,0
+Ciparay Hub|A|K|W|0|-1,0,0,-2,-12,1
+Ciwidey Hub|R|K|M|0|0,0,0,0,0,1
+Dayeuhkolot 2 Hub|S|K|M|0|0,0,0,0,-32,0
+Dayeuhkolot Hub|R|K|M|0|0,0,0,0,-5,0
+Ibun Hub|I|K|W|0|0,0,0,0,0,0
+Katapang Hub|R|K|M|0|-1,0,0,0,-12,8
+Kutawaringin 2 Hub|R|K|M|0|0,0,0,0,-12,0
+Majalaya Hub|I|K|W|0|0,-2,0,-3,-5,2
+Margaasih Hub|R|K|M|0|0,0,0,0,0,3
+Pacet Bandung Hub|A|K|W|0|0,0,0,-1,-1,2
+Pangalengan Hub|L|K|W|0|-3,0,0,0,-3,0
+Pasirjambu 2 Hub|R|K|M|0|0,0,0,0,0,0
+Rancabali Hub|R|K|M|0|0,0,0,0,0,0
+Rancaekek Hub|I|K|W|0|0,0,0,0,0,0
+Solokan Jeruk Hub|I|K|W|0|0,0,0,0,-18,0
+Soreang Hub|R|K|M|0|0,0,0,0,0,1
+Banjaran 3 Hub|S|K|M|0|-2,0,0,0,-2,1
+Cibeunying Kidul 2 Hub|A|B|W|0|0,0,0,0,-34,
+Cicalengka 2 Hub|I|K|W|0|-1,0,0,0,-1,0
+Paseh 3 Hub|I|K|W|0|-1,0,0,0,-5,0
+Regol 4 Hub|L|B|W|0|0,0,0,0,-33,
+Pangalengan 2 Hub|S|K|M|0|0,0,0,0,-3,
+Baleendah 4 Hub|F|K|M|0|0,0,0,0,-14,
+Baleendah 5 Hub|R|K|M|0|0,0,0,0,1,
+Margaasih 4 Hub|H|K|M|0|0,0,0,0,-3,
+Kutawaringin Hub|R|K|M|0|0,0,0,0,-10,
+Cimahi Tengah 3 Hub|S|C|M|0|0,0,0,0,-12,
+Margaasih 5 Hub|R|K||0|0,0,0,0,0,
+Cileunyi 2 Hub|I|K||1|0,0,0,0,0,
+Padalarang 2 Hub|H|BB||0|0,0,0,0,-27,`;
+var LD=LR.trim().split(/\n/).map(function(s){var p=s.split('|'),n=p[5].split(',');return{h:p[0],p:p[1],c:p[2],k:p[3],s:+p[4],dm:+n[0],rp:+n[1],rd:+n[2],dd:+n[3],t:+n[4],pr:n[5]===''?null:+n[5]}});
+var CM={B:'Kota Bandung',K:'Kab. Bandung',BB:'Kab. Bandung Barat',C:'Kota Cimahi'};
+var lp='',lq='',ls='',lo='t',lb='';
+function fm(v){return v<0?'−'+Math.abs(v):v>0?'+'+v:'0'}
+function fc(v){return v<0?'ng':v>0?'ps':'zr'}
+function lchips(){
+var h='<button class="chip'+(lp?'':' on')+'" data-p="">Semua<b>'+LD.length+'</b></button>';
+Object.keys(PN).forEach(function(k){var n=LD.filter(function(r){return r.p===k}).length;h+='<button class="chip'+(lp===k?' on':'')+'" data-p="'+k+'">'+PN[k]+'<b>'+n+'</b></button>'});
+$('lchips').innerHTML=h;
+$('lchips').querySelectorAll('.chip').forEach(function(b){b.onclick=function(){lp=b.dataset.p;lchips();ldraw()}})}
+function ldraw(){
+var t=lq.toLowerCase();
+var L=LD.filter(function(r){return(!lp||r.p===lp)&&(ls===''||String(r.s)===ls)&&(lb===''||(lb==='-'?r.k==='':r.k===lb))&&(r.h+' '+CM[r.c]).toLowerCase().indexOf(t)>-1});
+L.sort(function(a,b){return lo==='n'?a.h.localeCompare(b.h):lo==='p'?(b.pr===null?-1:b.pr)-(a.pr===null?-1:a.pr):a.t-b.t});
+var need=0,hc=0,pr=0;L.forEach(function(r){if(r.t<0)need-=r.t;hc+=r.s;pr+=r.pr||0});
+$('lk').innerHTML=[[L.length,'Hub ditampilkan'],[hc,'Hub hypercare'],[need,'Total kekurangan kurir'],[pr,'Pipeline ready']].map(function(k){return '<div class="kpi glass"><b>'+k[0]+'</b><span>'+k[1]+'</span></div>'}).join('');
+$('lcnt').textContent=L.length+' dari '+LD.length+' hub';
+$('lgrid').innerHTML=L.length?L.map(function(r,i){
+return '<article class="card glass" style="--i:'+Math.min(i,10)+'"><div class="top"><h3>'+esc(r.h)+'</h3><span class="pic" style="--h:'+HUE[r.p]+'">'+PN[r.p]+'</span></div>'+
+'<p class="dist">'+CM[r.c]+'</p><p class="cour">PIC BPO: '+(CN[r.k]||'Belum ada')+'</p>'+
+'<div class="st">'+[['Driver Mitra',r.dm],['Rider Plus',r.rp],['Rider Ded.',r.rd],['Driver Ded.',r.dd]].map(function(x){return '<div><b class="'+fc(x[1])+'">'+fm(x[1])+'</b><small>'+x[0]+'</small></div>'}).join('')+'</div>'+
+'<div class="ft"><span class="badge'+(r.s?'':' ok')+'">'+(r.s?'Hypercare - dorong mitra':'Normal')+'</span><span class="tot">Total <b class="'+fc(r.t)+'">'+fm(r.t)+'</b></span></div>'+
+'<p class="cour">Pipeline ready: '+(r.pr===null?'belum ada data':r.pr)+'</p></article>'}).join(''):
+'<div class="empty glass" style="grid-column:1/-1">Tidak ada hub yang cocok. Ubah kata kunci atau filter.</div>'}
+$('lq').oninput=function(){lq=this.value;ldraw()};
+$('ls').onchange=function(){ls=this.value;ldraw()};
+$('lb').onchange=function(){lb=this.value;ldraw()};
+$('lo').onchange=function(){lo=this.value;ldraw()};
+function route(){var r=location.hash.slice(1);if(['hub','lm','roster'].indexOf(r)<0)r='home';['home','hub','lm','roster'].forEach(function(k){$('v-'+k).hidden=k!==r});$('credit').hidden=r!=='home';window.scrollTo(0,0)}
+window.addEventListener('hashchange',route);
+chips();draw();lchips();ldraw();route();
+</script>
+</body>
+</html>
