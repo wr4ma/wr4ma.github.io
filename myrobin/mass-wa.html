@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>WhatsApp Jobportal Mass Send</title>
+<style>
+:root{color-scheme:dark;--tx:#f5f7fa;--mut:rgba(235,240,250,.62);--glass:rgba(255,255,255,.08);--glass2:rgba(255,255,255,.12);--bd:rgba(255,255,255,.18);--hi:rgba(255,255,255,.35);--pr:#30d158;--err:#ff6b6b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#05070d}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;color:var(--tx);font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;background:#05070d;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(70px);opacity:.55;z-index:0;pointer-events:none}
+.o1{width:340px;height:340px;background:#1f6bff;top:-80px;left:-90px}
+.o2{width:300px;height:300px;background:#a23cff;top:35%;right:-110px}
+.o3{width:320px;height:320px;background:#16c47a;bottom:-100px;left:10%}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:22px 16px 56px}
+h1{font-size:1.9rem;letter-spacing:-.02em;margin:10px 4px 2px;font-weight:700}
+.sub{color:var(--mut);margin:0 4px 22px;font-size:.95rem}
+.glass{background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.05));border:1px solid var(--bd);border-radius:28px;-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),inset 0 -1px 0 rgba(255,255,255,.05),0 12px 40px rgba(0,0,0,.45)}
+.card{padding:18px;margin-bottom:16px}
+label{display:block;font-weight:600;margin-bottom:8px;font-size:.95rem}
+.hint{font-weight:400;color:var(--mut);font-size:.82rem}
+textarea,.link{width:100%;color:var(--tx);background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12);border-radius:18px;box-shadow:inset 0 2px 6px rgba(0,0,0,.35)}
+textarea{padding:12px 14px;font:inherit;resize:vertical}
+textarea::placeholder{color:rgba(235,240,250,.35)}
+textarea:focus{outline:none;border-color:rgba(48,209,88,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.35),0 0 0 3px rgba(48,209,88,.25)}
+#nums{min-height:130px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.95rem}
+#msg{min-height:150px}
+.row{display:flex;justify-content:space-between;gap:8px;color:var(--mut);font-size:.8rem;margin-top:7px;flex-wrap:wrap;padding:0 4px}
+.field{margin-bottom:18px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button,a.btn{font:inherit;font-weight:600;border-radius:999px;padding:11px 20px;border:1px solid var(--bd);color:var(--tx);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.06));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 var(--hi),0 4px 14px rgba(0,0,0,.3);transition:transform .15s,filter .15s}
+button:active,a.btn:active{transform:scale(.96)}
+button:hover,a.btn:hover{filter:brightness(1.15)}
+.pri{background:linear-gradient(180deg,rgba(80,230,120,.95),rgba(30,170,70,.9));border-color:rgba(255,255,255,.35);color:#04210e}
+.sm{padding:8px 15px;font-size:.88rem}
+#gen{background:linear-gradient(180deg,rgba(190,130,255,.6),rgba(110,50,220,.45));border-color:rgba(215,185,255,.55);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 22px rgba(130,60,240,.45);text-shadow:0 1px 2px rgba(40,0,90,.4)}
+.item{border-radius:22px;padding:14px;margin-bottom:12px;background:var(--glass);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.num{font-weight:700;margin-bottom:8px}
+.link{padding:9px 12px;font:.78rem ui-monospace,Menlo,monospace;color:var(--mut);margin-bottom:10px;border-radius:14px}
+.bad{color:var(--err);font-size:.88rem;margin:4px 0}
+.head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.head h2{font-size:1.1rem;margin:0}
+.warn{color:var(--err);font-size:.82rem;margin-top:6px;padding:0 4px}
+.saved{color:var(--pr)}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes sh{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;margin-right:8px;flex:none}
+#gen[disabled]{opacity:.8;cursor:progress}
+#boot{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(5,7,13,.65);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);transition:opacity .5s,visibility .5s}
+#boot.hide{opacity:0;visibility:hidden}
+.bootc{padding:28px 34px;text-align:center}
+.bigspin{width:46px;height:46px;border:3px solid rgba(255,255,255,.2);border-top-color:#c9a2ff;border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 14px;box-shadow:0 0 24px rgba(150,80,255,.5)}
+.bootc p{margin:0;color:var(--mut);font-size:.9rem}
+.bootc b{font-size:1.05rem}
+.sk{height:92px;border-radius:22px;margin-bottom:12px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(100deg,rgba(255,255,255,.05) 30%,rgba(255,255,255,.16) 50%,rgba(255,255,255,.05) 70%);background-size:200% 100%;animation:sh 1.2s linear infinite}
+</style>
+</head>
+<body>
+<div id="boot"><div class="glass bootc"><div class="bigspin"></div><b>WhatsApp Jobportal Mass Send</b><p>Memuat halaman…</p></div></div>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<div class="wrap">
+  <h1>WhatsApp Jobportal Mass Send</h1>
+  <p class="sub">Buat link WhatsApp untuk banyak nomor sekaligus dengan satu pesan.</p>
+
+  <div class="glass card">
+    <div class="field">
+      <label for="nums">Nomor WhatsApp <span class="hint">(satu nomor per baris)</span></label>
+      <textarea id="nums" placeholder="08123456789&#10;6281234567890&#10;0812-3456-7891" spellcheck="false"></textarea>
+      <div class="row"><span></span><span id="cnt">0 nomor</span></div>
+    </div>
+    <div class="field">
+      <label for="msg">Pesan</label>
+      <textarea id="msg" placeholder="Tulis pesan di sini. Pesan panjang dan baris baru didukung."></textarea>
+      <div class="row"><span id="len">0 karakter</span><span class="saved" id="sv">Tersimpan otomatis di perangkat ini</span></div>
+      <div class="warn" id="lw" hidden>Pesan sangat panjang, link bisa gagal terbuka di beberapa perangkat.</div>
+    </div>
+    <div class="btns">
+      <button class="pri" id="gen">Buat Link</button>
+      <button id="clr">Reset</button>
+    </div>
+  </div>
+
+  <div class="glass card" id="resCard" hidden>
+    <div class="head">
+      <h2 id="rt">Hasil</h2>
+      <button class="sm" id="copyAll">Salin semua link</button>
+    </div>
+    <div id="bad"></div>
+    <div id="res"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var nums=$('nums'),msg=$('msg'),res=$('res'),bad=$('bad');
+  var links=[],KEY='wa_mass_link_msg';
+
+  function load(){try{return localStorage.getItem(KEY)||''}catch(e){return ''}}
+  function save(v){try{if(v)localStorage.setItem(KEY,v);else localStorage.removeItem(KEY)}catch(e){}}
+
+  function norm(raw){
+    var d=raw.replace(/\D/g,'');
+    if(!d)return null;
+    if(d.indexOf('62')===0){}
+    else if(d.charAt(0)==='0')d='62'+d.slice(1);
+    else if(d.charAt(0)==='8')d='62'+d;
+    return d;
+  }
+  function parse(){
+    var ok=[],err=[],seen={};
+    nums.value.split(/\r?\n/).forEach(function(l){
+      if(!l.trim())return;
+      var n=norm(l);
+      if(!n||n.length<10||n.length>15){err.push(l.trim());return}
+      if(seen[n])return;
+      seen[n]=1;ok.push(n);
+    });
+    return {ok:ok,err:err};
+  }
+  function upd(){
+    $('cnt').textContent=parse().ok.length+' nomor';
+    $('len').textContent=msg.value.length+' karakter';
+    $('lw').hidden=encodeURIComponent(msg.value).length<=6000;
+  }
+  nums.addEventListener('input',upd);
+  msg.addEventListener('input',function(){save(msg.value);upd()});
+
+  function copy(t,btn){
+    var done=function(){var o=btn.textContent;btn.textContent='Tersalin ✓';setTimeout(function(){btn.textContent=o},1400)};
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(done,function(){fb(t);done()});
+    }else{fb(t);done()}
+  }
+  function fb(t){
+    var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';
+    document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}
+    document.body.removeChild(a);
+  }
+
+  function build(){
+    var p=parse(),text=encodeURIComponent(msg.value);
+    res.innerHTML='';bad.innerHTML='';links=[];
+    $('resCard').hidden=false;
+    p.err.forEach(function(e){
+      var d=document.createElement('div');d.className='bad';
+      d.textContent='Nomor tidak valid: '+e;bad.appendChild(d);
+    });
+    if(!p.ok.length){$('rt').textContent='Hasil';res.textContent='Belum ada nomor valid.';return}
+    $('rt').textContent='Hasil ('+p.ok.length+' link)';
+    p.ok.forEach(function(n,i){
+      var url='https://wa.me/'+n+(msg.value.trim()?'?text='+text:'');
+      links.push(url);
+      var it=document.createElement('div');it.className='item';
+      var h=document.createElement('div');h.className='num';
+      h.textContent=(i+1)+'. +'+n;
+      var inp=document.createElement('input');inp.className='link';inp.readOnly=true;inp.value=url;
+      inp.onfocus=function(){inp.select()};
+      var b=document.createElement('div');b.className='btns';
+      var c=document.createElement('button');c.className='sm';c.textContent='Salin link';
+      c.onclick=function(){copy(url,c)};
+      var o=document.createElement('a');o.className='btn sm pri';o.href=url;o.target='_blank';o.rel='noopener noreferrer';o.textContent='Buka WhatsApp';
+      b.appendChild(c);b.appendChild(o);
+      it.appendChild(h);it.appendChild(inp);it.appendChild(b);res.appendChild(it);
+    });
+    $('resCard').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  var busy=false;
+  $('gen').onclick=function(){
+    if(busy)return;
+    busy=true;
+    var g=$('gen');
+    g.disabled=true;
+    g.innerHTML='<span class="spin"></span>Memproses…';
+    bad.innerHTML='';links=[];
+    $('rt').textContent='Membuat link…';
+    res.innerHTML='<div class="sk"></div><div class="sk"></div><div class="sk"></div>';
+    $('resCard').hidden=false;
+    $('resCard').scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(function(){
+      build();
+      g.disabled=false;
+      g.textContent='Buat Link';
+      busy=false;
+    },900);
+  };
+  $('copyAll').onclick=function(){if(links.length)copy(links.join('\n'),$('copyAll'))};
+  $('clr').onclick=function(){nums.value='';msg.value='';save('');res.innerHTML='';bad.innerHTML='';links=[];$('resCard').hidden=true;upd()};
+
+  msg.value=load();
+  upd();
+  setTimeout(function(){
+    var l=$('boot');
+    l.classList.add('hide');
+    setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l)},600);
+  },1000);
+})();
+</script>
+</body>
+</html>
