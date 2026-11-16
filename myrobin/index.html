@@ -58,7 +58,17 @@ input:focus-visible,select:focus-visible,.chip:focus-visible,.go:focus-visible{o
 .hero,.region{font-family:inherit}
 .hero{font-size:clamp(24px,5.6vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:6px 0 12px}
 .region{display:inline-block;font-size:clamp(14px,3.4vw,17px);font-weight:600;letter-spacing:.04em;color:var(--ac);margin:0 0 10px;padding:6px 18px;border-radius:999px;border:1px solid var(--gl2);background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 var(--hi),0 0 22px rgba(124,196,255,.18)}
-.credit{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:4;font-size:13px;color:var(--mut);white-space:nowrap}
+.credit{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:4;font-size:13px;line-height:30px;color:var(--mut);white-space:nowrap}
+.credit .ht{display:inline-block;color:#ff5c8a;font-weight:700;text-shadow:0 0 10px rgba(255,92,138,.7)}
+.credit .wr{font-weight:700;letter-spacing:.04em;background:linear-gradient(90deg,#7cc4ff,#c4a1ff,#ff8fb1,#7cc4ff);background-size:250% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+[data-theme="light"] .credit .ht{color:#e11d48;text-shadow:none}
+[data-theme="light"] .credit .wr{background-image:linear-gradient(90deg,#1d5fd1,#7c3aed,#db2777,#1d5fd1)}
+@media(prefers-reduced-motion:no-preference){
+.credit .ht{animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.35)}30%{transform:scale(1)}45%{transform:scale(1.22)}60%{transform:scale(1)}}
+.credit .wr{animation:crd 4s linear infinite}
+@keyframes crd{to{background-position:250% center}}
+}
 .sw{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:14px;z-index:6;width:62px;height:34px;border-radius:999px;border:1px solid var(--gl2);background:var(--gl);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);padding:0;cursor:pointer;box-shadow:inset 0 1px 0 var(--hi)}
 .sw:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 .sw i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;transform:translateX(28px);transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 2px 6px rgba(0,0,0,.35)}
@@ -222,6 +232,12 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 [data-lite] .ol{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(24,33,58,.88)}
 [data-lite][data-theme="light"] .ol{background:rgba(255,255,255,.92)}
 @media(prefers-reduced-motion:no-preference){.ol i{animation:blink 1.8s ease-in-out infinite}}
+.go{position:relative;overflow:hidden;color:var(--ink);background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -1px 0 rgba(255,255,255,.12),0 6px 16px rgba(0,0,0,.22);text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.go::before{content:'';position:absolute;left:0;right:0;top:0;height:52%;background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0));pointer-events:none}
+.go.off{text-shadow:none}
+.go.off::before{display:none}
+.go:active:not(.off){background:linear-gradient(180deg,rgba(255,255,255,.36),rgba(255,255,255,.14))}
+[data-theme="light"] .go:not(.off){color:#14213d;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.5));border-color:rgba(255,255,255,.95);box-shadow:inset 0 1px 0 #fff,0 6px 16px rgba(30,50,90,.15);text-shadow:none}
 .back{display:inline-block;color:var(--ac);text-decoration:none;font-weight:600;margin-bottom:6px;padding:4px 0}
 .back:focus-visible,.tile:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 .menu{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:8px}
@@ -322,7 +338,7 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 <div class="pager" id="pg" hidden><button class="pb" id="pp" aria-label="Halaman sebelumnya"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></button><span class="pi" id="pi"></span><button class="pb" id="pn" aria-label="Halaman berikutnya"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
 </section>
 </main>
-<div class="credit" id="credit">made with &lt;3 by wr4ma</div>
+<div class="credit" id="credit">made with <span class="ht">&lt;3</span> by <span class="wr">wr4ma</span></div>
 <script>
 var CN={M:"Mochamad Aqshal Revikasyah",W:"Wildhan Ramdhani A"};
 var PN={R:"Regy",I:"Ikhsan",A:"Aci",S:"Shafa",L:"Lily",H:"Hafazh",F:"Fadhila"};
