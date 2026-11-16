@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pendaftaran Kurir MyRobin</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--text:#1a1d21;--muted:#6b7280;--border:#d5d9e0;--accent:#16a34a;--accent-text:#fff;--err:#dc2626;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111317;--card:#1b1e24;--text:#eceef2;--muted:#9aa1ad;--border:#343943;--accent:#22c55e;--accent-text:#052e14;--err:#f87171}}
+:root[data-theme="dark"]{--bg:#111317;--card:#1b1e24;--text:#eceef2;--muted:#9aa1ad;--border:#343943;--accent:#22c55e;--accent-text:#052e14;--err:#f87171}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.35rem;margin:8px 0 4px}
+p.sub{color:var(--muted);margin:0 0 18px;font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+label{display:block;font-weight:600;font-size:.9rem;margin:14px 0 6px}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;padding:12px;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:10px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+textarea{min-height:90px;resize:vertical}
+input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;height:48px;line-height:1.2}
+input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
+input[type=date]::-webkit-calendar-picker-indicator{opacity:.7}
+select{-webkit-appearance:none;appearance:none;height:48px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
+input:not([type=date]){height:48px}
+.hint{font-size:.78rem;color:var(--muted);margin-top:4px}
+.err{color:var(--err);font-size:.8rem;margin-top:4px;display:none}
+.invalid .err{display:block}.invalid input,.invalid select,.invalid textarea{border-color:var(--err)}
+button{width:100%;margin-top:22px;padding:14px;font:inherit;font-weight:700;border:0;border-radius:12px;background:var(--accent);color:var(--accent-text);cursor:pointer}
+.out{margin-top:16px;font-size:.82rem;color:var(--muted);word-break:break-all;display:none}
+.out a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Pendaftaran Kurir MyRobin</h1>
+<p class="sub">Isi Data Dengan Benar</p>
+<div class="card">
+<form id="f" novalidate onsubmit="return false">
+<div class="f"><label for="nama">Nama</label><input id="nama" required autocomplete="name"><div class="err">Wajib diisi</div></div>
+<div class="f"><label for="nik">NIK</label><input id="nik" required inputmode="numeric" maxlength="16"><div class="err">NIK harus 16 digit angka</div></div>
+<div class="f"><label for="email">Email</label><input id="email" type="email" required autocomplete="email"><div class="err">Email tidak valid</div></div>
+<div class="f"><label for="nosim">No. SIM</label><input id="nosim" required inputmode="numeric"><div class="err">Wajib diisi</div></div>
+<div class="f"><label for="jenissim">Jenis SIM</label>
+<select id="jenissim" required><option value="">Pilih jenis SIM</option><option>A</option><option>B1</option><option>B1 Umum</option><option>B2</option><option>B2 Umum</option><option>C</option><option>D</option></select><div class="err">Pilih jenis SIM</div></div>
+<div class="f"><label for="exp">Tanggal kadaluarsa SIM</label><input id="exp" type="date" required><div class="err">Wajib diisi</div></div>
+<div class="f"><label for="wa">No WA aktif</label><input id="wa" type="tel" required inputmode="tel" placeholder="08xxxxxxxxxx"><div class="err">Nomor WA tidak valid</div></div>
+<div class="f"><label for="posisi">Posisi yg dilamar</label><select id="posisi" required><option value="">Pilih posisi</option><option>Rider (Motor)</option><option>Driver (Mobil)</option></select><div class="err">Wajib diisi</div></div>
+<div class="f"><label for="hub">HUB yang dilamar</label><select id="hub" required><option value="">Pilih HUB</option></select><div class="err">Pilih HUB</div></div>
+<div class="f"><label for="alamat">Alamat lengkap</label><textarea id="alamat" required></textarea><div class="err">Wajib diisi</div></div>
+<button id="go" type="submit">Kirim</button>
+</form>
+<div class="out" id="out">Jika WhatsApp tidak terbuka, <a id="lnk" href="#" target="_blank" rel="noopener">klik di sini</a>.</div>
+</div>
+</div>
+<script>
+var HUBS=["Cicalengka Hub","Pacet Bandung Hub","Rancaekek Hub","Solokan Jeruk Hub","Bojongsoang Hub","Majalaya Hub","Cileunyi Hub","Bandung Timur Hub","Bojongloa Kidul Hub","Pangalengan Hub","Bandung Utara Hub","Antapani Hub","Astana Anyar Hub","Bojongloa Kaler Hub","Bandung Hub","Kiaracondong Hub","Coblong Hub","Cibeunying Kidul Hub","Sukajadi Hub","Panyileukan Hub","Cidadap Hub","Regol 2 Hub","Babakan Ciparay 3 Hub","Cikancung Hub","Ciparay Hub","Rancasari Hub","Ciparay 2 Hub","Bojongsoang 2 Hub","Ibun Hub","Paseh 3 Hub","Cicalengka 2 Hub","Cibeunying Kidul 2 Hub","Regol 4 Hub"];
+var NOMOR="6287899604277";
+var hubSel=document.getElementById("hub");
+HUBS.forEach(function(h){var o=document.createElement("option");o.textContent=h;hubSel.appendChild(o)});
+function v(id){return document.getElementById(id).value.trim()}
+function fmtDate(s){if(!s)return"";var p=s.split("-");return p[2]+"-"+p[1]+"-"+p[0]}
+function setErr(id,bad){document.getElementById(id).closest(".f").classList.toggle("invalid",bad);return bad}
+document.getElementById("go").addEventListener("click",function(){
+var bad=false;
+["nama","nosim","jenissim","exp","posisi","hub","alamat"].forEach(function(i){if(setErr(i,!v(i)))bad=true});
+if(setErr("nik",!/^\d{16}$/.test(v("nik"))))bad=true;
+if(setErr("email",!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email"))))bad=true;
+if(setErr("wa",v("wa").replace(/\D/g,"").length<9))bad=true;
+if(bad){var e=document.querySelector(".invalid");if(e)e.scrollIntoView({behavior:"smooth",block:"center"});return}
+var msg="Silahkan isi data diri berikut!\n"+
+"Nama: "+v("nama")+"\n"+
+"NIK: "+v("nik")+"\n"+
+"Email: "+v("email")+"\n"+
+"No. SIM: "+v("nosim")+"\n"+
+"Jenis SIM: "+v("jenissim")+"\n"+
+"Tanggal kadaluarsa SIM: "+fmtDate(v("exp"))+"\n"+
+"No WA aktif: "+v("wa")+"\n"+
+"Posisi yg dilamar: "+v("posisi")+"\n"+
+"HUB yang dilamar: "+v("hub")+"\n"+
+"Alamat lengkap: "+v("alamat").replace(/\s*\n\s*/g,", ");
+var url="https://wa.me/"+NOMOR+"?text="+encodeURIComponent(msg);
+var l=document.getElementById("lnk");l.href=url;
+document.getElementById("out").style.display="block";
+l.click();
+});
+</script>
+</body>
+</html>
