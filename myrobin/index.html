@@ -226,18 +226,21 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 .fpanel{position:sticky;top:calc(env(safe-area-inset-top,0px) + 54px + var(--th,73px) + 8px);z-index:2;border-radius:24px;padding:12px;margin-bottom:18px;display:grid;gap:10px;transition:opacity .25s ease,transform .25s ease}
 .fpanel.hide{opacity:0;transform:translateY(-14px);pointer-events:none;visibility:hidden;transition:opacity .25s ease,transform .25s ease,visibility 0s .25s}
 @media(prefers-reduced-motion:reduce){.fpanel{transition:none!important}}
-.ol{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:6;display:flex;align-items:center;gap:8px;height:30px;padding:0 13px 0 11px;border-radius:999px;border:1px solid var(--gl2);background:var(--gl);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi);font-size:12.5px;color:var(--mut)}
-.ol b{color:var(--ink);font-weight:700}
-.ol i{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;flex-shrink:0}
-[data-lite] .ol{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(24,33,58,.88)}
-[data-lite][data-theme="light"] .ol{background:rgba(255,255,255,.92)}
-@media(prefers-reduced-motion:no-preference){.ol i{animation:blink 1.8s ease-in-out infinite}}
 .go{position:relative;overflow:hidden;color:var(--ink);background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -1px 0 rgba(255,255,255,.12),0 6px 16px rgba(0,0,0,.22);text-shadow:0 1px 2px rgba(0,0,0,.25)}
 .go::before{content:'';position:absolute;left:0;right:0;top:0;height:52%;background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0));pointer-events:none}
 .go.off{text-shadow:none}
 .go.off::before{display:none}
 .go:active:not(.off){background:linear-gradient(180deg,rgba(255,255,255,.36),rgba(255,255,255,.14))}
 [data-theme="light"] .go:not(.off){color:#14213d;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.5));border-color:rgba(255,255,255,.95);box-shadow:inset 0 1px 0 #fff,0 6px 16px rgba(30,50,90,.15);text-shadow:none}
+.sdb{color:var(--ink);font-weight:600}
+.cp-A i{background:#34d399;box-shadow:0 0 10px #34d399}
+.cp-A b{background:linear-gradient(100deg,#34d399 38%,#ecfdf5 50%,#34d399 62%);background-size:250% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+[data-theme="light"] .cp-A b{background-image:linear-gradient(100deg,#047857 38%,#6ee7b7 50%,#047857 62%)}
+@media(prefers-reduced-motion:no-preference){
+.cp-A i::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1.5px dashed #34d399;animation:spin 3s linear infinite}
+.cp-A b{animation:sweepA 2.8s linear infinite}
+@keyframes sweepA{to{background-position:250% center}}
+}
 .back{display:inline-block;color:var(--ac);text-decoration:none;font-weight:600;margin-bottom:6px;padding:4px 0}
 .back:focus-visible,.tile:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 .menu{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:8px}
@@ -261,7 +264,7 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 @keyframes d3{to{transform:translate(25vw,-28vh) scale(1.2)}}
 @keyframes vin{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
 .tile{animation:vin .5s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*70ms)}
-.tile:nth-child(2){--i:1}.tile:nth-child(3){--i:2}.tile:nth-child(4){--i:3}
+.tile:nth-child(2){--i:1}.tile:nth-child(3){--i:2}.tile:nth-child(4){--i:3}.tile:nth-child(5){--i:4}
 .card{animation:vin .4s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*35ms)}
 .chip,.go,.back{transition:transform .2s,background .25s,color .25s,box-shadow .25s}
 .chip:hover,.go:hover{transform:translateY(-1px)}
@@ -274,7 +277,6 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 <div id="curtain" aria-hidden="true"><div class="ring"></div><span>MyRobin Courier Monitoring</span></div>
 <div class="orbs"><i></i><i></i><i></i></div>
 <div class="veil" id="veil" aria-hidden="true"></div>
-<div class="ol" id="ol" hidden><i></i><span><b id="olc">1</b> orang online</span></div>
 <a class="bk" id="bk" href="#home" hidden aria-label="Kembali ke menu"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></a>
 <button class="lt" id="lt" role="switch" aria-checked="false" aria-label="Mode ringan"><span>Lite</span><i><svg viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg></i></button>
 <button class="sw" id="sw" role="switch" aria-checked="true" aria-label="Mode gelap"><i><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="sunI" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></i></button>
@@ -288,6 +290,7 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 <a class="tile glass" href="#lm"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><div><b>Lm Needs &amp; Backlog Status</b><span>Kebutuhan kurir dan status backlog</span></div></a>
 <a class="tile glass" href="#roster"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><div><b>Jadwal Roster Onsite</b><span>Jadwal tugas onsite per hub</span></div></a>
 <a class="tile glass" href="#kpi"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></div><div><b>KPI PIC Performance</b><span>Target, aktual, dan rank mingguan PIC</span></div></a>
+<a class="tile glass" href="#tools"><div class="ico"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></div><div><b>Tools</b><span>Kumpulan alat bantu</span></div></a>
 </nav>
 </section>
 <section id="v-lm" hidden>
@@ -320,6 +323,15 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 <div class="grid" id="kg"></div>
 <p class="cour" style="margin-top:16px">Nilai akhir dihitung dari bobot 20% Supply, 30% Rilis NHE, dan 50% Joiner. Perform Very Bad akan diberikan warning dari lead area.</p>
 </section>
+<section id="v-tools" hidden>
+<h1>Tools</h1>
+<p class="sub">Kumpulan alat bantu, akan terus ditambah</p>
+<div class="grid">
+<article class="card glass" style="--i:0"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.6 18.8z"/><path d="M9 10h6M9 13.5h4"/></svg></div><h3>WhatsApp Mass Send</h3><p class="addr">Buat link WhatsApp untuk banyak nomor sekaligus dengan satu pesan.</p><a class="go" href="https://wr4ma.github.io/myrobin/mass-wa" target="_blank" rel="noopener">Buka tool</a></article>
+<article class="card glass" style="--i:1"><div class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div><h3>Pendaftaran Kurir</h3><p class="addr">Formulir pendaftaran kurir MyRobin untuk posisi rider dan driver.</p><a class="go" href="https://wr4ma.github.io/myrobin/forms" target="_blank" rel="noopener">Buka tool</a></article>
+<article class="card glass" style="--i:2"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg></div><h3>Tool berikutnya</h3><p class="addr">Segera hadir</p></article>
+</div>
+</section>
 <section id="v-hub" hidden>
 <h1>Lokasi Semua Hub</h1>
 <p class="sub">Lokasi Terupdate HUB Jabar 1 &amp; 2</p>
@@ -329,7 +341,8 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 </div>
 </div>
 <div class="fpanel glass"><div class="srch">
-<select id="cs" aria-label="Filter Courier PIC"><option value="">Semua Courier PIC</option><option value="M">Mochamad Aqshal Revikasyah</option><option value="W">Wildhan Ramdhani A</option></select>
+<select id="cs" aria-label="Filter Courier PIC"><option value="">Semua Courier PIC</option><option value="M">Mochamad Aqshal Revikasyah</option><option value="W">Wildhan Ramdhani A</option><option value="A">Andika Budi Eka Putra</option></select>
+<select id="sd" aria-label="Filter Sub District"><option value="">Semua Sub District</option></select>
 </div>
 <div class="chips" id="chips" role="group" aria-label="Filter PIC BPOM"></div>
 </div>
@@ -340,9 +353,9 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 </main>
 <div class="credit" id="credit">made with <span class="ht">&lt;3</span> by <span class="wr">wr4ma</span></div>
 <script>
-var CN={M:"Mochamad Aqshal Revikasyah",W:"Wildhan Ramdhani A"};
-var PN={R:"Regy",I:"Ikhsan",A:"Aci",S:"Shafa",L:"Lily",H:"Hafazh",F:"Fadhila"};
-var HUE={R:200,I:150,A:35,S:320,L:270,H:10,F:55};
+var CN={M:"Mochamad Aqshal Revikasyah",W:"Wildhan Ramdhani A",A:"Andika Budi Eka Putra"};
+var PN={R:"Regy",I:"Ikhsan",A:"Aci",S:"Shafa",L:"Lily",H:"Hafazh",F:"Fadhila",T:"Rahmat",P:"Arip"};
+var HUE={R:200,I:150,A:35,S:320,L:270,H:10,F:55,T:175,P:95};
 // [courier, hub, wilayah, alamat, maps, pic]  (g: = goo.gl/maps/)
 var D=[
 ["M","Baleendah Hub","Baleendah (Baleendah, Malakasari)","Jl siliwangi no 48a rt 07 rw 22 kel baleendah kec baleendah kabupaten bandung","r5MeTgKXXu3sLUhp9","R"],
@@ -421,12 +434,34 @@ var D=[
 ["M","Baleendah 5 Hub","Baleendah (Manggahang, Jelekong, Wargamekar)","XMJ3+Q2G, Manggahang, Baleendah, Bandung Regency, West Java 40376","rmYjh3xk6BZ2sjC4A","R"],
 ["M","Margaasih 4 Hub","","2GWM+GMV, Nanjung, Margaasih, Bandung Regency, West Java 40217","b8YDchyQrhoGWEJ69","H"],
 ["M","Cimahi Tengah 3 Hub","","4H22+HM8, Central Cigugur, Cimahi Tengah, Cimahi City, West Java 40533","y6v19HUYU86FW1xK8","S"],
-["M","Kutawaringin Hub","Kutawaringin (Jelegong)","Jl. Cisaat No.90, RT.03/RW.04, Jelegong, Kec. Kutawaringin, Kabupaten Bandung 40971","un7WPVM1F8zh3EoX7","R"]
+["M","Kutawaringin Hub","Kutawaringin (Jelegong)","Jl. Cisaat No.90, RT.03/RW.04, Jelegong, Kec. Kutawaringin, Kabupaten Bandung 40971","un7WPVM1F8zh3EoX7","R"],
+["A","Agrabinta Hub","KAB. CIANJUR","HWM2+22W, Mekarsari, Kec. Agrabinta, Kabupaten Cianjur, Jawa Barat","q:HWM2%2B22W%2C+Mekarsari%2C+Agrabinta%2C+Cianjur%2C+Jawa+Barat","T"],
+["A","Bantargadung Hub","KAB. SUKABUMI","Kp. Pasapen RT 001 RW 006, Kel/Desa Bantargadung, Kecamatan Bantargadung, Kabupaten Sukabumi, Provinsi Jawa Barat","q:Kp+Pasapen+RT+001+RW+006%2C+Bantargadung%2C+Sukabumi%2C+Jawa+Barat","P"],
+["A","Campaka Hub","KAB. CIANJUR","X4VV+W88, Sukajadi, Kec. Campaka, Kabupaten Cianjur, Jawa Barat","q:X4VV%2BW88%2C+Sukajadi%2C+Campaka%2C+Cianjur","T"],
+["A","Cianjur Hub","KAB. CIANJUR","Jl.Terusan Terminal Kp. Rawa Bango, Rt 003 Rw 011, Des. Bojong, Kec. Karangtengah Kab. Cianjur","q:Jl+Terusan+Terminal+Kp+Rawa+Bango%2C+Bojong%2C+Karangtengah%2C+Cianjur","T"],
+["A","Cibadak Hub","KAB. SUKABUMI","jalan siliwangi kampung bojong duren kelurahan cibadak rw 19 sukabumi jawa barat","q:Jalan+Siliwangi+Kampung+Bojong+Duren%2C+Cibadak%2C+Sukabumi","P"],
+["A","Cibinong Cianjur 2 Hub","KAB. CIANJUR","P44F+6QV, Sukajadi, Kec. Cibinong, Kabupaten Cianjur, Jawa Barat","q:P44F%2B6QV%2C+Sukajadi%2C+Cibinong%2C+Cianjur","T"],
+["A","Cibinong Cianjur Hub","KAB. CIANJUR","Jl. Raya Tanggeung, Tanggeung, Kec. Tanggeung, Kabupaten Cianjur, Jawa Barat 43267","q:Jl+Raya+Tanggeung%2C+Tanggeung%2C+Cianjur+43267","T"],
+["A","Cicantayan Hub","KAB. SUKABUMI","3VW7+3W4, Cibolang Kaler, Kec. Cisaat, Kabupaten Sukabumi, Jawa Barat","q:3VW7%2B3W4%2C+Cibolang+Kaler%2C+Cisaat%2C+Sukabumi","P"],
+["A","Cicurug 2 Hub","KAB. SUKABUMI","6QFH+HXP, Tenjoayu, Kec. Cicurug, Kabupaten Sukabumi, Jawa Barat","q:6QFH%2BHXP%2C+Tenjoayu%2C+Cicurug%2C+Sukabumi","P"],
+["A","Cicurug Hub","KAB. SUKABUMI","6Q3H+56X, Nyangkowek, Kec. Cicurug, Kabupaten Sukabumi, Jawa Barat","q:6Q3H%2B56X%2C+Nyangkowek%2C+Cicurug%2C+Sukabumi","P"],
+["A","Cidadap Sukabumi Hub","KAB. SUKABUMI","PWGP+4Q5, Padasenang, Kec. Cidadap, Kabupaten Sukabumi, Jawa Barat","q:PWGP%2B4Q5%2C+Padasenang%2C+Cidadap%2C+Sukabumi","P"],
+["A","Cidahu Kab. Sukabumi Hub","KAB. SUKABUMI","6Q25+8HW, Pondokaso Tonggoh, Kec. Cidahu, Kabupaten Sukabumi, Jawa Barat","q:6Q25%2B8HW%2C+Pondokaso+Tonggoh%2C+Cidahu%2C+Sukabumi","P"],
+["A","Cidaun 2 Hub","KAB. CIANJUR","H82Q+7CC, Kertajadi, Kec. Cidaun, Kabupaten Cianjur, Jawa Barat","q:H82Q%2B7CC%2C+Kertajadi%2C+Cidaun%2C+Cianjur","T"],
+["A","Cidaun Hub","KAB. CIANJUR","G963+7F5, Cidamar, Kec. Cidaun, Kabupaten Cianjur, Jawa Barat","q:G963%2B7F5%2C+Cidamar%2C+Cidaun%2C+Cianjur","T"],
+["A","Ciemas 3 Hub","KAB. SUKABUMI","QG68+R56, Mekarsakti, Kec. Ciemas, Kabupaten Sukabumi, Jawa Barat","q:QG68%2BR56%2C+Mekarsakti%2C+Ciemas%2C+Sukabumi","P"],
+["A","Ciemas Hub","KAB. SUKABUMI","KP. Tegal Sumur Rt 02 Rw 01 Desa.Ciwaru Kec.Ciemas Kab.Sukabumi Jawa Barat","q:Kp+Tegal+Sumur+RT+02+RW+01%2C+Ciwaru%2C+Ciemas%2C+Sukabumi","P"],
+["A","Cijati Hub","KAB. CIANJUR","P2Q6+FJ4, Sukamahi, Kec. Cijati, Kabupaten Cianjur, Jawa Barat","q:P2Q6%2BFJ4%2C+Sukamahi%2C+Cijati%2C+Cianjur","T"],
+["A","Cikadu Hub","KAB. CIANJUR","Jl. Cibeunteur Blok F Rt. 13 Rw. 04 Desa Mekarlaksana Kec. Cikadu Kab Cianjur Provinsi Jawa Barat","q:Jl+Cibeunteur+Blok+F%2C+Mekarlaksana%2C+Cikadu%2C+Cianjur","T"],
+["A","Cikakak Hub","KAB. SUKABUMI","2FWM+2X5, Cimaja, Kec. Cikakak, Kabupaten Sukabumi, Jawa Barat","q:2FWM%2B2X5%2C+Cimaja%2C+Cikakak%2C+Sukabumi","P"],
+["A","Cikalongkulon Hub","KAB. CIANJUR","76P4+GMR, Sukagalih, Kec. Cikalongkulon, Kabupaten Cianjur, Jawa Barat","q:76P4%2BGMR%2C+Sukagalih%2C+Cikalongkulon%2C+Cianjur","T"],
+["A","Cikembar Hub","KAB. SUKABUMI","Kampung Bojong Kaler RT004/005 Desa Bojong, Kecamatan Cikembar, Kabupaten Sukabumi, Jawa Barat.","q:Kampung+Bojong+Kaler+RT004+RW005%2C+Cikembar%2C+Sukabumi","P"],
+["A","Cikidang Hub","KAB. SUKABUMI","4MJM+MFC, Cicareuh, Kec. Cikidang, Kabupaten Sukabumi, Jawa Barat","q:4MJM%2BMFC%2C+Cicareuh%2C+Cikidang%2C+Sukabumi","P"]
 ];
 var pic="",q="",cs="";
 function $(i){return document.getElementById(i)}
 function esc(x){var d=document.createElement("div");d.textContent=x;return d.innerHTML}
-function url(m){return m?(m.indexOf("g:")===0?"https://goo.gl/maps/"+m.slice(2):"https://maps.app.goo.gl/"+m):""}
+function url(m){return m?(m.indexOf("q:")===0?"https://www.google.com/maps/search/?api=1&query="+m.slice(2):m.indexOf("g:")===0?"https://goo.gl/maps/"+m.slice(2):"https://maps.app.goo.gl/"+m):""}
 function chips(){
 var h='<button class="chip'+(pic?'':' on')+'" data-p="">Semua<b>'+D.length+'</b></button>';
 Object.keys(PN).forEach(function(k){var n=D.filter(function(r){return r[5]===k}).length;h+='<button class="chip'+(pic===k?' on':'')+'" data-p="'+k+'">'+PN[k]+'<b>'+n+'</b></button>'});
@@ -434,13 +469,13 @@ $("chips").innerHTML=h;
 $("chips").querySelectorAll(".chip").forEach(function(b){b.onclick=function(){pic=b.dataset.p;chips();draw()}})}
 function draw(){
 var t=q.toLowerCase();
-var L=D.filter(function(r){return(!pic||r[5]===pic)&&(!cs||r[0]===cs)&&(r[1]+" "+r[2]+" "+r[3]).toLowerCase().indexOf(t)>-1});
-var sg2=pic+'|'+cs+'|'+q;if(sg2!==hp.sig){hp.sig=sg2;hp.p=1}var T=L.length,pages=Math.max(1,Math.ceil(T/PS));if(hp.p>pages)hp.p=pages;hp.n=T;L=L.slice((hp.p-1)*PS,hp.p*PS);
+var L=D.filter(function(r){return(!pic||r[5]===pic)&&(!cs||r[0]===cs)&&(!sdf||r[6]===sdf)&&(r[1]+" "+r[2]+" "+r[3]+" "+(r[6]||"")).toLowerCase().indexOf(t)>-1});
+var sg2=pic+'|'+cs+'|'+sdf+'|'+q;if(sg2!==hp.sig){hp.sig=sg2;hp.p=1}var T=L.length,pages=Math.max(1,Math.ceil(T/PS));if(hp.p>pages)hp.p=pages;hp.n=T;L=L.slice((hp.p-1)*PS,hp.p*PS);
 $("cnt").textContent=T?"Menampilkan "+((hp.p-1)*PS+1)+"-"+((hp.p-1)*PS+L.length)+" dari "+T+" hub"+(T!==D.length?" (total "+D.length+")":""):"0 dari "+D.length+" hub";
 $("grid").innerHTML=L.length?L.map(function(r,i){
 var u=url(r[4]);
 return '<article class="card glass" style="--i:'+Math.min(i,10)+'"><div class="top"><h3>'+esc(r[1])+'</h3><span class="pic" style="--h:'+HUE[r[5]]+'">'+PN[r[5]]+'</span></div>'+
-(r[2]?'<p class="dist">'+esc(r[2])+'</p>':'')+
+(r[2]?'<p class="dist">'+esc(r[2])+'</p>':'')+(r[6]?'<p class="cour">Sub District: <b class="sdb">'+esc(r[6])+'</b></p>':'')+
 '<p class="addr">'+esc(r[3])+'</p>'+cp('Courier PIC',r[0])+
 (u?'<a class="go" href="'+u+'" target="_blank" rel="noopener">Buka di Google Maps</a>':'<span class="go off">Link Maps belum diisi</span>')+'</article>'}).join(""):
 '<div class="empty glass" style="grid-column:1/-1">Tidak ada hub yang cocok. Ubah kata kunci atau pilih Semua.</div>'}
@@ -585,17 +620,22 @@ window.addEventListener('hashchange',function(){set(false);last=0;setTimeout(th,
 window.addEventListener('resize',th);
 }
 autoHide('hub');autoHide('lm');
-(function(){if(!window.claude||!claude.use)return;claude.use('room').then(function(room){if(!room)return;room.presence({online:true}).catch(function(){});function upd(ps){var s={};ps.forEach(function(p){if(p.kind==='viewer')s[p.by||p.peer]=1});var n=Object.keys(s).length||1;$('olc').textContent=n;$('ol').hidden=false}upd(room.peers());room.onPeers(function(c){upd(c.peers)})}).catch(function(){})})();
 var PG=18;
 function lazy(g,sid){if(!window.IntersectionObserver)return;var el=$(g),s=$(sid),cs=el.querySelectorAll('.card');for(var i=PG;i<cs.length;i++)cs[i].hidden=true;if(!s._io){s._io=new IntersectionObserver(function(en){if(!en[0].isIntersecting)return;var hd=el.querySelectorAll('.card[hidden]');for(var k=0;k<PG&&k<hd.length;k++)hd[k].hidden=false;if(hd.length>PG){s._io.unobserve(s);setTimeout(function(){s._io.observe(s)},60)}},{rootMargin:'700px 0px'})}s._io.unobserve(s);s._io.observe(s)}
+var sdf='';
+function fillSD(){var el=$('sd'),v=el.value,s={};D.forEach(function(r){if(r[6])s[r[6]]=1});var h='<option value="">Semua Sub District</option>';Object.keys(s).sort().forEach(function(k){h+='<option value="'+esc(k)+'">'+esc(k)+'</option>'});el.innerHTML=h;el.value=v}
+$('sd').onchange=function(){sdf=this.value;draw()};
 var hp={p:1,n:0,sig:''},PS=5;
 function pager(){var pages=Math.max(1,Math.ceil((hp.n||0)/PS));$('pg').hidden=pages<=1;$('pi').textContent='Halaman '+hp.p+' dari '+pages;$('pp').disabled=hp.p<=1;$('pn').disabled=hp.p>=pages}
 function goPage(d){hp.p+=d;draw();var y=$('grid').getBoundingClientRect().top+window.scrollY-140;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
 $('pp').onclick=function(){goPage(-1)};$('pn').onclick=function(){goPage(1)};
 var _d=draw;draw=function(){_d();pager()};
+var SDM={"Bandung Selatan": ["Baleendah Hub", "Pacet Bandung Hub", "Bojongsoang Hub", "Banjaran Hub", "Ciwidey Hub", "Pangalengan Hub", "Soreang Hub", "Arjasari Hub", "Dayeuhkolot 2 Hub", "Katapang Hub", "Dayeuhkolot Hub", "Margaasih Hub", "Pasirjambu 2 Hub", "Rancabali Hub", "Bojongsoang 2 Hub", "Kutawaringin 2 Hub", "Arjasari 2 Hub", "Banjaran 3 Hub", "Pangalengan 2 Hub", "Baleendah 4 Hub", "Baleendah 5 Hub", "Kutawaringin Hub", "Margaasih 4 Hub"], "Bandung Timur": ["Cicalengka Hub", "Rancaekek Hub", "Solokan Jeruk Hub", "Majalaya Hub", "Cileunyi Hub", "Bandung Timur Hub", "Antapani Hub", "Kiaracondong Hub", "Cibeunying Kidul Hub", "Panyileukan Hub", "Cipadung Kulon Hub", "Cikancung Hub", "Arcamanik Hub", "Ciparay Hub", "Rancasari Hub", "Ciparay 2 Hub", "Ibun Hub", "Paseh 3 Hub", "Cicalengka 2 Hub", "Cibeunying Kidul 2 Hub"], "Bandung Kota": ["Balonggede Hub", "Bojongloa Kidul Hub", "Bandung Kulon Hub", "Bandung Utara Hub", "Astana Anyar Hub", "Bojongloa Kaler Hub", "Bandung Hub", "Coblong Hub", "Sukajadi Hub", "Cidadap Hub", "Regol 2 Hub", "Babakan Ciparay 3 Hub", "Andir Hub", "Lengkong Kota Bandung Hub", "Regol 4 Hub"], "Cimahi": ["Cibabat Hub", "Cimahi Hub", "Cimahi Tengah Hub", "Cimahi Tengah 2 Hub", "Cimahi Selatan Hub", "Cimahi Utara 2 Hub", "Cimahi Tengah 3 Hub"], "Bandung Barat": ["Ngamprah Hub", "Bandung Barat Hub", "Sindangkerta Hub", "Batujajar Hub", "Gununghalu Hub", "Cipatat Hub", "Cipeundeuy Kab. Bandung Barat Hub", "Lembang Hub", "Cihampelas Hub", "Cipongkor Hub", "Cisarua Kab. Bandung Barat Hub"], "Cianjur": ["Agrabinta Hub", "Campaka Hub", "Cianjur Hub", "Cibinong Cianjur 2 Hub", "Cibinong Cianjur Hub", "Cidaun 2 Hub", "Cidaun Hub", "Cijati Hub", "Cikadu Hub", "Cikalongkulon Hub"], "Sukabumi": ["Bantargadung Hub", "Cibadak Hub", "Cicantayan Hub", "Cicurug 2 Hub", "Cicurug Hub", "Cidadap Sukabumi Hub", "Cidahu Kab. Sukabumi Hub", "Ciemas 3 Hub", "Ciemas Hub", "Cikakak Hub", "Cikembar Hub", "Cikidang Hub"]};
+Object.keys(SDM).forEach(function(k){SDM[k].forEach(function(n){D.forEach(function(r){if(r[1]===n)r[6]=k})})});
+fillSD();
 var _l=ldraw;ldraw=function(){_l();lazy('lgrid','sl')};
 (function(){var h=document.documentElement,t,on=0;window.addEventListener('scroll',function(){if(!on){on=1;h.classList.add('scrolling')}clearTimeout(t);t=setTimeout(function(){on=0;h.classList.remove('scrolling')},150)},{passive:true})})();
-var cur=null,tk=0,ord=['home','hub','lm','roster','kpi'],ended=0,t0=Date.now();
+var cur=null,tk=0,ord=['home','hub','lm','roster','kpi','tools'],ended=0,t0=Date.now();
 function endIntro(){if(ended)return;ended=1;setTimeout(function(){document.documentElement.classList.add('ready');$('curtain').classList.add('gone')},Math.max(0,900-(Date.now()-t0)))}
 function route(){
 var r=location.hash.slice(1);if(ord.indexOf(r)<0)r='home';
