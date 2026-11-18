@@ -3,90 +3,455 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pendaftaran Kurir MyRobin</title>
+<title>Pendaftaran Kurir SPX</title>
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--text:#1a1d21;--muted:#6b7280;--border:#d5d9e0;--accent:#16a34a;--accent-text:#fff;--err:#dc2626;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111317;--card:#1b1e24;--text:#eceef2;--muted:#9aa1ad;--border:#343943;--accent:#22c55e;--accent-text:#052e14;--err:#f87171}}
-:root[data-theme="dark"]{--bg:#111317;--card:#1b1e24;--text:#eceef2;--muted:#9aa1ad;--border:#343943;--accent:#22c55e;--accent-text:#052e14;--err:#f87171}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:520px;margin:0 auto;padding:20px 16px 40px}
-h1{font-size:1.35rem;margin:8px 0 4px}
-p.sub{color:var(--muted);margin:0 0 18px;font-size:.92rem}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
-label{display:block;font-weight:600;font-size:.9rem;margin:14px 0 6px}
-label:first-child{margin-top:0}
-input,select,textarea{width:100%;padding:12px;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:10px}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
-textarea{min-height:90px;resize:vertical}
-input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;height:48px;line-height:1.2}
-input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
-input[type=date]::-webkit-calendar-picker-indicator{opacity:.7}
-select{-webkit-appearance:none;appearance:none;height:48px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
-input:not([type=date]){height:48px}
-.hint{font-size:.78rem;color:var(--muted);margin-top:4px}
-.err{color:var(--err);font-size:.8rem;margin-top:4px;display:none}
-.invalid .err{display:block}.invalid input,.invalid select,.invalid textarea{border-color:var(--err)}
-button{width:100%;margin-top:22px;padding:14px;font:inherit;font-weight:700;border:0;border-radius:12px;background:var(--accent);color:var(--accent-text);cursor:pointer}
-.out{margin-top:16px;font-size:.82rem;color:var(--muted);word-break:break-all;display:none}
-.out a{color:var(--accent)}
+:root{--bg:#f3f5f8;--card:#fff;--tx:#1c2430;--mut:#5b6675;--p:#1f3a5f;--pt:#fff;--line:#dde2ea;--soft:#f6f8fb;--sel:#e8eef7;--err:#c62828;--hero:#14233b;--accent:#ee4d2d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151d;--card:#18202b;--tx:#e8ecf2;--mut:#9aa6b6;--p:#7ba3dc;--pt:#0d1420;--line:#2a3442;--soft:#1d2733;--sel:#22344d;--err:#ef7a73;--hero:#0b111b}}
+:root[data-theme="dark"]{--bg:#10151d;--card:#18202b;--tx:#e8ecf2;--mut:#9aa6b6;--p:#7ba3dc;--pt:#0d1420;--line:#2a3442;--soft:#1d2733;--sel:#22344d;--err:#ef7a73;--hero:#0b111b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;background:var(--bg)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+main{max-width:640px;margin:0 auto;padding:0 14px 90px;overflow-x:hidden;touch-action:pan-y}
+.hero{margin-top:12px;padding:18px 12px 16px;display:flex;flex-direction:column;align-items:center;gap:8px;border-bottom:1px solid var(--line);
+ background:none}
+.lockup{display:flex;align-items:center;gap:18px;max-width:100%}
+.lg{display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap}
+.lg svg{width:46px;height:46px;display:block}
+
+.wm{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px}
+.lg-my .wm b{font-weight:800;color:#2f5d9e}.lg-spx .wm b{font-weight:800;color:var(--accent)}
+.x{color:#8a94a3;font-weight:300;font-size:24px;line-height:46px;align-self:flex-start}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .lg svg{filter:drop-shadow(0 0 .7px #fff) drop-shadow(0 0 .7px #fff)}:root:not([data-theme="light"]) .lg-my .wm b{color:#7ba3dc}}
+:root[data-theme="dark"] .lg svg{filter:drop-shadow(0 0 .7px #fff) drop-shadow(0 0 .7px #fff)}:root[data-theme="dark"] .lg-my .wm b{color:#7ba3dc}
+.hero p{margin:0;color:var(--mut);font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+#prog{display:none;position:sticky;top:env(safe-area-inset-top,0px);z-index:11;margin:12px 0 0;padding:10px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+main.started #prog{display:block}
+#prog .t{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
+#prog .tr{height:6px;border-radius:9px;background:var(--line);margin-top:6px;overflow:hidden}
+#prog .fl{height:100%;border-radius:9px;background:var(--p);transition:width .45s}
+.band{margin-top:14px;padding:14px 18px;border-radius:12px;font-size:18px;font-weight:600;color:var(--pt);background:var(--p)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:12px;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+label.q{display:block;font-size:16px;font-weight:600;margin-bottom:4px}
+.req{color:var(--err)}
+.hint{font-size:14px;margin:2px 0 12px;white-space:pre-line;color:var(--mut)}
+.hint.b{font-weight:600;color:var(--tx)}
+input[type=text],input[type=email],input[type=date],select{display:block;width:100%;min-width:0;max-width:100%;height:50px;font:inherit;color:var(--tx);padding:0 14px;border-radius:10px;
+ border:1px solid var(--line);background-color:var(--soft);outline:0;transition:.15s;-webkit-appearance:none;appearance:none;text-align:left}
+input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0;min-height:1.5em}
+input[type=date]::-webkit-datetime-edit{padding:0}
+input[type=date]{position:relative;padding-right:46px;background-repeat:no-repeat;background-position:right 14px center;background-size:20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7788' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E")}
+input[type=date]::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+select{padding-right:38px;background-repeat:no-repeat;background-position:right 14px center;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236b7788' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")}
+input::placeholder{color:#8a94a3}
+select:disabled{opacity:1;cursor:not-allowed;color:var(--tx);-webkit-text-fill-color:var(--tx);background-image:none;background-color:var(--sel)}
+input:focus,select:focus{background-color:var(--card);border-color:var(--p);box-shadow:0 0 0 3px rgba(47,93,158,.25)}
+.opt{display:flex;align-items:center;gap:12px;padding:11px 14px;margin:6px 0;border-radius:10px;background:var(--soft);border:1px solid var(--line);cursor:pointer;transition:.15s}
+.opt:has(input:checked){background:var(--sel);border-color:var(--p)}
+.opt input{width:20px;height:20px;accent-color:var(--p);flex:none}
+.file{display:inline-block;padding:10px 18px;border-radius:10px;color:var(--p);font-weight:500;cursor:pointer;border:1px solid var(--p)}
+.file input{display:none}
+.fn{font-size:13px;color:var(--mut);margin-top:8px}
+.prev{max-width:150px;max-height:110px;margin-top:10px;border-radius:8px;display:block;border:1px solid var(--line)}
+.bad{border-color:var(--err);box-shadow:0 0 0 2px var(--err)}
+.msg{color:var(--err);font-size:13px;margin-top:8px}
+.bar{display:flex;gap:12px;margin-top:18px}
+button{font:inherit;font-weight:600;padding:13px 24px;border-radius:10px;color:var(--p);cursor:pointer;background:var(--card);border:1px solid var(--line);transition:transform .15s}
+button:active{transform:scale(.97)}
+button.main{color:var(--pt);flex:1;background:var(--p);border-color:var(--p)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--sel);color:var(--p);margin-bottom:8px}
+#intro h2,#ok h2{margin:0 0 4px;font-size:20px}
+#intro h3{margin:18px 0 0;font-size:15px}
+.info h2{margin:0 0 6px;font-size:20px}.info h3{margin:16px 0 0;font-size:15px}.info ul,.info ol{margin:8px 0 0;padding-left:20px}.info li{margin:5px 0;font-size:15px}
+#intro ol,#intro ul{margin:8px 0 0;padding-left:20px}#intro li{margin:5px 0}
+.note{margin-top:14px;padding:10px 12px;border-radius:10px;background:var(--soft);border:1px dashed var(--line);font-size:13px;color:var(--mut)}
+#intro .opt{margin-top:16px}
+#intro .bar{margin-top:14px}
+section.inr{animation:inr .35s ease}
+section.inl{animation:inl .35s ease}
+@keyframes inr{from{opacity:0;transform:translateX(40px)}}
+@keyframes inl{from{opacity:0;transform:translateX(-40px)}}
+#ok{display:none;text-align:center;padding:28px 18px 22px;margin-top:20px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#intro .lead,#ok .lead{margin:0;color:var(--mut);font-size:15px}
+#intro .sec,#ok .sec{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--p)}
+#intro .sec::after,#ok .sec::after{content:"";flex:1;height:1px;background:var(--line)}
+#intro .rows,#intro .tick,#intro .steps,#ok .rows,#ok .steps{list-style:none;margin:0;padding:0}
+#intro .rows li,#ok .rows li{display:flex;justify-content:space-between;gap:12px;margin:0;padding:10px 0;border-bottom:1px solid var(--line)}
+#intro .rows li:last-child,#ok .rows li:last-child{border-bottom:0;padding-bottom:0}
+#intro .rows span,#ok .rows span{color:var(--mut);font-size:15px}#intro .rows b,#ok .rows b{font-size:15px;text-align:right}
+#intro .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+#intro .chips span{padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--soft);font-size:14px;font-weight:600}
+#intro .tick li{position:relative;padding-left:28px;margin:8px 0}
+#intro .tick li::before{content:"";position:absolute;left:5px;top:5px;width:6px;height:11px;border:solid var(--p);border-width:0 2px 2px 0;transform:rotate(45deg)}
+#intro .steps,#ok .steps{counter-reset:n}
+#intro .steps li,#ok .steps li{counter-increment:n;position:relative;padding-left:34px;margin:10px 0}
+#intro .steps li::before,#ok .steps li::before{content:counter(n);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:var(--sel);color:var(--p);font-size:12px;font-weight:700;display:grid;place-items:center}
+#intro .pic,#ok .pic{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--tx);text-decoration:none}
+#intro .pic small,#ok .pic small{display:block;color:var(--mut);font-size:13px}
+#intro .wa,#ok .wa{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;background:#1f9d55;color:#fff;font-size:14px;font-weight:600;white-space:nowrap}
+#intro .wa svg,#ok .wa svg{width:18px;height:18px;flex:none}
+[hidden]{display:none!important}
+#ok .rows,#ok .steps,#ok .pic{text-align:left}
+#ok .steps{margin-top:18px}
+#proof{margin:18px 0 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--soft);text-align:left}
+#proof .sec{margin-bottom:6px}
+#proofimg{display:block;max-width:100%;margin:12px auto 0;border-radius:10px;border:1px solid var(--line)}
+#ok .pic.rec{border-color:var(--p);background:var(--sel)}
+#ok button.main{width:100%;margin-top:16px}
+.okmark{width:84px;height:84px;display:block;margin:0 auto 14px;animation:pop .5s .95s ease}
+.okmark .c,.okmark .t{fill:none;stroke:#1f9d55;stroke-linecap:round;stroke-linejoin:round}
+.okmark .c{stroke-width:2.5;stroke-dasharray:145;stroke-dashoffset:145;animation:dr .7s ease forwards}
+.okmark .t{stroke-width:3.4;stroke-dasharray:40;stroke-dashoffset:40;animation:dr .4s .65s ease forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+@keyframes pop{50%{transform:scale(1.1)}}
+@media(prefers-reduced-motion:reduce){.okmark .c,.okmark .t{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<h1>Pendaftaran Kurir MyRobin</h1>
-<p class="sub">Isi Data Dengan Benar</p>
-<div class="card">
-<form id="f" novalidate onsubmit="return false">
-<div class="f"><label for="nama">Nama</label><input id="nama" required autocomplete="name"><div class="err">Wajib diisi</div></div>
-<div class="f"><label for="nik">NIK</label><input id="nik" required inputmode="numeric" maxlength="16"><div class="err">NIK harus 16 digit angka</div></div>
-<div class="f"><label for="email">Email</label><input id="email" type="email" required autocomplete="email"><div class="err">Email tidak valid</div></div>
-<div class="f"><label for="nosim">No. SIM</label><input id="nosim" required inputmode="numeric"><div class="err">Wajib diisi</div></div>
-<div class="f"><label for="jenissim">Jenis SIM</label>
-<select id="jenissim" required><option value="">Pilih jenis SIM</option><option>A</option><option>B1</option><option>B1 Umum</option><option>B2</option><option>B2 Umum</option><option>C</option><option>D</option></select><div class="err">Pilih jenis SIM</div></div>
-<div class="f"><label for="exp">Tanggal kadaluarsa SIM</label><input id="exp" type="date" required><div class="err">Wajib diisi</div></div>
-<div class="f"><label for="wa">No WA aktif</label><input id="wa" type="tel" required inputmode="tel" placeholder="08xxxxxxxxxx"><div class="err">Nomor WA tidak valid</div></div>
-<div class="f"><label for="posisi">Posisi yg dilamar</label><select id="posisi" required><option value="">Pilih posisi</option><option>Rider (Motor)</option><option>Driver (Mobil)</option></select><div class="err">Wajib diisi</div></div>
-<div class="f"><label for="hub">HUB yang dilamar</label><select id="hub" required><option value="">Pilih HUB</option></select><div class="err">Pilih HUB</div></div>
-<div class="f"><label for="alamat">Alamat lengkap</label><textarea id="alamat" required></textarea><div class="err">Wajib diisi</div></div>
-<button id="go" type="submit">Kirim</button>
-</form>
-<div class="out" id="out">Jika WhatsApp tidak terbuka, <a id="lnk" href="#" target="_blank" rel="noopener">klik di sini</a>.</div>
+<main>
+<header class="hero">
+ <div class="lockup" role="img" aria-label="MyRobin x SPX Express">
+  <div class="lg lg-my"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 30 2 38l4 3 9-5z" fill="#3f4d63"/><ellipse cx="24" cy="28" rx="14" ry="13" fill="#5a6b82"/><circle cx="30" cy="16" r="9" fill="#5a6b82"/><ellipse cx="30" cy="26" rx="8" ry="9" fill="#f26a3d"/><ellipse cx="21" cy="28" rx="8" ry="5" transform="rotate(-20 21 28)" fill="#3f4d63"/><path d="m38 15 7 2-7 2z" fill="#f2b134"/><circle cx="33" cy="14" r="1.9" fill="#fff"/><circle cx="33.4" cy="14" r=".9" fill="#111"/><path d="M22 40v5M28 40v5" stroke="#b27b3a" stroke-width="2" stroke-linecap="round"/></svg><span class="wm">my<b>Robin</b></span></div>
+  <span class="x">&times;</span>
+  <div class="lg lg-spx"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6l18 8-18 8-18-8z" fill="#f2c58a"/><path d="M6 14l18 8v20L6 34z" fill="#d9a35f"/><path d="M42 14 24 22v20l18-8z" fill="#c28a46"/><path d="M15 10l18 8" stroke="#f6e3c4" stroke-width="5"/><path d="m10 24 8 3.6V34l-8-3.5z" fill="#ee4d2d"/></svg><span class="wm"><b>SPX</b> Express</span></div>
+ </div>
+ <p>Rekrutmen Kurir</p>
+</header>
+<!-- ===== GANTI ISI PENGUMUMAN DI BAWAH INI ===== -->
+<div id="intro">
+ <div class="card">
+  <span class="badge">Pengumuman</span>
+  <h2>Formulir Pendaftaran Kurir</h2>
+  <p class="lead">Selamat datang di formulir pendaftaran kurir MyRobin Project SPX Express. Saat ini tersedia kesempatan bergabung sebagai Kurir Shopee Xpress dengan pilihan skema berikut.</p>
+ </div>
+ <div class="card">
+  <div class="sec">Benefit Mitra</div>
+  <ul class="rows">
+   <li><span>Motor (SIM C)</span><b>Rp1.600–1.900 / paket</b></li>
+   <li><span>Mobil (SIM A)</span><b>Rp4.750–5.500 / paket</b></li>
+   <li><span>Pembayaran</span><b>Setiap 2 minggu</b></li>
+  </ul>
+ </div>
+ <div class="card">
+  <div class="sec">Benefit Plus (Motor)</div>
+  <ul class="tick">
+   <li>Gaji pokok 80% UMK setempat, dibayarkan tanggal 25.</li>
+   <li>Bonus produktivitas, dibayarkan tanggal 15.</li>
+   <li>Tunjangan JKK &amp; JKM.</li>
+  </ul>
+ </div>
+ <div class="card">
+  <div class="sec">Tingkatan</div>
+  <div class="chips"><span>Mitra</span><span>Mitra Plus</span><span>Dedicated</span></div>
+  <p class="lead">Daftar sesuai dengan posisi yang dibutuhkan.</p>
+ </div>
+ <div class="card">
+  <div class="sec">Persyaratan</div>
+  <ul class="tick"><li>KTP</li><li>SIM C / A</li><li>STNK</li><li>Kendaraan pribadi</li></ul>
+ </div>
+ <div class="card">
+  <div class="sec">Informasi Pendaftaran</div>
+  <p class="lead">Saat mengisi formulir, pastikan memilih:</p>
+  <ul class="rows" style="margin-top:6px">
+   <li><span>Category</span><b>MITRA / PLUS</b></li>
+   <li><span>Hub</span><b>Sesuai domisili</b></li>
+  </ul>
+ </div>
+ <div class="card">
+  <div class="sec">Catatan Penting</div>
+  <ol class="steps">
+   <li>Pastikan nomor WhatsApp dan email yang digunakan aktif.</li>
+   <li>Jika ada hal yang belum dipahami, silakan bertanya terlebih dahulu.</li>
+   <li>Setelah mengisi formulir, kirimkan screenshot sebagai bukti pendaftaran.</li>
+  </ol>
+ </div>
+ <div class="card">
+  <div class="sec">Hubungi PIC</div>
+  <p class="lead">Jika ada yang ingin ditanyakan, silakan hubungi PIC berikut.</p>
+  <a class="pic" href="https://wa.me/6287899604277?text=Halo%2C%20saya%20ingin%20bertanya%20mengenai%20pendaftaran%20kurir%20MyRobin%20x%20SPX%20Express." target="_blank" rel="noopener"><span><b>Wildhan</b><small>Bandung Kota</small></span><span class="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8.5c0 3.3 2.7 6 6 6l1.3-1.5-2-1-1 .8a4 4 0 0 1-2-2l.8-1-1-2z" fill="currentColor"/></svg>Chat WhatsApp</span></a>
+  <a class="pic" href="https://wa.me/6283120489103?text=Halo%2C%20saya%20ingin%20bertanya%20mengenai%20pendaftaran%20kurir%20MyRobin%20x%20SPX%20Express." target="_blank" rel="noopener"><span><b>Aqsal</b><small>Cimahi Kota</small></span><span class="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8.5c0 3.3 2.7 6 6 6l1.3-1.5-2-1-1 .8a4 4 0 0 1-2-2l.8-1-1-2z" fill="currentColor"/></svg>Chat WhatsApp</span></a>
+  <a class="pic" href="https://wa.me/6282112182456?text=Halo%2C%20saya%20ingin%20bertanya%20mengenai%20pendaftaran%20kurir%20MyRobin%20x%20SPX%20Express." target="_blank" rel="noopener"><span><b>Andhika</b><small>Cianjur &amp; Sukabumi</small></span><span class="wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8.5c0 3.3 2.7 6 6 6l1.3-1.5-2-1-1 .8a4 4 0 0 1-2-2l.8-1-1-2z" fill="currentColor"/></svg>Chat WhatsApp</span></a>
+  <label class="opt" style="margin-top:18px"><input type="checkbox" id="agree">Saya telah membaca dan memahami informasi di atas</label>
+  <div class="bar"><button type="button" id="start" class="main" disabled>Mulai Isi Formulir</button></div>
+ </div>
 </div>
+<!-- ===== AKHIR PENGUMUMAN ===== -->
+<div id="prog"><div class="t"><span id="pt"></span><span id="pm"></span></div><div class="tr"><div class="fl" id="pf"></div></div></div>
+<div id="app" hidden></div>
+<div id="ok" class="card">
+ <svg class="okmark" viewBox="0 0 52 52" aria-hidden="true"><circle class="c" cx="26" cy="26" r="23"/><path class="t" d="M15 27l8 8 14-16"/></svg>
+ <h2>Pendaftaran Berhasil Dikirim</h2>
+ <p class="lead">Data Anda sudah kami terima. Agar proses lebih cepat, kirim bukti pendaftaran ke PIC sesuai area Anda.</p>
+ <div id="proof"><div class="sec">Bukti Pendaftaran</div><ul class="rows"></ul></div>
+ <ol class="steps"><li>Screenshot bukti pendaftaran di atas, atau tekan tombol Bagikan Bukti.</li><li>Kirim ke PIC sesuai area Anda lewat tombol WhatsApp di bawah.</li></ol>
+ <button type="button" id="shareproof" class="main">Bagikan Bukti sebagai Gambar</button>
+ <img id="proofimg" hidden alt="Bukti pendaftaran">
+ <p id="proofhint" class="lead" style="margin-top:8px" hidden>Tekan lama gambar lalu pilih Simpan, atau screenshot layar ini.</p>
+ <div id="picbox"></div>
+ <button type="button" style="margin-top:16px;width:100%" onclick="location.reload()">Isi form baru</button>
 </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-var HUBS=["Cicalengka Hub","Pacet Bandung Hub","Rancaekek Hub","Solokan Jeruk Hub","Bojongsoang Hub","Majalaya Hub","Cileunyi Hub","Bandung Timur Hub","Bojongloa Kidul Hub","Pangalengan Hub","Bandung Utara Hub","Antapani Hub","Astana Anyar Hub","Bojongloa Kaler Hub","Bandung Hub","Kiaracondong Hub","Coblong Hub","Cibeunying Kidul Hub","Sukajadi Hub","Panyileukan Hub","Cidadap Hub","Regol 2 Hub","Babakan Ciparay 3 Hub","Cikancung Hub","Ciparay Hub","Rancasari Hub","Ciparay 2 Hub","Bojongsoang 2 Hub","Ibun Hub","Paseh 3 Hub","Cicalengka 2 Hub","Cibeunying Kidul 2 Hub","Regol 4 Hub"];
-var NOMOR="6287899604277";
-var hubSel=document.getElementById("hub");
-HUBS.forEach(function(h){var o=document.createElement("option");o.textContent=h;hubSel.appendChild(o)});
-function v(id){return document.getElementById(id).value.trim()}
-function fmtDate(s){if(!s)return"";var p=s.split("-");return p[2]+"-"+p[1]+"-"+p[0]}
-function setErr(id,bad){document.getElementById(id).closest(".f").classList.toggle("invalid",bad);return bad}
-document.getElementById("go").addEventListener("click",function(){
-var bad=false;
-["nama","nosim","jenissim","exp","posisi","hub","alamat"].forEach(function(i){if(setErr(i,!v(i)))bad=true});
-if(setErr("nik",!/^\d{16}$/.test(v("nik"))))bad=true;
-if(setErr("email",!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email"))))bad=true;
-if(setErr("wa",v("wa").replace(/\D/g,"").length<9))bad=true;
-if(bad){var e=document.querySelector(".invalid");if(e)e.scrollIntoView({behavior:"smooth",block:"center"});return}
-var msg="Silahkan isi data diri berikut!\n"+
-"Nama: "+v("nama")+"\n"+
-"NIK: "+v("nik")+"\n"+
-"Email: "+v("email")+"\n"+
-"No. SIM: "+v("nosim")+"\n"+
-"Jenis SIM: "+v("jenissim")+"\n"+
-"Tanggal kadaluarsa SIM: "+fmtDate(v("exp"))+"\n"+
-"No WA aktif: "+v("wa")+"\n"+
-"Posisi yg dilamar: "+v("posisi")+"\n"+
-"HUB yang dilamar: "+v("hub")+"\n"+
-"Alamat lengkap: "+v("alamat").replace(/\s*\n\s*/g,", ");
-var url="https://wa.me/"+NOMOR+"?text="+encodeURIComponent(msg);
-var l=document.getElementById("lnk");l.href=url;
-document.getElementById("out").style.display="block";
-l.click();
+// ====== GANTI INI dengan URL Web App dari Apps Script ======
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQbHnbzxIGEOonKt8op-pG_aShXn5RkrgM1ZYpiTywXsojTrNVMNJYX9I-SFeaMYeX/exec";
+
+// Mode tes: true = validasi dimatikan, boleh lanjut/geser halaman & kirim kosong. Set false saat rilis.
+const TEST_MODE = false;
+
+// ====== Daftar pilihan dropdown (isi sesuai form asli, tidak terlihat di screenshot) ======
+const VENDOR = ["MYROBIN"];
+const SUMBER = ["Facebook","Instagram","Whatsapp Status","Whatsapp Group / Channel","Teman / Saudara yang bukan karyawan SPX","Karyawan SPX (Kurir, Operator, Admin, Dll)","PIC Vendor","Mencari di Google / Iklan Google","Pintarnya","Kitalulus","Jobstreet","Linkedin","Glints"];
+const AGAMA = ["Islam","Kristen Protestan","Kristen Katolik","Budha","Konghucu","Hindu"];
+const PEND = ["SD","SMP atau sederajat","SMA / SMK atau sederajat","D3/D4/S1"];
+const HUB = "Baleendah Hub|Cicalengka Hub|Pacet Bandung Hub|Rancaekek Hub|Solokan Jeruk Hub|Bojongsoang Hub|Majalaya Hub|Cileunyi Hub|Balonggede Hub|Bandung Timur Hub|Bojongloa Kidul Hub|Banjaran Hub|Ciwidey Hub|Pangalengan Hub|Soreang Hub|Arjasari Hub|Dayeuhkolot 2 Hub|Katapang Hub|Dayeuhkolot Hub|Margaasih Hub|Bandung Kulon Hub|Bandung Utara Hub|Cibabat Hub|Ngamprah Hub|Bandung Barat Hub|Sindangkerta Hub|Batujajar Hub|Gununghalu Hub|Cipatat Hub|Cimahi Hub|Cimahi Tengah Hub|Cimahi Utara Hub|Cipeundeuy Kab. Bandung Barat Hub|Antapani Hub|Lembang Hub|Astana Anyar Hub|Bojongloa Kaler Hub|Bandung Hub|Kiaracondong Hub|Coblong Hub|Cibeunying Kidul Hub|Sukajadi Hub|Panyileukan Hub|Cipadung Kulon Hub|Cidadap Hub|Regol 2 Hub|Babakan Ciparay 3 Hub|Cikancung Hub|Pasirjambu 2 Hub|Andir Hub|Cihampelas Hub|Arcamanik Hub|Cipongkor Hub|Ciparay Hub|Rancasari Hub|Cimahi Tengah 2 Hub|Ciparay 2 Hub|Cimahi Selatan Hub|Lengkong Kota Bandung Hub|Rancabali Hub|Cisarua Kab. Bandung Barat Hub|Bojongsoang 2 Hub|Cimahi Utara 2 Hub|Ibun Hub|Kutawaringin 2 Hub|Arjasari 2 Hub|Paseh 3 Hub|Banjaran 3 Hub|Cicalengka 2 Hub|Cibeunying Kidul 2 Hub|Pangalengan 2 Hub|Regol 4 Hub|Baleendah 4 Hub|Baleendah 5 Hub|Margaasih 4 Hub|Cimahi Tengah 3 Hub|Kutawaringin Hub|Agrabinta Hub|Bantargadung Hub|Campaka Hub|Cianjur Hub|Cibadak Hub|Cibinong Cianjur 2 Hub|Cibinong Cianjur Hub|Cicantayan Hub|Cicurug 2 Hub|Cicurug Hub|Cidadap Sukabumi Hub|Cidahu Kab. Sukabumi Hub|Cidaun 2 Hub|Cidaun Hub|Ciemas 3 Hub|Ciemas Hub|Cijati Hub|Cikadu Hub|Cikakak Hub|Cikalongkulon Hub|Cikembar Hub|Cikidang Hub|Cilaku Hub|Cimanggu 3 Hub|Ciracap Hub|Cireunghas Hub|Cisolok Hub|Cugenang Hub|Curugkembar Hub|Geger Bitung Hub|Gunung Guruh Hub|Gunungpuyuh Hub|Haurwangi Hub|Jampang Kulon Hub|Jampang Tengah Hub|Kab. Sukabumi Hub|Kabandungan Hub|Kadupandak Hub|Kalapa Nunggal Hub|Kalibunder Hub|Leles 2 Hub|Lengkong Hub|MH Cibinong Cianjur Hub|Mande Hub|Nagrak Sukabumi Hub|Nyalindung Hub|Pabuaran Kab. Sukabumi Hub|Pacet Hub|Pacet Kab. Cianjur 2 Hub|Pagelaran Kab. Cianjur Hub|Parakan Salak Hub|Parung Kuda Hub|Pasirkuda Hub|Pelabuhan Ratu Hub|Purabaya Hub|Sagaranten Hub|Sawah Gede Hub|Selabintana Sukabumi Hub|Simpenan Hub|Sindangbarang Hub|Sukabumi Hub|Sukalarang Hub|Sukaluyu Hub|Sukanagara Hub|Sukaraja Sukabumi Hub|Sukaresmi Kab. Cianjur Hub|Surade Hub|Takokak Hub|Tegal Buleud Hub|Warungkiara Hub|Warungkondang Hub".split("|");
+const HUBUNGAN = ["Ayah","Ibu","Saudara laki-laki","Saudara Perempuan","Suami","Istri","Anak","Lainnya"];
+const SIM = ["A","A Umum","B1","B1 Umum","B2","B2 Umum","C"];
+
+const SU = ["Sudah","Belum"];
+const FILEHINT = "Upload 1 file gambar. Maks 980 KB (otomatis dikompres).";
+const BULAN = "Isi dengan format hanya angka dalam hitungan bulan.\nBenar: 12, 1, 100\nSalah: 12Bulan, bulan 12, 12 bulan";
+
+// t: text|email|tel|num|date|select|radio|check|file|declare
+const S = [
+ {h:null, f:[
+  {k:"email",l:"Masukan Email Pribadi Anda",t:"email",r:1,hint:"Isi dengan email pribadi anda, pastikan alamat email valid, karena informasi dari SPX akan dikirim ke email tersebut"},
+  {k:"vendor",l:"Mendapatkan Informasi Dari Vendor Mana?",t:"select",r:1,o:VENDOR,fixed:"MYROBIN"},
+  {k:"sudah_info",l:"Apakah sebelumnya sudah mendapatkan informasi terkait posisi, area, skema kerja dan benefit untuk posisi yang dilamar ?",t:"radio",r:1,o:SU},
+  {k:"sumber_lowongan",l:"Mendapatkan informasi lowongan dari mana ?",t:"select",r:1,o:SUMBER},
+  {k:"pernah_spx",l:"Apakah sebelumnya sudah pernah bergabung di Shopee xpress?",t:"radio",r:1,o:SU}]},
+ {h:"Hub Yang Dilamar", f:[
+  {k:"category",l:"Category",t:"radio",r:1,o:["Mitra","Plus","Dedicated"],hint:"• Kurir Mitra adalah individu yang bekerja secara independen sebagai mitra.\n• Kurir Plus adalah kurir dengan skema baru, dengan target pengiriman lebih fleksibel dan pendapatan bulanan yang tetap.\n• Kurir Dedicated adalah kurir yang memiliki jam kerja yang sudah ditentukan."},
+  {k:"posisi",l:"Posisi Yang Dilamar",t:"radio",r:1,o:["Rider","Driver"]},
+  {k:"agama",l:"Agama",t:"select",r:1,o:AGAMA},
+  {k:"pendidikan",l:"Pendidikan Terakhir",t:"select",r:1,o:PEND},
+  {k:"hub",l:"Hub Yang Dilamar",t:"select",r:1,o:HUB}]},
+ {h:"Data Diri", f:[
+  {k:"nama",l:"Nama Lengkap Sesuai KTP",t:"text",r:1,up:1,b:1,hint:"Isi dengan huruf besar semua, pastikan kembali nama yang diisi sudah sesuai dengan nama yang ada di KTP"},
+  {k:"ktp",l:"Nomor KTP (16 Digit )",t:"tel",r:1,digits:16},
+  {k:"wa",l:"Nomor WhatsApp",t:"tel",r:1,wa:1,b:1,hint:"Isi nomor diawali dengan angka 0"},
+  {k:"telp_darurat",l:"Nomor Telephone Darurat Yang Bisa Dihubungi",t:"tel",r:1,wa:1,b:1,hint:"Isi nomor diawali dengan angka 0"},
+  {k:"nama_darurat",l:"Nama pemilik Nomor Telephone Darurat",t:"text",r:1},
+  {k:"hubungan_darurat",l:"Hubungan dengan Nomor Telephone Darurat",t:"select",r:1,o:HUBUNGAN},
+  {k:"jenis_kelamin",l:"Jenis Kelamin",t:"radio",r:1,o:["Pria","Wanita"],b:1,hint:"Jenis Kelamin Anda"},
+  {k:"tgl_lahir",l:"Tanggal Lahir",t:"date",r:1,b:1,hint:"Tanggal Lahir Anda (Pastikan sesuai format)"},
+  {k:"kota",l:"Kota/Kabupaten (Domisili)",t:"text",r:1},
+  {k:"kecamatan",l:"Kecamatan (Domisili)",t:"text",r:1},
+  {k:"kelurahan",l:"Kelurahan (Domisili)",t:"text",r:1},
+  {k:"alamat",l:"Alamat Lengkap (Domisili)",t:"text",r:1},
+  {k:"no_sim",l:"No. SIM",t:"text",r:1,b:1,hint:"SIM yang Anda Daftarkan"},
+  {k:"type_sim",l:"Type SIM",t:"select",r:1,o:SIM,b:1,hint:"SIM yang Anda Daftarkan"},
+  {k:"masa_sim",l:"Masa Berlaku SIM",t:"date",r:1,b:1,hint:"SIM yang Anda Daftarkan (Pastikan sesuai format)"},
+  {k:"kendaraan",l:"Jenis & Merk Kendaraan",t:"text",r:1},
+  {k:"tahun_kendaraan",l:"Tahun Pembuatan Kendaraan",t:"tel",r:1,digits:4},
+  {k:"plat",l:"No. Polisi Kendaraan (Plat Nomor)",t:"text",r:1,up:1,plat:1,hint:"Contoh penulisan : A123BC"},
+  {k:"no_stnk",l:"No. STNK",t:"text",r:1},
+  {k:"tgl_stnk",l:"Tanggal Berlaku STNK",t:"date",r:1,b:1,hint:"Tanggal Berlaku STNK Kendaraan yang Anda Daftarkan (Pastikan sesuai format)"},
+  {k:"tgl_pajak",l:"Tanggal Berlaku Pajak Kendaraan",t:"date",r:1,b:1,hint:"Tanggal Berlaku Pajak Kendaraan yang Anda Daftarkan (Pastikan sesuai format)"},
+  {k:"no_rek",l:"No. Rekening",t:"tel",r:1,digits:0,hint:"masukan angka saja, jangan gunakan spasi, jangan gunakan huruf atau tanda baca lainnya"},
+  {k:"nama_rek",l:"Nama Pemilik Rekening",t:"text",r:1},
+  {k:"bank",l:"Nama Bank",t:"text",r:1},
+  {k:"foto_selfie",l:"Upload Foto Selfie",t:"file",r:1,hint:FILEHINT},
+  {k:"foto_ktp",l:"Upload Foto KTP",t:"file",r:1,hint:FILEHINT},
+  {k:"foto_sim",l:"Upload Foto SIM",t:"file",r:1,hint:FILEHINT},
+  {k:"foto_stnk1",l:"Upload Foto STNK (Halaman 1)",t:"file",r:1,hint:FILEHINT},
+  {k:"foto_stnk2",l:"Upload Foto STNK (Halaman 2)",t:"file",r:1,hint:FILEHINT},
+  {k:"foto_ijazah",l:"Upload Foto ijazah",t:"file",r:0,hint:FILEHINT}]},
+ {h:"Pengalaman Kerja Sebagai Kurir", f:[
+  {k:"lama_pengalaman",l:"Lama Pengalaman Kerja sebagai Kurir",t:"tel",r:1,digits:0,hint:BULAN+"\n\nJika tidak memiliki pengalaman silahkan mengisi dengan 0"},
+  {k:"ekspektasi",l:"Ekspektasi Lama Bekerja sebagai Kurir di SPX",t:"tel",r:1,digits:0,hint:BULAN}]},
+ {h:"Informasi Tambahan untuk kandidat kurir", f:[
+  {k:"shopee_username",l:"Apa shopee username anda?",t:"text",r:1},
+  {k:"status_rumah",l:"Apa status rumah anda sekarang?",t:"radio",r:1,o:["Rumah KPR/Cicilan","Rumah Kepemilikan","Menyewa bulanan/tahunan","Tinggal bersama orangtua/ saudara"]},
+  {k:"tanggungan",l:"Berapa jumlah tanggungan Anda sekarang?",t:"radio",r:1,o:["1 Orang","2 Orang","3 Orang","> 3 Orang"]},
+  {k:"cicilan",l:"Cicilan apa yang anda miliki?",t:"check",r:1,hint:"Bisa memilih lebih dari 1 pilihan",o:["Rumah","Mobil","Motor","Elektronik","Kredit Serbaguna","Lain-lain","Tidak ada"]},
+  {k:"kartu_kredit",l:"Kartu kredit apa saja yang anda miliki?",t:"check",r:1,hint:"Bisa memilih lebih dari 1 pilihan",o:["BCA","BRI","BNI","Danamon","Mandiri","Lain-lain","Tidak ada"]},
+  {k:"aplikasi_keuangan",l:"Aplikasi keuangan apa saja yang Anda gunakan di bawah ini?",t:"check",r:1,hint:"Bisa memilih lebih dari 1 pilihan",o:["Ajaib","Bibit","Credit Pintar","Dana","Gopay","Home Credit","Julo","Kredivo","Mirae","Ovo","Pluang","Rupiah Cepat","SPayLater","Tidak ada"]}]},
+ {h:"Deklarasi Kesehatan Diri", f:[
+  {k:"deklarasi",t:"radio",r:1,o:["Ya"],l:"Saya menyatakan bahwa kondisi fisik saya:",
+   hint:"a. Tidak mempunyai gangguan penglihatan;\nb. Tidak mempunyai gangguan pendengaran;\nc. Tidak mempunyai gangguan penglihatan warna (buta warna);\nd. Tidak mempunyai riwayat penyakit/kondisi medis yang masih memerlukan pengobatan atau pemantauan; dan\ne. Tidak mempunyai keterbatasan fisik yang dapat memengaruhi kemampuan Anda dalam melaksanakan pekerjaan\n\nSaya menyatakan bahwa informasi kesehatan yang diberikan benar sesuai kondisi saya saat ini dan bersedia menjaga kerahasiaan data tersebut. Apabila ditemukan ketidaksesuaian data, saya bersedia menerima sanksi sesuai ketentuan yang berlaku."}]},
+ {h:"Informasi & Ketentuan Pengiriman Data", info:`<div class="card info"><span class="badge">Informasi</span><h2>Data yang Akan Dikirim</h2><ul><li><b>Identitas:</b> nama, nomor KTP, tanggal lahir, jenis kelamin, agama, pendidikan.</li><li><b>Kontak &amp; alamat:</b> nomor WhatsApp, email, kontak darurat, alamat domisili.</li><li><b>SIM &amp; kendaraan:</b> data SIM, kendaraan, STNK, dan pajak.</li><li><b>Rekening:</b> nomor rekening, nama pemilik, dan bank.</li><li><b>Dokumen foto:</b> selfie, KTP, SIM, STNK, dan ijazah (jika ada).</li><li><b>Lainnya:</b> informasi tambahan dan deklarasi kesehatan.</li></ul><h3>Ketentuan</h3><ol><li>Data digunakan hanya untuk proses seleksi dan administrasi kurir.</li><li>Data hanya dapat diakses pihak yang berwenang dalam proses rekrutmen.</li><li>Data harus benar dan sesuai dokumen asli. Data yang tidak sesuai dapat membatalkan pendaftaran.</li><li>Data tidak diperjualbelikan atau dibagikan di luar kepentingan rekrutmen.</li><li>Untuk perbaikan data, silakan hubungi PIC sesuai area Anda.</li></ol></div>`, f:[
+  {k:"persetujuan",l:"Persetujuan Pengiriman Data",t:"check",r:1,o:["Saya telah membaca dan menyetujui informasi dan ketentuan di atas, serta menyatakan data yang saya kirim adalah benar."]}]}
+];
+
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const files = {};
+let cur = 0;
+
+function fieldHTML(f){
+  const star = f.r ? ' <span class="req">*</span>' : '';
+  let h = `<div class="card" data-k="${f.k}"><label class="q">${esc(f.l)}${star}</label>`;
+  if (f.hint) h += `<div class="hint${f.b?' b':''}">${esc(f.hint)}</div>`;
+  const n = `name="${f.k}"`;
+  if (["text","email","tel","date"].includes(f.t)) {
+    const ty = f.t==="tel" ? 'inputmode="numeric"' : "";
+    h += `<input type="${f.t==="tel"?"text":f.t}" ${ty} ${n} ${f.up?'style="text-transform:uppercase"':""} placeholder="${f.t==="date"?"":"Jawaban Anda"}" autocomplete="off">`;
+  } else if (f.t==="select") {
+    h += f.fixed ? `<select ${n} disabled aria-readonly="true"><option value="${esc(f.fixed)}" selected>${esc(f.fixed)}</option></select>` : `<select ${n}><option value="">Pilih</option>${f.o.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`;
+  } else if (f.t==="radio" || f.t==="check") {
+    const ty = f.t==="radio" ? "radio" : "checkbox";
+    h += f.o.map(o=>`<label class="opt"><input type="${ty}" ${n} value="${esc(o)}">${esc(o)}</label>`).join("");
+  } else if (f.t==="file") {
+    h += `<label class="file">⬆ Tambah file<input type="file" accept="image/*" data-file="${f.k}"></label><div class="fn"></div><img class="prev" hidden alt="">`;
+  }
+  return h + `<div class="msg" hidden></div></div>`;
+}
+
+function render(){
+  $("#app").innerHTML = S.map((s,i)=>`<section data-s="${i}" hidden>
+    ${s.h?`<div class="band">${esc(s.h)}</div>`:`<div class="band" style="font-size:22px">Pendaftaran Kurir SPX Jawa Barat</div>`}
+    ${s.info||""}${s.f.map(fieldHTML).join("")}
+    <div class="bar">
+      ${i>0?'<button type="button" data-a="back">Kembali</button>':""}
+      ${i<S.length-1?'<button type="button" data-a="next" class="main">Lanjut</button>':'<button type="button" data-a="send" class="main">Kirim</button>'}
+    </div></section>`).join("");
+  show(0,1);
+}
+function show(i,dir){
+  const d = dir || (i>=cur?1:-1); cur=i;
+  document.querySelectorAll("section").forEach(x=>{
+    const on = +x.dataset.s===i; x.hidden=!on;
+    x.classList.remove("inr","inl");
+    if(on){ void x.offsetWidth; x.classList.add(d>0?"inr":"inl"); }
+  });
+  $("#pt").textContent = `Halaman ${i+1} dari ${S.length}`;
+  $("#pm").textContent = TEST_MODE ? "Mode tes" : "";
+  $("#pf").style.width = ((i+1)/S.length*100)+"%";
+  scrollTo({top:0,behavior:"smooth"});
+}
+function go(d){ if(!$("main").classList.contains("started")) return; const n=cur+d; if(n<0||n>=S.length) return; if(d>0 && !TEST_MODE && !validate(cur)) return; show(n,d); }
+
+function val(f){
+  const c = $(`[data-k="${f.k}"]`);
+  if (f.t==="file") return files[f.k] || null;
+  if (f.t==="radio") return (c.querySelector("input:checked")||{}).value || "";
+  if (f.t==="check") return [...c.querySelectorAll("input:checked")].map(x=>x.value).join(", ");
+  let v = c.querySelector("input,select").value.trim();
+  if (f.up) v = v.toUpperCase();
+  if (f.plat) v = v.replace(/\s+/g,"");
+  return v;
+}
+function check(f){
+  const v = val(f);
+  if (f.r && !v) return "Pertanyaan ini wajib diisi";
+  if (!v) return "";
+  if (f.digits && !new RegExp(`^\\d{${f.digits}}$`).test(v)) return `Isi ${f.digits} digit angka`;
+  if (f.digits===0 && !/^\d+$/.test(v)) return "Isi angka saja, tanpa spasi atau huruf";
+  if (f.wa && !/^0\d{8,13}$/.test(v)) return "Nomor harus diawali 0 dan hanya angka";
+  if (f.t==="email" && !/^\S+@\S+\.\S+$/.test(v)) return "Alamat email tidak valid";
+  return "";
+}
+function validate(i){
+  let first=null;
+  S[i].f.forEach(f=>{
+    const c = $(`[data-k="${f.k}"]`), m = $(".msg",c), e = check(f);
+    m.hidden = !e; m.textContent = e; c.classList.toggle("bad", !!e);
+    if (e && !first) first = c;
+  });
+  if (first) first.scrollIntoView({behavior:"smooth",block:"center"});
+  return !first;
+}
+
+// Kompres gambar agar <= 1 MB
+const MAX_IMG = 980*1000; // byte: di bawah 980 KB agar aman untuk batas 1 MB
+function dataBytes(d){ const b=d.split(",")[1]||""; return Math.floor(b.length*3/4)-(b.endsWith("==")?2:b.endsWith("=")?1:0); }
+function compress(file){
+  return new Promise((res,rej)=>{
+    const img = new Image(), u = URL.createObjectURL(file);
+    img.onload = ()=>{
+      let sc = Math.min(1, 1600/Math.max(img.width,img.height)), q = .85, out;
+      const cv = document.createElement("canvas");
+      for (let n=0;n<16;n++){
+        cv.width = Math.round(img.width*sc); cv.height = Math.round(img.height*sc);
+        const cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0,0,cv.width,cv.height); cx.drawImage(img,0,0,cv.width,cv.height);
+        out = cv.toDataURL("image/jpeg", q);
+        if (dataBytes(out) <= MAX_IMG) break;
+        if (q > .55) q -= .1; else sc *= .85;
+      }
+      URL.revokeObjectURL(u); if (dataBytes(out) > MAX_IMG) rej(new Error("Gambar terlalu besar, silakan pilih foto lain")); else res(out);
+    };
+    img.onerror = ()=>rej(new Error("Bukan file gambar"));
+    img.src = u;
+  });
+}
+
+document.addEventListener("change", async e=>{
+  const k = e.target.dataset.file; if (!k) return;
+  const c = $(`[data-k="${k}"]`), fn = $(".fn",c), pv = $(".prev",c), file = e.target.files[0];
+  if (!file) return;
+  fn.textContent = "Memproses…";
+  try {
+    const d = await compress(file);
+    files[k] = {name:`${k}.jpg`, data:d.split(",")[1], mime:"image/jpeg"};
+    pv.src = d; pv.hidden = false;
+    fn.textContent = `${file.name} (${Math.round(dataBytes(d)/1000)} KB)`;
+    c.classList.remove("bad"); $(".msg",c).hidden = true;
+  } catch(err){ delete files[k]; fn.textContent = err.message; }
 });
+
+const PIC=[{n:"Wildhan",a:"Bandung Kota",t:"6287899604277"},{n:"Aqsal",a:"Cimahi Kota",t:"6283120489103"},{n:"Andhika",a:"Cianjur &amp; Sukabumi",t:"6282112182456"}];
+function picFor(h){ const k=HUB.indexOf("Agrabinta Hub"), i=HUB.indexOf(h); if(k>=0&&i>=k) return 2; return /cimahi|batujajar|ngamprah/i.test(h)?1:0; }
+function showDone(d){
+  $("main").classList.remove("started");
+  const when=new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
+  const rows=[["Nama",d.nama],["No. WhatsApp",d.wa],["Category",d.category],["Posisi",d.posisi],["Hub",d.hub],["Waktu kirim",when]];
+  $("#proof .rows").innerHTML=rows.map(r=>`<li><span>${esc(r[0])}</span><b>${esc(r[1]||"-")}</b></li>`).join("");
+  const best=picFor(d.hub||""), WAI=$("#intro .wa svg").outerHTML;
+  const msg=`Halo, saya ${d.nama||""} sudah mengisi formulir pendaftaran kurir MyRobin x SPX Express.\nHub: ${d.hub||"-"}\nCategory: ${d.category||"-"}\nPosisi: ${d.posisi||"-"}\nBerikut screenshot bukti pendaftaran saya.`;
+  const order=[best,...[0,1,2].filter(i=>i!==best)];
+  $("#picbox").innerHTML=`<div class="sec" style="margin-top:22px">Kirim ke PIC</div>`+order.map((i,k)=>{const p=PIC[i];
+    return `<a class="pic${k?"":" rec"}" href="https://wa.me/${p.t}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener"><span><b>${p.n}</b><small>${p.a}${k?"":" · Sesuai hub Anda"}</small></span><span class="wa">${WAI}Kirim</span></a>`;}).join("");
+}
+$("#shareproof").addEventListener("click",async e=>{
+  const b=e.currentTarget, t=b.textContent; b.disabled=true; b.textContent="Membuat gambar…";
+  try{
+    const el=$("#proof"), cv=await html2canvas(el,{scale:2,backgroundColor:getComputedStyle(el).backgroundColor});
+    const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+    const file=new File([blob],"bukti-pendaftaran.png",{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"Bukti Pendaftaran"});
+    else { $("#proofimg").src=cv.toDataURL("image/png"); $("#proofimg").hidden=false; $("#proofhint").hidden=false; }
+  }catch(err){ if(!err||err.name!=="AbortError"){ $("#proofhint").hidden=false; alert("Gagal membuat gambar. Silakan screenshot layar ini secara manual."); } }
+  b.disabled=false; b.textContent=t;
+});
+document.addEventListener("click", async e=>{
+  const a = e.target.dataset.a; if (!a) return;
+  if (a==="back") go(-1);
+  if (a==="next") go(1);
+  if (a==="send" && (TEST_MODE || validate(cur))) {
+    if (!TEST_MODE) for (let i=0;i<S.length-1;i++) if(!validate(i)){ show(i); return; }
+    const btn = e.target; btn.disabled = true; btn.textContent = "Mengirim…";
+    const data = {};
+    S.forEach(s=>s.f.forEach(f=>{ const v = val(f); if (v!==null) data[f.k]=v; }));
+    try {
+      if (!TEST_MODE) {
+      if (SCRIPT_URL.startsWith("PASTE")) throw new Error("SCRIPT_URL belum diisi");
+      const r = await fetch(SCRIPT_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(data)});
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error||"Gagal menyimpan");
+      }
+      $("#app").hidden = true; $("#ok").style.display = "block"; showDone(data); if (TEST_MODE) $("#proof .sec").textContent = "Bukti Pendaftaran · MODE TES"; scrollTo(0,0);
+    } catch(err){ alert("Gagal mengirim: "+err.message); btn.disabled=false; btn.textContent="Kirim"; }
+  }
+});
+// Geser kiri/kanan untuk pindah halaman
+let sx=0, sy=0, st=0;
+const mainEl = $("main");
+mainEl.addEventListener("touchstart",e=>{const t=e.touches[0]; sx=t.clientX; sy=t.clientY; st=Date.now();},{passive:true});
+mainEl.addEventListener("touchend",e=>{
+  const t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+  if (Math.abs(dx)>70 && Math.abs(dx)>Math.abs(dy)*1.6 && Date.now()-st<700) go(dx<0?1:-1);
+},{passive:true});
+addEventListener("keydown",e=>{
+  if (["INPUT","SELECT","TEXTAREA"].includes(document.activeElement.tagName)) return;
+  if (e.key==="ArrowRight") go(1); if (e.key==="ArrowLeft") go(-1);
+});
+$("#agree").addEventListener("change",e=>{ $("#start").disabled = !e.target.checked; });
+$("#start").addEventListener("click",()=>{ $("#intro").hidden=true; $("#app").hidden=false; $("main").classList.add("started"); scrollTo(0,0); });
+render();
 </script>
 </body>
 </html>
