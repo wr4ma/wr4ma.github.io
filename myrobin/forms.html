@@ -122,6 +122,11 @@ section.inl{animation:inl .35s ease}
 </header>
 <!-- ===== GANTI ISI PENGUMUMAN DI BAWAH INI ===== -->
 <div id="intro">
+ <div class="card" id="draftbox" hidden>
+  <div class="sec">Draf Tersimpan</div>
+  <p class="lead" id="draftinfo"></p>
+  <div class="bar"><button type="button" id="draftgo" class="main">Lanjutkan</button><button type="button" id="draftdel">Mulai Baru</button></div>
+ </div>
  <div class="card">
   <span class="badge">Pengumuman</span>
   <h2>Formulir Pendaftaran Kurir</h2>
@@ -395,7 +400,7 @@ document.addEventListener("change", async e=>{
 
 const PIC=[{n:"Wildhan",a:"Bandung Kota",t:"6287899604277"},{n:"Aqsal",a:"Cimahi Kota",t:"6283120489103"},{n:"Andhika",a:"Cianjur &amp; Sukabumi",t:"6282112182456"}];
 function picFor(h){ const k=HUB.indexOf("Agrabinta Hub"), i=HUB.indexOf(h); if(k>=0&&i>=k) return 2; return /cimahi|batujajar|ngamprah/i.test(h)?1:0; }
-function showDone(d){
+function showDone(d){ clearDraft();
   $("main").classList.remove("started");
   const when=new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
   const rows=[["Nama",d.nama],["No. WhatsApp",d.wa],["Category",d.category],["Posisi",d.posisi],["Hub",d.hub],["Waktu kirim",when]];
@@ -450,7 +455,49 @@ addEventListener("keydown",e=>{
   if (e.key==="ArrowRight") go(1); if (e.key==="ArrowLeft") go(-1);
 });
 $("#agree").addEventListener("change",e=>{ $("#start").disabled = !e.target.checked; });
-$("#start").addEventListener("click",()=>{ $("#intro").hidden=true; $("#app").hidden=false; $("main").classList.add("started"); scrollTo(0,0); });
+$("#start").addEventListener("click",()=>{ draftReady=true; $("#intro").hidden=true; $("#app").hidden=false; $("main").classList.add("started"); scrollTo(0,0); });
+const DRAFT_KEY="spx_draft_v1", DRAFT_TTL=3*24*3600*1000, DRAFT_SKIP=["persetujuan","deklarasi"];
+let draftReady=false, dtimer;
+function collectDraft(){
+  const v={};
+  S.forEach(s=>s.f.forEach(f=>{
+    if(f.t==="file"||f.fixed||DRAFT_SKIP.includes(f.k)) return;
+    const c=$(`[data-k="${f.k}"]`); if(!c) return;
+    if(f.t==="radio") v[f.k]=(c.querySelector("input:checked")||{}).value||"";
+    else if(f.t==="check") v[f.k]=[...c.querySelectorAll("input:checked")].map(x=>x.value);
+    else v[f.k]=c.querySelector("input,select").value;
+  }));
+  return v;
+}
+function saveDraft(){
+  if(!draftReady) return;
+  clearTimeout(dtimer);
+  dtimer=setTimeout(()=>{ try{ localStorage.setItem(DRAFT_KEY,JSON.stringify({t:Date.now(),cur:cur,v:collectDraft()})); }catch(e){} },400);
+}
+function clearDraft(){ draftReady=false; clearTimeout(dtimer); try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
+function restoreDraft(d){
+  S.forEach(s=>s.f.forEach(f=>{
+    if(f.t==="file"||f.fixed||DRAFT_SKIP.includes(f.k)) return;
+    const v=d.v[f.k], c=$(`[data-k="${f.k}"]`); if(v==null||!c) return;
+    if(f.t==="radio") c.querySelectorAll("input").forEach(x=>{ x.checked=(x.value===v); });
+    else if(f.t==="check") c.querySelectorAll("input").forEach(x=>{ x.checked=v.includes(x.value); });
+    else c.querySelector("input,select").value=v;
+  }));
+  $("#agree").checked=true; $("#intro").hidden=true; $("#app").hidden=false; $("main").classList.add("started");
+  draftReady=true; show(Math.min(d.cur||0,S.length-1),1); scrollTo(0,0);
+}
+const _show=show; show=function(i,dir){ _show(i,dir); saveDraft(); };
+document.addEventListener("input",saveDraft);
+document.addEventListener("change",saveDraft);
+try{
+  const raw=localStorage.getItem(DRAFT_KEY), d=raw&&JSON.parse(raw);
+  if(d&&d.v&&Date.now()-d.t<DRAFT_TTL&&Object.values(d.v).some(x=>Array.isArray(x)?x.length:x)){
+    $("#draftinfo").textContent="Terakhir disimpan "+new Date(d.t).toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"})+". Isian teks akan dipulihkan, foto perlu diunggah ulang.";
+    $("#draftbox").hidden=false;
+    $("#draftgo").onclick=()=>restoreDraft(d);
+    $("#draftdel").onclick=()=>{ clearDraft(); $("#draftbox").hidden=true; };
+  } else if(raw) localStorage.removeItem(DRAFT_KEY);
+}catch(e){}
 render();
 </script>
 </body>
