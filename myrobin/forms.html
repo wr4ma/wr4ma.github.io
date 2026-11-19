@@ -62,7 +62,7 @@ button:active{transform:scale(.97)}
 button.main{color:var(--pt);flex:1;background:var(--p);border-color:var(--p)}
 button:disabled{opacity:.45;cursor:not-allowed}
 .badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--sel);color:var(--p);margin-bottom:8px}
-#intro h2,#ok h2{margin:0 0 4px;font-size:20px}
+#intro h2,#ok h2,#closed h2{margin:0 0 4px;font-size:20px}
 #intro h3{margin:18px 0 0;font-size:15px}
 .info h2{margin:0 0 6px;font-size:20px}.info h3{margin:16px 0 0;font-size:15px}.info ul,.info ol{margin:8px 0 0;padding-left:20px}.info li{margin:5px 0;font-size:15px}
 #intro ol,#intro ul{margin:8px 0 0;padding-left:20px}#intro li{margin:5px 0}
@@ -75,7 +75,7 @@ section.inl{animation:inl .35s ease}
 @keyframes inl{from{opacity:0;transform:translateX(-40px)}}
 #ok{display:none;text-align:center;padding:28px 18px 22px;margin-top:20px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-#intro .lead,#ok .lead{margin:0;color:var(--mut);font-size:15px}
+#intro .lead,#ok .lead,#closed .lead{margin:0;color:var(--mut);font-size:15px}
 #intro .sec,#ok .sec{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--p)}
 #intro .sec::after,#ok .sec::after{content:"";flex:1;height:1px;background:var(--line)}
 #intro .rows,#intro .tick,#intro .steps,#ok .rows,#ok .steps{list-style:none;margin:0;padding:0}
@@ -89,10 +89,10 @@ section.inl{animation:inl .35s ease}
 #intro .steps,#ok .steps{counter-reset:n}
 #intro .steps li,#ok .steps li{counter-increment:n;position:relative;padding-left:34px;margin:10px 0}
 #intro .steps li::before,#ok .steps li::before{content:counter(n);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:var(--sel);color:var(--p);font-size:12px;font-weight:700;display:grid;place-items:center}
-#intro .pic,#ok .pic{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--tx);text-decoration:none}
-#intro .pic small,#ok .pic small{display:block;color:var(--mut);font-size:13px}
-#intro .wa,#ok .wa{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;background:#1f9d55;color:#fff;font-size:14px;font-weight:600;white-space:nowrap}
-#intro .wa svg,#ok .wa svg{width:18px;height:18px;flex:none}
+#intro .pic,#ok .pic,#closed .pic{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--tx);text-decoration:none}
+#intro .pic small,#ok .pic small,#closed .pic small{display:block;color:var(--mut);font-size:13px}
+#intro .wa,#ok .wa,#closed .wa{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;background:#1f9d55;color:#fff;font-size:14px;font-weight:600;white-space:nowrap}
+#intro .wa svg,#ok .wa svg,#closed .wa svg{width:18px;height:18px;flex:none}
 [hidden]{display:none!important}
 #ok .rows,#ok .steps,#ok .pic{text-align:left}
 #ok .steps{margin-top:18px}
@@ -108,6 +108,7 @@ section.inl{animation:inl .35s ease}
 @keyframes dr{to{stroke-dashoffset:0}}
 @keyframes pop{50%{transform:scale(1.1)}}
 @media(prefers-reduced-motion:reduce){.okmark .c,.okmark .t{stroke-dashoffset:0}}
+#testbar{margin-top:12px;padding:8px 12px;border-radius:10px;border:1px dashed var(--line);background:var(--soft);color:var(--mut);font-size:13px;text-align:center}
 </style>
 </head>
 <body>
@@ -120,6 +121,13 @@ section.inl{animation:inl .35s ease}
  </div>
  <p>Rekrutmen Kurir</p>
 </header>
+<div id="testbar" hidden>Mode tes: data yang diisi tidak dikirim</div>
+<div id="closed" class="card" hidden>
+ <span class="badge">Informasi</span>
+ <h2>Pendaftaran Ditutup Sementara</h2>
+ <p class="lead">Mohon maaf, pendaftaran sedang ditutup sementara. Untuk informasi pembukaan kembali, silakan hubungi PIC berikut.</p>
+ <div class="picks"></div>
+</div>
 <!-- ===== GANTI ISI PENGUMUMAN DI BAWAH INI ===== -->
 <div id="intro">
  <div class="card" id="draftbox" hidden>
@@ -202,10 +210,10 @@ section.inl{animation:inl .35s ease}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // ====== GANTI INI dengan URL Web App dari Apps Script ======
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQbHnbzxIGEOonKt8op-pG_aShXn5RkrgM1ZYpiTywXsojTrNVMNJYX9I-SFeaMYeX/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkpH4pDwuynrIaX9HSEPCo2sTUxemJikOfvYz_5R-SYoxPcYZg6Enr_l2rJGJUFf-r/exec";
 
 // Mode tes: true = validasi dimatikan, boleh lanjut/geser halaman & kirim kosong. Set false saat rilis.
-const TEST_MODE = false;
+let TEST_MODE = false;
 
 // ====== Daftar pilihan dropdown (isi sesuai form asli, tidak terlihat di screenshot) ======
 const VENDOR = ["MYROBIN"];
@@ -498,6 +506,21 @@ try{
     $("#draftdel").onclick=()=>{ clearDraft(); $("#draftbox").hidden=true; };
   } else if(raw) localStorage.removeItem(DRAFT_KEY);
 }catch(e){}
+function setTestUI(){ $("#testbar").hidden=!TEST_MODE; $("#pm").textContent = TEST_MODE ? "Mode tes" : ""; }
+function closeForm(){
+  $("#closed .picks").innerHTML=[...document.querySelectorAll("#intro .pic")].map(a=>a.outerHTML).join("");
+  $("#intro").hidden=true; $("#app").hidden=true; $("#ok").style.display="none"; $("main").classList.remove("started"); $("#closed").hidden=false;
+}
+(async function(){
+  setTestUI();
+  if(SCRIPT_URL.startsWith("PASTE")) return;
+  try{
+    const r=await fetch(SCRIPT_URL+"?action=status",{cache:"no-store"}), j=await r.json();
+    if(!j||!j.ok) return;
+    TEST_MODE = j.mode==="test"; setTestUI();
+    if(j.enabled===false) closeForm();
+  }catch(e){}
+})();
 render();
 </script>
 </body>
