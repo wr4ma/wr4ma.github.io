@@ -157,7 +157,8 @@ function dls(r){
 }
 function row(r){
   const wa = r.wa.replace(/\D/g,"").replace(/^0/,"62"), id = esc(r.id), dn = isDone(r);
-  const msg = encodeURIComponent("Halo "+r.nama+", kami dari tim rekrutmen MyRobin x SPX Express. Terima kasih sudah mendaftar sebagai kurir di "+r.hub+".");
+  const nm = String(r.nama || "").toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  const msg = encodeURIComponent("Halo "+nm+", terima kasih sudah berminat untuk bergabung menjadi kurir MyRobin untuk project SPX Express. Data kamu sudah dikirim ke SPX Express. Jika lolos untuk proses selanjutnya, akan dihubungi langsung oleh pihak SPX untuk melakukan onboarding.");
   return '<div class="card row'+(dn?' done':'')+'">'+
     '<div class="rh"><div><h3>'+esc(r.nama)+'</h3><div class="t">'+esc(r.timestamp)+'</div></div>'+(ADMIN?'<span class="area">'+esc((AREAS[r.pic]||[r.pic])[0])+'</span>':'')+'</div>'+
     '<div class="chips"><span class="h">'+esc(r.hub)+'</span><span>'+esc(r.category)+'</span><span>'+esc(r.posisi)+'</span></div>'+
