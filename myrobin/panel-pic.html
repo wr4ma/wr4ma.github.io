@@ -69,6 +69,19 @@ button:disabled{opacity:.5}
 #toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:11px 18px;border-radius:999px;background:rgba(40,44,56,.85);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--line);font-size:14px;z-index:20;max-width:90%}
 #copybox{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30;display:flex;align-items:center;justify-content:center;padding:16px}
 #copybox .card{width:100%;max-width:420px;margin:0;background:rgba(30,34,46,.95)}
+.tabs{display:flex;padding:3px;margin-top:10px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid var(--line)}
+.tabs button{flex:1;border:0;box-shadow:none;background:transparent;color:var(--mut);padding:9px 6px}
+.tabs button.on{background:rgba(255,255,255,.2);color:var(--tx);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.areasel{margin-top:10px}
+#chart{margin-top:10px}
+.dr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.dr b{font-size:18px;color:var(--green)}
+.spin{display:none;width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;animation:sp .75s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#go.busy{opacity:1;gap:10px}
+#go.busy .spin{display:inline-block}
+#login.busy input{opacity:.55;pointer-events:none}
+#login.busy .lead{opacity:.6}
 </style>
 </head>
 <body>
@@ -80,38 +93,46 @@ button:disabled{opacity:.5}
  <p class="lead" style="margin-bottom:14px">Masukkan kode akses PIC Anda untuk melihat pendaftar di area Anda.</p>
  <input id="key" type="password" placeholder="Kode akses" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
  <div id="err" class="msg"></div>
- <button id="go" class="main">Masuk</button>
+ <button id="go" class="main"><span class="spin" aria-hidden="true"></span><span class="lbl">Masuk</span></button>
 </section>
 
 <section id="panel" hidden>
  <div class="who glass"><div><b id="whoName"></b><small id="whoSub"></small></div><button id="refresh">Muat ulang</button></div>
- <div id="cfg" class="card" hidden>
-  <h2 style="font-size:17px">Pengaturan Form</h2>
-  <p class="lead" id="cfgstate" style="font-size:13px;margin-bottom:6px"></p>
-  <label class="sw"><span><b>Pendaftaran dibuka</b><small>Matikan untuk menutup form sementara</small></span><input type="checkbox" id="swOpen"></label>
-  <label class="sw"><span><b>Mode tes</b><small>Form berjalan normal, tetapi data tidak dikirim</small></span><input type="checkbox" id="swTest"></label>
-  <div id="cfgmsg" class="msg"></div>
+ <div class="tabs" id="tabs"><button data-tab="list" class="on">Pendaftar</button><button data-tab="sum">Ringkasan</button><button data-tab="cfg" id="tabCfgBtn" hidden>Pengaturan</button></div>
+ <select id="fArea" hidden class="areasel"><option value="">Semua area</option><option value="wildhan">Wildhan</option><option value="aqsal">Aqsal</option><option value="andhika">Andhika</option></select>
+ <div id="tab-list">
+  <div class="stats">
+   <div class="stat"><b id="sTotal">0</b><span>Total</span></div>
+   <div class="stat"><b id="sDone">0</b><span>Done</span></div>
+   <div class="stat"><b id="sBelum">0</b><span>Tidak done</span></div>
+  </div>
+  <div class="filters">
+   <input id="q" type="search" placeholder="Cari nama, nomor WhatsApp, atau hub">
+   <select id="fHub"><option value="">Semua hub</option></select>
+   <select id="fCat"><option value="">Semua category</option></select>
+   <select id="fStat" style="grid-column:1/-1"><option value="">Semua status</option><option value="done">Done</option><option value="belum">Tidak done</option></select>
+  </div>
+  <div id="list"></div>
  </div>
- <div class="stats">
-  <div class="stat"><b id="sTotal">0</b><span>Total</span></div>
-  <div class="stat"><b id="sDone">0</b><span>Done</span></div>
-  <div class="stat"><b id="sBelum">0</b><span>Tidak done</span></div>
+ <div id="tab-sum" hidden>
+  <div class="card"><h2 style="font-size:17px">Done 6 hari terakhir</h2><p class="lead" id="sumsub" style="font-size:13px"></p><div id="chart"></div><div id="sumlist" style="margin-top:6px"></div></div>
  </div>
- <div class="filters">
-  <input id="q" type="search" placeholder="Cari nama, nomor WhatsApp, atau hub">
-  <select id="fArea" hidden style="grid-column:1/-1"><option value="">Semua area</option><option value="wildhan">Wildhan</option><option value="aqsal">Aqsal</option><option value="andhika">Andhika</option></select>
-  <select id="fHub"><option value="">Semua hub</option></select>
-  <select id="fCat"><option value="">Semua category</option></select>
-  <select id="fStat" style="grid-column:1/-1"><option value="">Semua status</option><option value="done">Done</option><option value="belum">Tidak done</option></select>
+ <div id="tab-cfg" hidden>
+  <div id="cfg" class="card">
+   <h2 style="font-size:17px">Pengaturan Form</h2>
+   <p class="lead" id="cfgstate" style="font-size:13px;margin-bottom:6px"></p>
+   <label class="sw"><span><b>Pendaftaran dibuka</b><small>Matikan untuk menutup form sementara</small></span><input type="checkbox" id="swOpen"></label>
+   <label class="sw"><span><b>Mode tes</b><small>Form berjalan normal, tetapi data tidak dikirim</small></span><input type="checkbox" id="swTest"></label>
+   <div id="cfgmsg" class="msg"></div>
+  </div>
  </div>
- <div id="list"></div>
 </section>
 </main>
 <div id="toast" hidden></div>
 <div id="copybox" hidden><div class="card"><p class="lead" style="margin-bottom:8px">Salin teks di bawah ini secara manual</p><textarea id="copytxt" readonly rows="9"></textarea><button class="main" id="copyclose">Tutup</button></div></div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDUS79oeUtvvOG0EQtljUtRx8mGNwZfaCTrwoDUob4o6MWbUjTwtyIoZaV4QJp55WE/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvdsQodAYgCJmWztg8AEVqpwuFyABKpnDPoTmcP0AFbBFArGC_0i4HyDr6g37OxObd/exec";
 
 const PHOTO_LABEL = {foto_selfie:"Selfie", foto_ktp:"KTP", foto_sim:"SIM", foto_stnk1:"STNK 1", foto_stnk2:"STNK 2", foto_ijazah:"Ijazah"};
 const AREAS = {wildhan:["Wildhan","Admin · Semua area"], aqsal:["Aqsal","Cimahi Kota"], andhika:["Andhika","Cianjur & Sukabumi"]};
@@ -158,23 +179,48 @@ function view(){
   $("#sTotal").textContent = sc.length; $("#sDone").textContent = d; $("#sBelum").textContent = sc.length - d;
   fill($("#fHub"), sc.map(r => r.hub), "Semua hub");
   fill($("#fCat"), sc.map(r => r.category), "Semua category");
-  render();
+  render(); drawSum();
 }
 function show(j){
   DATA = j.rows || [];
-  ADMIN = !!j.admin; $("#cfg").hidden = !ADMIN; $("#fArea").hidden = !ADMIN;
+  ADMIN = !!j.admin; $("#tabCfgBtn").hidden = !ADMIN; $("#fArea").hidden = !ADMIN;
   if (ADMIN && j.config) { CFG = j.config; drawCfg(); }
   const a = AREAS[j.pic] || [j.pic, ""];
   $("#whoName").textContent = a[0]; $("#whoSub").textContent = a[1];
   if (ADMIN && !areaInit) { $("#fArea").value = AREAS[j.pic] ? j.pic : ""; areaInit = true; }
   view();
 }
+const DN = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"], DL = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"], MN = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+const p2 = x => String(x).padStart(2,"0"), dkey = d => d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());
+const doneDay = r => String(r.done_at || r.timestamp || "").slice(0,10);
+const nowStr = () => { const d = new Date(); return dkey(d)+" "+p2(d.getHours())+":"+p2(d.getMinutes())+":"+p2(d.getSeconds()); };
+function setTab(t){
+  ["list","sum","cfg"].forEach(k => { $("#tab-"+k).hidden = k !== t; });
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === t));
+}
+function drawSum(){
+  const sc = scoped().filter(isDone), days = [];
+  for (let i = 5; i >= 0; i--){ const d = new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()-i); const k = dkey(d); days.push({d, n:sc.filter(r => doneDay(r) === k).length, today:i === 0}); }
+  const max = Math.max(1, ...days.map(x => x.n)), W = 360, H = 230, pl = 14, pb = 46, pt = 26, bw = 40, gap = (W-2*pl-6*bw)/5, ch = H-pt-pb;
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Grafik done 6 hari terakhir"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5ee37d"/><stop offset="1" stop-color="#1f9d45"/></linearGradient></defs>';
+  [0,.5,1].forEach(f => { const y = pt+ch*(1-f); svg += '<line x1="'+pl+'" x2="'+(W-pl)+'" y1="'+y+'" y2="'+y+'" stroke="rgba(255,255,255,.12)"/>'; });
+  days.forEach((x,i) => {
+    const bx = pl+i*(bw+gap), bh = Math.max(x.n ? 4 : 2, ch*x.n/max), by = pt+ch-bh, cx = bx+bw/2;
+    svg += '<rect x="'+bx+'" y="'+by+'" width="'+bw+'" height="'+bh+'" rx="8" fill="'+(x.n ? 'url(#gb)' : 'rgba(255,255,255,.18)')+'"'+(x.today ? ' stroke="#fff" stroke-opacity=".7" stroke-width="1.5"' : '')+'/>';
+    svg += '<text x="'+cx+'" y="'+(by-7)+'" text-anchor="middle" font-size="15" font-weight="700" fill="#f5f7fb">'+x.n+'</text>';
+    svg += '<text x="'+cx+'" y="'+(H-pb+17)+'" text-anchor="middle" font-size="11" font-weight="'+(x.today ? 700 : 500)+'" fill="'+(x.today ? '#fff' : 'rgba(235,240,255,.62)')+'">'+(x.today ? 'Hari ini' : DN[x.d.getDay()])+'</text>';
+    svg += '<text x="'+cx+'" y="'+(H-pb+32)+'" text-anchor="middle" font-size="11" fill="rgba(235,240,255,.62)">'+p2(x.d.getDate())+'/'+p2(x.d.getMonth()+1)+'</text>';
+  });
+  $("#chart").innerHTML = svg+'</svg>';
+  $("#sumsub").textContent = "Pendaftar yang ditandai Done per hari · total "+days.reduce((a,x) => a+x.n, 0);
+  $("#sumlist").innerHTML = days.slice().reverse().map(x => '<div class="dr"><span>'+(x.today ? 'Hari ini · ' : '')+DL[x.d.getDay()]+', '+x.d.getDate()+' '+MN[x.d.getMonth()]+' '+x.d.getFullYear()+'</span><b>'+x.n+'</b></div>').join("");
+}
 function toast(m){ const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(t._t); t._t = setTimeout(() => t.hidden = true, 3500); }
 async function mark(id, status){
   const r = DATA.find(x => x.id === id); if (!r) return;
-  const prev = r.remark; r.remark = status === "done" ? "Done" : "Tidak done"; view();
+  const prev = [r.remark, r.done_at]; r.remark = status === "done" ? "Done" : "Tidak done"; r.done_at = status === "done" ? nowStr() : ""; view();
   try{ await call({action:"mark", key:KEY, id, status}); }
-  catch(e){ r.remark = prev; view(); toast(e.message || "Gagal menyimpan status"); }
+  catch(e){ r.remark = prev[0]; r.done_at = prev[1]; view(); toast(e.message || "Gagal menyimpan status"); }
 }
 async function openForm(id, btn){
   const w = window.open("", "_blank"), old = btn.textContent; btn.disabled = true; btn.textContent = "Menyiapkan…";
@@ -227,14 +273,14 @@ async function setCfg(patch){
   drawCfg();
 }
 async function enter(key, silent){
-  $("#err").textContent = ""; $("#go").disabled = true;
+  $("#err").textContent = ""; $("#go").disabled = true; $("#go").classList.add("busy"); $("#login").classList.add("busy"); $("#go .lbl").textContent = "Memeriksa kode akses…";
   try{
-    show(await call({action:"list", key})); KEY = key;
+    show(await call({action:"list", key})); KEY = key; setTab("list");
     $("#login").hidden = true; $("#panel").hidden = false; $("#out").hidden = false;
     try{ sessionStorage.setItem("pk", key); }catch(e){}
     clearInterval(timer); timer = setInterval(refresh, 60000);
   }catch(e){ if (!silent) $("#err").textContent = e.message || "Gagal terhubung"; try{ sessionStorage.removeItem("pk"); }catch(_){} }
-  $("#go").disabled = false;
+  $("#go").disabled = false; $("#go").classList.remove("busy"); $("#login").classList.remove("busy"); $("#go .lbl").textContent = "Masuk";
 }
 async function refresh(){ if (!KEY || document.hidden) return; try{ show(await call({action:"list", key:KEY})); }catch(e){} }
 function logout(){
@@ -245,6 +291,7 @@ $("#go").onclick = () => { const k = $("#key").value.trim(); if (k) enter(k); };
 $("#key").addEventListener("keydown", e => { if (e.key === "Enter") $("#go").click(); });
 $("#refresh").onclick = async e => { const b = e.currentTarget; b.disabled = true; await refresh(); b.disabled = false; };
 $("#out").onclick = logout;
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (b) setTab(b.dataset.tab); });
 ["input","change"].forEach(ev => { $("#q").addEventListener(ev, render); $("#fHub").addEventListener(ev, render); $("#fCat").addEventListener(ev, render); $("#fArea").addEventListener(ev, view); $("#fStat").addEventListener(ev, render); });
 $("#list").addEventListener("click", e => {
   const t = e.target.closest("button"); if (!t) return;
