@@ -210,7 +210,7 @@ section.inl{animation:inl .35s ease}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // ====== GANTI INI dengan URL Web App dari Apps Script ======
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkpH4pDwuynrIaX9HSEPCo2sTUxemJikOfvYz_5R-SYoxPcYZg6Enr_l2rJGJUFf-r/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDUS79oeUtvvOG0EQtljUtRx8mGNwZfaCTrwoDUob4o6MWbUjTwtyIoZaV4QJp55WE/exec";
 
 // Mode tes: true = validasi dimatikan, boleh lanjut/geser halaman & kirim kosong. Set false saat rilis.
 let TEST_MODE = false;
@@ -407,7 +407,8 @@ document.addEventListener("change", async e=>{
 });
 
 const PIC=[{n:"Wildhan",a:"Bandung Kota",t:"6287899604277"},{n:"Aqsal",a:"Cimahi Kota",t:"6283120489103"},{n:"Andhika",a:"Cianjur &amp; Sukabumi",t:"6282112182456"}];
-function picFor(h){ const k=HUB.indexOf("Agrabinta Hub"), i=HUB.indexOf(h); if(k>=0&&i>=k) return 2; return /cimahi|batujajar|ngamprah/i.test(h)?1:0; }
+const AQSHAL_HUBS = new Set("Baleendah Hub|Balonggede Hub|Banjaran Hub|Ciwidey Hub|Soreang Hub|Arjasari Hub|Dayeuhkolot 2 Hub|Katapang Hub|Dayeuhkolot Hub|Margaasih Hub|Bandung Kulon Hub|Cibabat Hub|Ngamprah Hub|Bandung Barat Hub|Sindangkerta Hub|Batujajar Hub|Gununghalu Hub|Cipatat Hub|Cimahi Hub|Cimahi Tengah Hub|Cimahi Utara Hub|Cipeundeuy Kab. Bandung Barat Hub|Lembang Hub|Cipadung Kulon Hub|Pasirjambu 2 Hub|Andir Hub|Cihampelas Hub|Arcamanik Hub|Cipongkor Hub|Cimahi Tengah 2 Hub|Cimahi Selatan Hub|Lengkong Kota Bandung Hub|Rancabali Hub|Cisarua Kab. Bandung Barat Hub|Cimahi Utara 2 Hub|Kutawaringin 2 Hub|Arjasari 2 Hub|Banjaran 3 Hub|Pangalengan 2 Hub|Baleendah 4 Hub|Baleendah 5 Hub|Margaasih 4 Hub|Cimahi Tengah 3 Hub|Kutawaringin Hub".split("|"));
+function picFor(h){ const k=HUB.indexOf("Agrabinta Hub"), i=HUB.indexOf(h); if(k>=0&&i>=k) return 2; return AQSHAL_HUBS.has(h)?1:0; }
 function showDone(d){ clearDraft();
   $("main").classList.remove("started");
   const when=new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
