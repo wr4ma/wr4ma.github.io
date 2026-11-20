@@ -158,8 +158,12 @@ function setAv(id){
 }
 async function loadThumb(id){
   if (id in THUMBS || PENDING.has(id)) return; PENDING.add(id);
-  try{ const j = await call({action:"thumb", key:KEY, id}); THUMBS[id] = "data:"+(j.mime || "image/jpeg")+";base64,"+j.data; }
-  catch(e){ THUMBS[id] = ""; THUMBS_ERR[id] = (e && e.message) || "gagal memuat"; }
+  let err = "";
+  for (let a = 0; a < 2; a++){
+    try{ const j = await call({action:"thumb", key:KEY, id}); THUMBS[id] = "data:"+(j.mime || "image/jpeg")+";base64,"+j.data; err = ""; break; }
+    catch(e){ err = (e && e.message) || "gagal memuat"; if (a === 0) await new Promise(r => setTimeout(r, 1200)); }
+  }
+  if (err){ THUMBS[id] = ""; THUMBS_ERR[id] = err; }
   PENDING.delete(id); setAv(id);
 }
 async function call(body){
@@ -301,7 +305,7 @@ async function setCfg(patch){
 async function enter(key, silent){
   $("#err").textContent = ""; $("#go").disabled = true; $("#go").classList.add("busy"); $("#login").classList.add("busy"); $("#go .lbl").textContent = "Memeriksa kode akses…";
   try{
-    show(await call({action:"list", key})); KEY = key; setTab("list");
+    const j = await call({action:"list", key}); KEY = key; show(j); setTab("list");
     $("#login").hidden = true; $("#panel").hidden = false; $("#out").hidden = false;
     try{ sessionStorage.setItem("pk", key); }catch(e){}
     clearInterval(timer); timer = setInterval(refresh, 60000);
