@@ -139,7 +139,7 @@ button:disabled{opacity:.5}
 <div id="copybox" hidden><div class="card"><p class="lead" style="margin-bottom:8px">Salin teks di bawah ini secara manual</p><textarea id="copytxt" readonly rows="9"></textarea><button class="main" id="copyclose">Tutup</button></div></div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0iXa4Fs6TLZxqFHj5H6xJi3mIaJgScLoUxhxTD4HvJZIPHsIMePTKyU46kpAF0a9x/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCYcXp1pnc5bO53UomkF2UOCXSOK_YrPp0_hOpM2Z5rtCPoci8Ih6g2EkfIwQ9YM6W/exec";
 
 const PHOTO_LABEL = {foto_selfie:"Selfie", foto_ktp:"KTP", foto_sim:"SIM", foto_stnk1:"STNK 1", foto_stnk2:"STNK 2", foto_ijazah:"Ijazah"};
 const AREAS = {wildhan:["Wildhan","Admin · Semua area"], aqsal:["Aqsal","Cimahi Kota"], andhika:["Andhika","Cianjur & Sukabumi"]};
@@ -150,7 +150,7 @@ const isDone = r => r.remark === "Done";
 let KEY = "", DATA = [], CFG = {enabled:true, mode:"live"}, ADMIN = false, areaInit = false, timer;
 
 const PAGE = 5; let page = 0;
-const THUMBS = {}, PENDING = new Set();
+const THUMBS = {}, THUMBS_ERR = {}, PENDING = new Set();
 const PERSON = '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="rgba(235,240,255,.5)" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>';
 const hasSelfie = r => (r.fotos || "").split(",").includes("foto_selfie");
 function setAv(id){
@@ -159,7 +159,7 @@ function setAv(id){
 async function loadThumb(id){
   if (id in THUMBS || PENDING.has(id)) return; PENDING.add(id);
   try{ const j = await call({action:"thumb", key:KEY, id}); THUMBS[id] = "data:"+(j.mime || "image/jpeg")+";base64,"+j.data; }
-  catch(e){ THUMBS[id] = ""; }
+  catch(e){ THUMBS[id] = ""; THUMBS_ERR[id] = (e && e.message) || "gagal memuat"; }
   PENDING.delete(id); setAv(id);
 }
 async function call(body){
@@ -320,6 +320,8 @@ $("#out").onclick = logout;
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (b) setTab(b.dataset.tab); });
 ["input","change"].forEach(ev => { const r0 = () => { page = 0; render(); }; $("#q").addEventListener(ev, r0); $("#fHub").addEventListener(ev, r0); $("#fCat").addEventListener(ev, r0); $("#fArea").addEventListener(ev, () => { page = 0; view(); }); $("#fStat").addEventListener(ev, r0); });
 $("#list").addEventListener("click", e => {
+  const av = e.target.closest(".av[data-av]");
+  if (av){ const id = av.dataset.av; if (id in THUMBS && !THUMBS[id]){ toast("Selfie: " + (THUMBS_ERR[id] || "tidak tersedia") + " · ketuk lagi untuk coba ulang"); delete THUMBS[id]; delete THUMBS_ERR[id]; render(); } return; }
   const t = e.target.closest("button"); if (!t) return;
   if (t.dataset.s) mark(t.dataset.id, t.dataset.s);
   else if (t.dataset.dl) download(t.dataset.id, t.dataset.dl, t);
