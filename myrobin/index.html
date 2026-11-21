@@ -728,9 +728,11 @@ $('med').textContent='Mencari lokasimu...';
 navigator.geolocation.getCurrentPosition(function(p){ME={lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy)};hp.p=1;mep();meName();draw();geoRun()},
 function(e){ME=null;mep();$('med').textContent=e&&e.code===1?'Izin lokasi ditolak. Izinkan lokasi untuk situs ini di pengaturan browser, lalu coba lagi.':'Lokasi belum bisa didapat. Pastikan GPS aktif lalu coba lagi.'},
 {enableHighAccuracy:true,timeout:20000,maximumAge:30000})}
-$('mebtn').onclick=meGet;
+$('mebtn').onclick=function(){try{localStorage.removeItem('hm-meoff')}catch(e){}meGet()};
 $('metg').onclick=function(){MIN=!MIN;try{localStorage.setItem('hm-memin',MIN?'1':'0')}catch(e){}mep()};
-$('meoff').onclick=function(){ME=null;hp.p=1;mep();draw()};
+$('meoff').onclick=function(){try{localStorage.setItem('hm-meoff','1')}catch(e){}ME=null;hp.p=1;mep();draw()};
+function meAuto(){var off=false;try{off=localStorage.getItem('hm-meoff')==='1'}catch(e){}if(off)return;
+if(navigator.permissions&&navigator.permissions.query){navigator.permissions.query({name:'geolocation'}).then(function(p){if(p.state==='denied')$('med').textContent='Izin lokasi ditolak. Izinkan lokasi untuk situs ini di pengaturan browser, lalu ketuk Gunakan lokasi saya.';else meGet()}).catch(meGet)}else meGet()}
 /* ===== LIVE DATA (Google Sheets, published CSV) ===== */
 var SHEET_BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vSEMq93U2bfRms7gsiMdir7M_7W99f9vodrt1ssAv-iLAO4taenIGGTEzMo4Y3geldce1CiDXK92_AA/pub?single=true&output=csv&gid=';
 var GID_LM='899028723',GID_KPI='248735701';
@@ -800,7 +802,7 @@ function knotes(k){if(!k.notes||!k.notes.length)return;var m=k.notes.join(' ').m
 $('knote').innerHTML='<ul class="kn">'+k.notes.map(function(n){return '<li>'+esc(n)+'</li>'}).join('')+'</ul>'}
 function liveMsg(id,ok){var el=$(id);if(!el)return;var d=new Date(),t=('0'+d.getHours()).slice(-2)+'.'+('0'+d.getMinutes()).slice(-2);
 el.className='lv'+(ok?' on':' off');el.textContent=ok?'Live dari Google Sheets, dimuat '+t:'Gagal memuat data live, menampilkan data terakhir yang tersimpan'}
-function getCSV(gid){return fetch(SHEET_BASE+gid+'&_='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text()}).then(csvParse)}
+function getCSV(gid){var ac=window.AbortController?new AbortController():null,tm=ac?setTimeout(function(){ac.abort()},20000):0;return fetch(SHEET_BASE+gid+'&_='+Date.now(),ac?{cache:'no-store',signal:ac.signal}:{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text()}).then(function(t){clearTimeout(tm);return csvParse(t)},function(e){clearTimeout(tm);throw e})}
 function liveLoad(){
 getCSV(GID_HUB).then(function(R){var n=hparse(R);if(!n.length)throw new Error('kosong');D=hmerge(n);applySD();fillCS();fillSD();chips();draw();liveMsg('hstat',1)}).catch(function(){liveMsg('hstat',0)});
 getCSV(GID_LM).then(function(R){var n=lparse(R);if(!n.length)throw new Error('kosong');LD=n;fillLB();lchips();ldraw();liveMsg('lstat',1)}).catch(function(){liveMsg('lstat',0)});
@@ -808,9 +810,9 @@ getCSV(GID_KPI).then(function(R){var k=kparse(R);if(!k.rows.length)throw new Err
 if(k.date&&$('ksub'))$('ksub').textContent=(k.names.join(' & ')||'KPI PIC')+', data per '+k.date;knotes(k);kdraw();liveMsg('kstat',1)}).catch(function(){liveMsg('kstat',0)})}
 setInterval(function(){if(!document.hidden)liveLoad()},LIVE_MS);
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-(liveLoad.t||0)>60000){liveLoad.t=Date.now();liveLoad()}});
-liveLoad.t=Date.now();
+liveLoad.t=Date.now();liveLoad();
 
-chips();draw();lchips();ldraw();route();endIntro();setTimeout(endIntro,4000);
+chips();draw();lchips();ldraw();route();meAuto();endIntro();setTimeout(endIntro,4000);
 </script>
 </body>
 </html>
