@@ -130,6 +130,7 @@ button:disabled{opacity:.5}
    <p class="lead" id="cfgstate" style="font-size:13px;margin-bottom:6px"></p>
    <label class="sw"><span><b>Pendaftaran dibuka</b><small>Matikan untuk menutup form sementara</small></span><input type="checkbox" id="swOpen"></label>
    <label class="sw"><span><b>Mode tes</b><small>Form berjalan normal, tetapi data tidak dikirim</small></span><input type="checkbox" id="swTest"></label>
+   <label class="sw"><span><b>Hanya kategori Mitra</b><small>Matikan untuk membuka pilihan Plus dan Dedicated di form</small></span><input type="checkbox" id="swMitra"></label>
    <div id="cfgmsg" class="msg"></div>
   </div>
  </div>
@@ -139,7 +140,7 @@ button:disabled{opacity:.5}
 <div id="copybox" hidden><div class="card"><p class="lead" style="margin-bottom:8px">Salin teks di bawah ini secara manual</p><textarea id="copytxt" readonly rows="9"></textarea><button class="main" id="copyclose">Tutup</button></div></div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCYcXp1pnc5bO53UomkF2UOCXSOK_YrPp0_hOpM2Z5rtCPoci8Ih6g2EkfIwQ9YM6W/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCDks2Xg0G7r6Narsc_QfyfPtDha2uPiJUGwcwi7sFr2y4o_h4dYAdHb7JuCEqp9wv/exec";
 
 const PHOTO_LABEL = {foto_selfie:"Selfie", foto_ktp:"KTP", foto_sim:"SIM", foto_stnk1:"STNK 1", foto_stnk2:"STNK 2", foto_ijazah:"Ijazah"};
 const AREAS = {wildhan:["Wildhan","Admin · Semua area"], aqsal:["Aqsal","Cimahi Kota"], andhika:["Andhika","Cianjur & Sukabumi"]};
@@ -293,8 +294,8 @@ async function copyData(id, btn){
   btn.disabled = false; btn.textContent = old;
 }
 function drawCfg(){
-  $("#swOpen").checked = CFG.enabled; $("#swTest").checked = CFG.mode === "test";
-  $("#cfgstate").textContent = "Status: pendaftaran " + (CFG.enabled ? "DIBUKA" : "DITUTUP") + " · mode " + (CFG.mode === "test" ? "TES" : "LIVE");
+  $("#swOpen").checked = CFG.enabled; $("#swTest").checked = CFG.mode === "test"; $("#swMitra").checked = CFG.mitraOnly !== false;
+  $("#cfgstate").textContent = "Status: pendaftaran " + (CFG.enabled ? "DIBUKA" : "DITUTUP") + " · mode " + (CFG.mode === "test" ? "TES" : "LIVE") + " · kategori " + (CFG.mitraOnly !== false ? "Mitra saja" : "semua");
 }
 async function setCfg(patch){
   $("#cfgmsg").textContent = "";
@@ -336,6 +337,7 @@ $("#list").addEventListener("click", e => {
 $("#copyclose").onclick = () => { $("#copybox").hidden = true; };
 $("#swOpen").onchange = e => setCfg({enabled:e.target.checked});
 $("#swTest").onchange = e => setCfg({mode:e.target.checked ? "test" : "live"});
+$("#swMitra").onchange = e => setCfg({mitraOnly:e.target.checked});
 try{ const k = sessionStorage.getItem("pk"); if (k) enter(k, true); }catch(e){}
 </script>
 </body>

@@ -109,6 +109,7 @@ section.inl{animation:inl .35s ease}
 @keyframes pop{50%{transform:scale(1.1)}}
 @media(prefers-reduced-motion:reduce){.okmark .c,.okmark .t{stroke-dashoffset:0}}
 #testbar{margin-top:12px;padding:8px 12px;border-radius:10px;border:1px dashed var(--line);background:var(--soft);color:var(--mut);font-size:13px;text-align:center}
+.opt:has(input:disabled){opacity:.45;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -169,7 +170,7 @@ section.inl{animation:inl .35s ease}
   <div class="sec">Informasi Pendaftaran</div>
   <p class="lead">Saat mengisi formulir, pastikan memilih:</p>
   <ul class="rows" style="margin-top:6px">
-   <li><span>Category</span><b>MITRA / PLUS</b></li>
+   <li><span>Category</span><b id="catinfo">MITRA</b></li>
    <li><span>Hub</span><b>Sesuai domisili</b></li>
   </ul>
  </div>
@@ -210,7 +211,7 @@ section.inl{animation:inl .35s ease}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // ====== GANTI INI dengan URL Web App dari Apps Script ======
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCYcXp1pnc5bO53UomkF2UOCXSOK_YrPp0_hOpM2Z5rtCPoci8Ih6g2EkfIwQ9YM6W/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCDks2Xg0G7r6Narsc_QfyfPtDha2uPiJUGwcwi7sFr2y4o_h4dYAdHb7JuCEqp9wv/exec";
 
 // Mode tes: true = validasi dimatikan, boleh lanjut/geser halaman & kirim kosong. Set false saat rilis.
 let TEST_MODE = false;
@@ -237,7 +238,7 @@ const S = [
   {k:"sumber_lowongan",l:"Mendapatkan informasi lowongan dari mana ?",t:"select",r:1,o:SUMBER},
   {k:"pernah_spx",l:"Apakah sebelumnya sudah pernah bergabung di Shopee xpress?",t:"radio",r:1,o:SU}]},
  {h:"Hub Yang Dilamar", f:[
-  {k:"category",l:"Category",t:"radio",r:1,o:["Mitra","Plus","Dedicated"],hint:"• Kurir Mitra adalah individu yang bekerja secara independen sebagai mitra.\n• Kurir Plus adalah kurir dengan skema baru, dengan target pengiriman lebih fleksibel dan pendapatan bulanan yang tetap.\n• Kurir Dedicated adalah kurir yang memiliki jam kerja yang sudah ditentukan."},
+  {k:"category",l:"Category",t:"radio",r:1,o:["Mitra","Plus","Dedicated"],only:"Mitra",hint:"• Kurir Mitra adalah individu yang bekerja secara independen sebagai mitra.\n• Kurir Plus adalah kurir dengan skema baru, dengan target pengiriman lebih fleksibel dan pendapatan bulanan yang tetap.\n• Kurir Dedicated adalah kurir yang memiliki jam kerja yang sudah ditentukan."},
   {k:"posisi",l:"Posisi Yang Dilamar",t:"radio",r:1,o:["Rider","Driver"]},
   {k:"agama",l:"Agama",t:"select",r:1,o:AGAMA},
   {k:"pendidikan",l:"Pendidikan Terakhir",t:"select",r:1,o:PEND},
@@ -307,7 +308,7 @@ function fieldHTML(f){
     h += f.fixed ? `<select ${n} disabled aria-readonly="true"><option value="${esc(f.fixed)}" selected>${esc(f.fixed)}</option></select>` : `<select ${n}><option value="">Pilih</option>${f.o.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`;
   } else if (f.t==="radio" || f.t==="check") {
     const ty = f.t==="radio" ? "radio" : "checkbox";
-    h += f.o.map(o=>`<label class="opt"><input type="${ty}" ${n} value="${esc(o)}">${esc(o)}</label>`).join("");
+    h += f.o.map(o=>`<label class="opt"><input type="${ty}" ${n} value="${esc(o)}"${f.only===o?" checked":""}${f.only&&f.only!==o?" disabled":""}>${esc(o)}</label>`).join("") + (f.only ? `<div class="hint lockhint" style="margin-top:8px">Saat ini pendaftaran hanya tersedia untuk kategori ${esc(f.only)}.</div>` : "");
   } else if (f.t==="file") {
     h += `<label class="file">⬆ Tambah file<input type="file" accept="image/*" data-file="${f.k}"></label><div class="fn"></div><img class="prev" hidden alt="">`;
   }
@@ -470,7 +471,7 @@ let draftReady=false, dtimer;
 function collectDraft(){
   const v={};
   S.forEach(s=>s.f.forEach(f=>{
-    if(f.t==="file"||f.fixed||DRAFT_SKIP.includes(f.k)) return;
+    if(f.t==="file"||f.fixed||f.only||DRAFT_SKIP.includes(f.k)) return;
     const c=$(`[data-k="${f.k}"]`); if(!c) return;
     if(f.t==="radio") v[f.k]=(c.querySelector("input:checked")||{}).value||"";
     else if(f.t==="check") v[f.k]=[...c.querySelectorAll("input:checked")].map(x=>x.value);
@@ -486,7 +487,7 @@ function saveDraft(){
 function clearDraft(){ draftReady=false; clearTimeout(dtimer); try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
 function restoreDraft(d){
   S.forEach(s=>s.f.forEach(f=>{
-    if(f.t==="file"||f.fixed||DRAFT_SKIP.includes(f.k)) return;
+    if(f.t==="file"||f.fixed||f.only||DRAFT_SKIP.includes(f.k)) return;
     const v=d.v[f.k], c=$(`[data-k="${f.k}"]`); if(v==null||!c) return;
     if(f.t==="radio") c.querySelectorAll("input").forEach(x=>{ x.checked=(x.value===v); });
     else if(f.t==="check") c.querySelectorAll("input").forEach(x=>{ x.checked=v.includes(x.value); });
@@ -507,6 +508,12 @@ try{
     $("#draftdel").onclick=()=>{ clearDraft(); $("#draftbox").hidden=true; };
   } else if(raw) localStorage.removeItem(DRAFT_KEY);
 }catch(e){}
+function applyCategoryLock(on){
+  const c = document.querySelector('[data-k="category"]'); if (!c) return;
+  c.querySelectorAll("input").forEach(x => { x.disabled = on && x.value !== "Mitra"; if (on) x.checked = x.value === "Mitra"; });
+  const n = c.querySelector(".lockhint"); if (n) n.hidden = !on;
+  const ci = document.getElementById("catinfo"); if (ci) ci.textContent = on ? "MITRA" : "MITRA / PLUS";
+}
 function setTestUI(){ $("#testbar").hidden=!TEST_MODE; $("#pm").textContent = TEST_MODE ? "Mode tes" : ""; }
 function closeForm(){
   $("#closed .picks").innerHTML=[...document.querySelectorAll("#intro .pic")].map(a=>a.outerHTML).join("");
@@ -518,7 +525,7 @@ function closeForm(){
   try{
     const r=await fetch(SCRIPT_URL+"?action=status",{cache:"no-store"}), j=await r.json();
     if(!j||!j.ok) return;
-    TEST_MODE = j.mode==="test"; setTestUI();
+    TEST_MODE = j.mode==="test"; setTestUI(); applyCategoryLock(j.mitraOnly !== false);
     if(j.enabled===false) closeForm();
   }catch(e){}
 })();
