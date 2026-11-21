@@ -284,6 +284,15 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 .lv::before{content:"";width:7px;height:7px;border-radius:50%;background:#fbbf24;flex-shrink:0}
 .lv.on::before{background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.2)}
 .lv.off::before{background:#ff9f6b}
+.kn{margin:0;padding-left:18px}
+.kn li{margin:0 0 6px}
+.me{border-radius:24px;padding:14px;margin-bottom:16px;display:grid;gap:10px}
+.me .t{font-size:15px;font-weight:700;margin:0;color:var(--ink,var(--tx))}
+.me .nm{font-size:14px;margin:0;color:var(--ink,var(--tx));line-height:1.4}
+.me iframe{width:100%;height:190px;border:0;border-radius:16px;background:rgba(255,255,255,.06)}
+.me .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button.go{width:100%;box-sizing:border-box;font:inherit;font-weight:700;cursor:pointer}
+a.go.rt{margin-top:8px}
 </style>
 </head>
 <body>
@@ -336,7 +345,7 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 <p class="sub" id="ksub">Jabar 1 &amp; Parahyangan Kulon, data per 15 Nov 2026</p>
 <p class="lv" id="kstat">Memuat data live...</p>
 <div class="grid" id="kg"></div>
-<p class="cour" style="margin-top:16px">Nilai akhir dihitung dari bobot 20% Supply, 30% Rilis NHE, dan 50% Joiner. Perform Very Bad akan diberikan warning dari lead area.</p>
+<div class="cour" id="knote" style="margin-top:16px">Nilai akhir dihitung dari bobot 20% Supply, 30% Rilis NHE, dan 50% Joiner. Perform Very Bad akan diberikan warning dari lead area.</div>
 </section>
 <section id="v-tools" hidden>
 <h1>Tools</h1>
@@ -351,6 +360,7 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 <section id="v-hub" hidden>
 <h1>Lokasi Semua Hub</h1>
 <p class="sub">Lokasi Terupdate HUB Jabar 1 &amp; 2</p>
+<p class="lv" id="hstat">Memuat data live...</p>
 <div class="tools glass">
 <div class="srch">
 <input id="q" type="search" placeholder="Cari nama hub, wilayah, atau alamat" aria-label="Cari hub">
@@ -361,6 +371,18 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 <select id="sd" aria-label="Filter Sub District"><option value="">Semua Sub District</option></select>
 </div>
 <div class="chips" id="chips" role="group" aria-label="Filter PIC BPOM"></div>
+</div>
+<div class="me glass" id="me">
+<p class="t">Lokasi saya &amp; hub terdekat</p>
+<p class="cour" id="med">Aktifkan lokasi untuk melihat posisimu dan mengurutkan hub dari yang terdekat.</p>
+<div id="mebody" hidden>
+<iframe id="memap" title="Peta lokasi saya" loading="lazy"></iframe>
+<p class="nm" id="mename"></p>
+<p class="cour" id="mec"></p>
+<a class="go" id="mego" target="_blank" rel="noopener">Buka lokasi saya di Google Maps</a>
+</div>
+<div class="row"><button type="button" class="go" id="mebtn">Gunakan lokasi saya</button><button type="button" class="go off" id="meoff" hidden>Matikan</button></div>
+<p class="cour" id="mepg"></p>
 </div>
 <p class="cnt" id="cnt"></p>
 <div class="grid" id="grid"></div>
@@ -477,7 +499,7 @@ var D=[
 var pic="",q="",cs="";
 function $(i){return document.getElementById(i)}
 function esc(x){var d=document.createElement("div");d.textContent=x;return d.innerHTML}
-function url(m){return m?(m.indexOf("q:")===0?"https://www.google.com/maps/search/?api=1&query="+m.slice(2):m.indexOf("g:")===0?"https://goo.gl/maps/"+m.slice(2):"https://maps.app.goo.gl/"+m):""}
+function url(m){return m?(/^https?:\/\//i.test(m)?m:m.indexOf("q:")===0?"https://www.google.com/maps/search/?api=1&query="+m.slice(2):m.indexOf("g:")===0?"https://goo.gl/maps/"+m.slice(2):"https://maps.app.goo.gl/"+m):""}
 function chips(){
 var h='<button class="chip'+(pic?'':' on')+'" data-p="">Semua<b>'+D.length+'</b></button>';
 Object.keys(PN).forEach(function(k){var n=D.filter(function(r){return r[5]===k}).length;h+='<button class="chip'+(pic===k?' on':'')+'" data-p="'+k+'">'+PN[k]+'<b>'+n+'</b></button>'});
@@ -486,14 +508,15 @@ $("chips").querySelectorAll(".chip").forEach(function(b){b.onclick=function(){pi
 function draw(){
 var t=q.toLowerCase();
 var L=D.filter(function(r){return(!pic||r[5]===pic)&&(!cs||r[0]===cs)&&(!sdf||r[6]===sdf)&&(r[1]+" "+r[2]+" "+r[3]+" "+(r[6]||"")).toLowerCase().indexOf(t)>-1});
+if(ME){setDist();L.sort(function(a,b){return(a.d==null?1e9:a.d)-(b.d==null?1e9:b.d)})}
 var sg2=pic+'|'+cs+'|'+sdf+'|'+q;if(sg2!==hp.sig){hp.sig=sg2;hp.p=1}var T=L.length,pages=Math.max(1,Math.ceil(T/PS));if(hp.p>pages)hp.p=pages;hp.n=T;L=L.slice((hp.p-1)*PS,hp.p*PS);
 $("cnt").textContent=T?"Menampilkan "+((hp.p-1)*PS+1)+"-"+((hp.p-1)*PS+L.length)+" dari "+T+" hub"+(T!==D.length?" (total "+D.length+")":""):"0 dari "+D.length+" hub";
 $("grid").innerHTML=L.length?L.map(function(r,i){
 var u=url(r[4]);
 return '<article class="card glass" style="--i:'+Math.min(i,10)+'"><div class="top"><h3>'+esc(r[1])+'</h3><span class="pic" style="--h:'+HUE[r[5]]+'">'+PN[r[5]]+'</span></div>'+
 (r[2]?'<p class="dist">'+esc(r[2])+'</p>':'')+(r[6]?'<p class="cour">Sub District: <b class="sdb">'+esc(r[6])+'</b></p>':'')+
-'<p class="addr">'+esc(r[3])+'</p>'+cp('Courier PIC',r[0])+
-(u?'<a class="go" href="'+u+'" target="_blank" rel="noopener">Buka di Google Maps</a>':'<span class="go off">Link Maps belum diisi</span>')+'</article>'}).join(""):
+'<p class="addr">'+esc(r[3])+'</p>'+dl(r)+cp('Courier PIC',r[0])+
+(u?'<a class="go" href="'+u+'" target="_blank" rel="noopener">Buka di Google Maps</a>':'<span class="go off">Link Maps belum diisi</span>')+rt(r)+'</article>'}).join(""):
 '<div class="empty glass" style="grid-column:1/-1">Tidak ada hub yang cocok. Ubah kata kunci atau pilih Semua.</div>'}
 var qt;$("q").oninput=function(){var v=this.value;clearTimeout(qt);qt=setTimeout(function(){q=v;draw()},120)};
 $("cs").onchange=function(){cs=this.value;draw()};
@@ -648,7 +671,8 @@ function goPage(d){hp.p+=d;draw();var y=$('grid').getBoundingClientRect().top+wi
 $('pp').onclick=function(){goPage(-1)};$('pn').onclick=function(){goPage(1)};
 var _d=draw;draw=function(){_d();pager()};
 var SDM={"Bandung Selatan": ["Baleendah Hub", "Pacet Bandung Hub", "Bojongsoang Hub", "Banjaran Hub", "Ciwidey Hub", "Pangalengan Hub", "Soreang Hub", "Arjasari Hub", "Dayeuhkolot 2 Hub", "Katapang Hub", "Dayeuhkolot Hub", "Margaasih Hub", "Pasirjambu 2 Hub", "Rancabali Hub", "Bojongsoang 2 Hub", "Kutawaringin 2 Hub", "Arjasari 2 Hub", "Banjaran 3 Hub", "Pangalengan 2 Hub", "Baleendah 4 Hub", "Baleendah 5 Hub", "Kutawaringin Hub", "Margaasih 4 Hub"], "Bandung Timur": ["Cicalengka Hub", "Rancaekek Hub", "Solokan Jeruk Hub", "Majalaya Hub", "Cileunyi Hub", "Bandung Timur Hub", "Antapani Hub", "Kiaracondong Hub", "Cibeunying Kidul Hub", "Panyileukan Hub", "Cipadung Kulon Hub", "Cikancung Hub", "Arcamanik Hub", "Ciparay Hub", "Rancasari Hub", "Ciparay 2 Hub", "Ibun Hub", "Paseh 3 Hub", "Cicalengka 2 Hub", "Cibeunying Kidul 2 Hub"], "Bandung Kota": ["Balonggede Hub", "Bojongloa Kidul Hub", "Bandung Kulon Hub", "Bandung Utara Hub", "Astana Anyar Hub", "Bojongloa Kaler Hub", "Bandung Hub", "Coblong Hub", "Sukajadi Hub", "Cidadap Hub", "Regol 2 Hub", "Babakan Ciparay 3 Hub", "Andir Hub", "Lengkong Kota Bandung Hub", "Regol 4 Hub"], "Cimahi": ["Cibabat Hub", "Cimahi Hub", "Cimahi Tengah Hub", "Cimahi Tengah 2 Hub", "Cimahi Selatan Hub", "Cimahi Utara 2 Hub", "Cimahi Tengah 3 Hub"], "Bandung Barat": ["Ngamprah Hub", "Bandung Barat Hub", "Sindangkerta Hub", "Batujajar Hub", "Gununghalu Hub", "Cipatat Hub", "Cipeundeuy Kab. Bandung Barat Hub", "Lembang Hub", "Cihampelas Hub", "Cipongkor Hub", "Cisarua Kab. Bandung Barat Hub"], "Cianjur": ["Agrabinta Hub", "Campaka Hub", "Cianjur Hub", "Cibinong Cianjur 2 Hub", "Cibinong Cianjur Hub", "Cidaun 2 Hub", "Cidaun Hub", "Cijati Hub", "Cikadu Hub", "Cikalongkulon Hub"], "Sukabumi": ["Bantargadung Hub", "Cibadak Hub", "Cicantayan Hub", "Cicurug 2 Hub", "Cicurug Hub", "Cidadap Sukabumi Hub", "Cidahu Kab. Sukabumi Hub", "Ciemas 3 Hub", "Ciemas Hub", "Cikakak Hub", "Cikembar Hub", "Cikidang Hub"]};
-Object.keys(SDM).forEach(function(k){SDM[k].forEach(function(n){D.forEach(function(r){if(r[1]===n)r[6]=k})})});
+function applySD(){Object.keys(SDM).forEach(function(k){SDM[k].forEach(function(n){D.forEach(function(r){if(r[1]===n)r[6]=k})})})}
+applySD();
 fillSD();
 var _l=ldraw;ldraw=function(){_l();lazy('lgrid','sl')};
 (function(){var h=document.documentElement,t,on=0;window.addEventListener('scroll',function(){if(!on){on=1;h.classList.add('scrolling')}clearTimeout(t);t=setTimeout(function(){on=0;h.classList.remove('scrolling')},150)},{passive:true})})();
@@ -665,6 +689,42 @@ if(matchMedia('(prefers-reduced-motion:reduce)').matches||document.documentEleme
 var v=$('veil');v.classList.add('on');
 setTimeout(function(){if(id!==tk)return;show();document.documentElement.classList.remove('ready');window.scrollTo(0,0);v.classList.remove('on')},190)}
 window.addEventListener('hashchange',route);
+/* ===== LOKASI SAYA & JARAK ===== */
+var ME=null,HC={},GEO={},geoBusy=0;
+try{GEO=JSON.parse(localStorage.getItem('hm-geo')||'{}')}catch(e){}
+function hav(a,b,c,d){var p=Math.PI/180,x=Math.sin((c-a)*p/2),y=Math.sin((d-b)*p/2),h=x*x+Math.cos(a*p)*Math.cos(c*p)*y*y;return 12742*Math.asin(Math.sqrt(h))}
+function fk(d){return d<1?Math.round(d*1000)+' m':d.toFixed(1).replace('.',',')+' km'}
+function coordUrl(u){var m=String(u||'').match(/@(-?\d+\.\d+),(-?\d+\.\d+)/)||String(u||'').match(/[?&](?:q|query|ll|destination)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/i)||String(u||'').match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);return m?{lat:+m[1],lng:+m[2],ap:0}:null}
+function hbase(n){return n.replace(/\s+Hub$/i,'').replace(/\s+\d+$/,'').replace(/\bKab\.\s*/gi,'Kabupaten ').replace(/\s+/g,' ').trim()}
+function hexact(r){return HC[r[1]]||coordUrl(url(r[4]))}
+function hcoord(r){var c=hexact(r);if(c)return c;var g=GEO[hbase(r[1])];return g&&g.length?{lat:g[0],lng:g[1],ap:1}:null}
+function setDist(){D.forEach(function(r){var c=hcoord(r);r.d=ME&&c?hav(ME.lat,ME.lng,c.lat,c.lng):null;r.ap=c?c.ap:0})}
+function dl(r){return ME&&r.d!=null?'<p class="dist">≈ '+fk(r.d)+' dari lokasimu'+(r.ap?' (perkiraan)':'')+'</p>':''}
+function rt(r){if(!ME)return '';var c=hexact(r),dst=c?c.lat+','+c.lng:encodeURIComponent(r[1]+' '+r[3]);return '<a class="go rt" href="https://www.google.com/maps/dir/?api=1&origin='+ME.lat+','+ME.lng+'&destination='+dst+'" target="_blank" rel="noopener">Rute dari lokasi saya</a>'}
+function mep(){if(!ME){$('mebody').hidden=true;$('meoff').hidden=true;$('mebtn').textContent='Gunakan lokasi saya';$('mepg').textContent='';$('med').textContent='Aktifkan lokasi untuk melihat posisimu dan mengurutkan hub dari yang terdekat.';return}
+var la=ME.lat.toFixed(6),lo=ME.lng.toFixed(6),d=0.012,src='https://www.openstreetmap.org/export/embed.html?bbox='+(ME.lng-d)+','+(ME.lat-d*.6)+','+(ME.lng+d)+','+(ME.lat+d*.6)+'&layer=mapnik&marker='+ME.lat+','+ME.lng;
+if($('memap').getAttribute('src')!==src)$('memap').setAttribute('src',src);
+$('med').textContent='Hub diurutkan dari yang terdekat dengan lokasimu.';
+$('mebody').hidden=false;$('meoff').hidden=false;$('mebtn').textContent='Perbarui lokasi';
+$('mename').textContent=ME.name||'Mencari nama tempat...';
+$('mec').textContent=la+', '+lo+' (akurasi sekitar '+ME.acc+' m)';
+$('mego').href='https://www.google.com/maps/search/?api=1&query='+la+','+lo;
+var n=0,ap=0;D.forEach(function(r){var c=hcoord(r);if(c){n++;if(c.ap)ap++}});
+$('mepg').textContent='Jarak tersedia untuk '+n+' dari '+D.length+' hub'+(ap?', '+ap+' di antaranya perkiraan lokasi kecamatan. Isi kolom Latitude dan Longitude di sheet untuk jarak yang akurat.':'.')+(geoBusy?' Sedang menghitung lokasi hub...':'')}
+function meName(){var m=ME;fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=17&accept-language=id&lat='+m.lat+'&lon='+m.lng).then(function(r){return r.json()}).then(function(j){if(ME===m&&j&&j.display_name){m.name=j.display_name;mep()}}).catch(function(){if(ME===m){m.name='Nama tempat tidak tersedia';mep()}})}
+function geoRun(){if(geoBusy||!ME)return;var todo=[],seen={};D.forEach(function(r){if(hexact(r))return;var b=hbase(r[1]);if(GEO[b]===undefined&&!seen[b]){seen[b]=1;todo.push(b)}});
+if(!todo.length)return;geoBusy=1;var i=0;
+function next(){if(!ME||i>=todo.length){geoBusy=0;try{localStorage.setItem('hm-geo',JSON.stringify(GEO))}catch(e){}mep();draw();return}
+var b=todo[i++];
+fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=id&accept-language=id&viewbox=106.3,-5.9,108.9,-8.0&bounded=1&q='+encodeURIComponent(b+', Jawa Barat')).then(function(r){return r.json()}).then(function(j){GEO[b]=j&&j[0]?[+j[0].lat,+j[0].lon]:[]}).catch(function(){}).then(function(){if(i%6===0){try{localStorage.setItem('hm-geo',JSON.stringify(GEO))}catch(e){}draw()}mep();setTimeout(next,1100)})}
+next()}
+function meGet(){if(!navigator.geolocation){$('med').textContent='Browser ini tidak mendukung lokasi.';return}
+$('med').textContent='Mencari lokasimu...';
+navigator.geolocation.getCurrentPosition(function(p){ME={lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy)};hp.p=1;mep();meName();draw();geoRun()},
+function(e){ME=null;mep();$('med').textContent=e&&e.code===1?'Izin lokasi ditolak. Izinkan lokasi untuk situs ini di pengaturan browser, lalu coba lagi.':'Lokasi belum bisa didapat. Pastikan GPS aktif lalu coba lagi.'},
+{enableHighAccuracy:true,timeout:20000,maximumAge:30000})}
+$('mebtn').onclick=meGet;
+$('meoff').onclick=function(){ME=null;hp.p=1;mep();draw()};
 /* ===== LIVE DATA (Google Sheets, published CSV) ===== */
 var SHEET_BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vSEMq93U2bfRms7gsiMdir7M_7W99f9vodrt1ssAv-iLAO4taenIGGTEzMo4Y3geldce1CiDXK92_AA/pub?single=true&output=csv&gid=';
 var GID_LM='899028723',GID_KPI='248735701';
@@ -700,10 +760,12 @@ return out}
 function fillLB(){var el=$('lb'),v=el.value,seen={},h='<option value="">Semua PIC BPO</option>';
 LD.forEach(function(r){if(r.k&&!seen[r.k]){seen[r.k]=1;h+='<option value="'+esc(r.k)+'">'+esc(CN[r.k]||r.k)+'</option>'}});
 h+='<option value="-">Belum ada PIC BPO</option>';el.innerHTML=h;el.value=v;if(el.value!==v){el.value='';lb=''}}
-function kparse(R){var date='',secs=[],cur=null;
+function kparse(R){var date='',secs=[],cur=null,notes=[],inNote=false;
 R.forEach(function(c,i){var a=(c[0]||'').trim();
 if(!date&&/^\d{1,2}-[A-Za-z]{3}-\d{4}$/.test(a))date=a.replace(/-/g,' ');
-if(!a||/^keterangan$/i.test(a)||a.charAt(0)==='*')return;
+if(/^keterangan$/i.test(a)){inNote=true;return}
+if(inNote&&a.charAt(0)==='*'){notes.push(a.replace(/^\*+\s*/,'').trim());return}
+if(!a||a.charAt(0)==='*')return;
 var hc=num(c[1]);
 if(isNaN(hc)){if(a!=='PIC'&&a!==date.replace(/ /g,'-')){cur={n:a,rows:[]};secs.push(cur)}return}
 if(!cur)return;
@@ -712,14 +774,32 @@ cur.rows.push([a,hc,[num(c[2])||0,num(c[3])||0,num(c[4])||0],[num(c[6])||0,num(c
 var rows=[],names=[];
 secs.forEach(function(s){if(KPI_SECTIONS.indexOf(s.n)<0)return;names.push(s.n);
 var r=s.rows.slice();if(r.length&&r[r.length-1][5]===null)r.pop();rows=rows.concat(r)});
-return{date:date,rows:rows,names:names}}
+return{date:date,rows:rows,names:names,notes:notes}}
+
+var GID_HUB='0',D0=D.slice();
+function hclean(s){return String(s||'').replace(/[\u2060\u200b\u200c\u200d\ufeff]/g,'').replace(/\n\s*-\s*/g,', ').replace(/:\s*-\s*/g,': ').replace(/\s+/g,' ').replace(/\s+,/g,',').trim()}
+function pkey(n){if(!n){if(!PN['-']){PN['-']='-';HUE['-']=0}return '-'}return nkey(PN,n,HUE,hueOf(n))}
+function dn(x){return num(String(x==null?'':x).replace(',','.'))}
+function hparse(R){var out=[],il=-1,ig=-1,ik=-1;HC={};R.forEach(function(c){
+if((c[0]||'').trim()==='Courier PIC'){c.forEach(function(x,i){x=String(x).trim();if(/^lat/i.test(x))il=i;else if(/^(lng|lon)/i.test(x))ig=i;else if(/koordinat/i.test(x))ik=i});return}
+var h=hclean(c[1]);if(!h)return;
+var la=il>=0?dn(c[il]):NaN,lo=ig>=0?dn(c[ig]):NaN;
+if(ik>=0&&isNaN(la)){var m=String(c[ik]||'').match(/(-?\d+[.,]\d+)\s*[,;\s]\s*(-?\d+[.,]\d+)/);if(m){la=dn(m[1]);lo=dn(m[2])}}
+if(!isNaN(la)&&!isNaN(lo)&&Math.abs(la)<=90&&Math.abs(lo)<=180)HC[h]={lat:la,lng:lo,ap:0};
+var cn=hclean(c[0]);out.push([cn?nkey(CN,cn):'',h,hclean(c[2]),hclean(c[3]),(c[4]||'').trim(),pkey(hclean(c[5]))])});return out}
+function hmerge(live){var have={};live.forEach(function(r){have[r[1].toLowerCase()]=1});return live.concat(D0.filter(function(r){return !have[r[1].toLowerCase()]}))}
+function fillCS(){var el=$('cs'),v=el.value,seen={},h='<option value="">Semua Courier PIC</option>';D.forEach(function(r){if(r[0]&&!seen[r[0]]){seen[r[0]]=1;h+='<option value="'+esc(r[0])+'">'+esc(CN[r[0]]||r[0])+'</option>'}});el.innerHTML=h;el.value=v;if(el.value!==v){el.value='';cs=''}}
+var KW_RE=/(\d+)\s*%\s*Supply\D+?(\d+)\s*%\s*Rilis\s*NHE\D+?(\d+)\s*%\s*Joiner/i;
+function knotes(k){if(!k.notes||!k.notes.length)return;var m=k.notes.join(' ').match(KW_RE);if(m)KW=[m[1]+'%',m[2]+'%',m[3]+'%'];
+$('knote').innerHTML='<ul class="kn">'+k.notes.map(function(n){return '<li>'+esc(n)+'</li>'}).join('')+'</ul>'}
 function liveMsg(id,ok){var el=$(id);if(!el)return;var d=new Date(),t=('0'+d.getHours()).slice(-2)+'.'+('0'+d.getMinutes()).slice(-2);
 el.className='lv'+(ok?' on':' off');el.textContent=ok?'Live dari Google Sheets, dimuat '+t:'Gagal memuat data live, menampilkan data terakhir yang tersimpan'}
 function getCSV(gid){return fetch(SHEET_BASE+gid+'&_='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text()}).then(csvParse)}
 function liveLoad(){
+getCSV(GID_HUB).then(function(R){var n=hparse(R);if(!n.length)throw new Error('kosong');D=hmerge(n);applySD();fillCS();fillSD();chips();draw();liveMsg('hstat',1)}).catch(function(){liveMsg('hstat',0)});
 getCSV(GID_LM).then(function(R){var n=lparse(R);if(!n.length)throw new Error('kosong');LD=n;fillLB();lchips();ldraw();liveMsg('lstat',1)}).catch(function(){liveMsg('lstat',0)});
 getCSV(GID_KPI).then(function(R){var k=kparse(R);if(!k.rows.length)throw new Error('kosong');KD=k.rows;
-if(k.date&&$('ksub'))$('ksub').textContent=(k.names.join(' & ')||'KPI PIC')+', data per '+k.date;kdraw();liveMsg('kstat',1)}).catch(function(){liveMsg('kstat',0)})}
+if(k.date&&$('ksub'))$('ksub').textContent=(k.names.join(' & ')||'KPI PIC')+', data per '+k.date;knotes(k);kdraw();liveMsg('kstat',1)}).catch(function(){liveMsg('kstat',0)})}
 setInterval(function(){if(!document.hidden)liveLoad()},LIVE_MS);
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-(liveLoad.t||0)>60000){liveLoad.t=Date.now();liveLoad()}});
 liveLoad.t=Date.now();
