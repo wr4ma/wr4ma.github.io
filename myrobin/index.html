@@ -280,6 +280,10 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 .chip:active,.go:active{transform:scale(.95)}
 .tile:hover{transform:translateY(-3px)}
 }
+.lv{margin:-6px 0 14px;font-size:12px;color:var(--tx2);display:flex;align-items:center;gap:7px}
+.lv::before{content:"";width:7px;height:7px;border-radius:50%;background:#fbbf24;flex-shrink:0}
+.lv.on::before{background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.2)}
+.lv.off::before{background:#ff9f6b}
 </style>
 </head>
 <body>
@@ -305,6 +309,7 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 <section id="v-lm" hidden>
 <h1>Lm Needs &amp; Backlog Status</h1>
 <p class="sub">Realtime Data Hub Needs &amp; Backlog</p>
+<p class="lv" id="lstat">Memuat data live...</p>
 <div class="kpis" id="lk"></div>
 <div class="tools glass">
 <div class="srch">
@@ -328,7 +333,8 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 </section>
 <section id="v-kpi" hidden>
 <h1>KPI PIC Performance</h1>
-<p class="sub">Jabar 1 &amp; Parahyangan Kulon, data per 15 Nov 2026</p>
+<p class="sub" id="ksub">Jabar 1 &amp; Parahyangan Kulon, data per 15 Nov 2026</p>
+<p class="lv" id="kstat">Memuat data live...</p>
 <div class="grid" id="kg"></div>
 <p class="cour" style="margin-top:16px">Nilai akhir dihitung dari bobot 20% Supply, 30% Rilis NHE, dan 50% Joiner. Perform Very Bad akan diberikan warning dari lead area.</p>
 </section>
@@ -602,9 +608,10 @@ $('lo').onchange=function(){lo=this.value;ldraw()};
 var KD=[['Mochamad Aqshal Revikasyah',44,[10,30,20],[9,14,12],62,1,'Bad'],['Wildhan Ramdhani A',33,[10,30,20],[12,4,3],31.5,7,'Very Bad'],['Andika Budi Eka Putra',71,[10,25,15],[23,4,3],34.8,6,'Very Bad']];
 var KM=['Supply','Rilis NHE','Joiner'],KW=['20%','30%','50%'];
 function kc(p){return p<50?'#ff9f6b':p<80?'#fbbf24':'#6ee7b7'}
-$('kg').innerHTML=KD.map(function(d,i){
-var rows=KM.map(function(m,j){var a=d[3][j],t=d[2][j],p=Math.round(a/t*100);return '<div class="mr"><div class="mh"><span>'+m+' <small>(bobot '+KW[j]+')</small></span><b>'+a+' / '+t+'</b></div><div class="bar2"><i style="width:'+Math.min(p,100)+'%;background:'+kc(p)+'"></i></div></div>'}).join('');
-return '<article class="card glass" style="--i:'+i+'"><div class="top"><h3>'+esc(d[0])+'</h3><span class="badge'+(d[6]==='Very Bad'?' vb':'')+'">'+d[6]+'</span></div><div class="big"><b>'+d[4].toFixed(2)+'%</b><span>Rank mingguan #'+d[5]+'</span></div><p class="cour">Hub cover: '+d[1]+'. Angka di bawah: aktual / target.</p>'+rows+'</article>'}).join('');
+function kdraw(){$('kg').innerHTML=KD.length?KD.map(function(d,i){
+var rows=KM.map(function(m,j){var a=d[3][j],t=d[2][j],p=t?Math.round(a/t*100):0;return '<div class="mr"><div class="mh"><span>'+m+' <small>(bobot '+KW[j]+')</small></span><b>'+a+' / '+t+'</b></div><div class="bar2"><i style="width:'+Math.min(p,100)+'%;background:'+kc(p)+'"></i></div></div>'}).join('');
+return '<article class="card glass" style="--i:'+i+'"><div class="top"><h3>'+esc(d[0])+'</h3><span class="badge'+(d[6]==='Very Bad'?' vb':/^(best|good|excellent)$/i.test(d[6])?' ok':'')+'">'+esc(d[6]||'-')+'</span></div><div class="big"><b>'+d[4].toFixed(2)+'%</b><span>'+(d[5]?'Rank mingguan #'+d[5]:'Belum ada rank')+'</span></div><p class="cour">Hub cover: '+d[1]+'. Angka di bawah: aktual / target.</p>'+rows+'</article>'}).join(''):'<div class="empty glass" style="grid-column:1/-1">Data KPI belum tersedia.</div>'}
+kdraw();
 function cp(label,code){return '<p class="cp cp-'+String(code).replace(/\W/g,'_')+'"><i></i><span>'+label+'</span><b>'+esc(CN[code]||'Belum ada')+'</b></p>'}
 function setTheme(t){document.documentElement.dataset.theme=t;$('sw').setAttribute('aria-checked',String(t==='dark'));try{localStorage.setItem('hm-theme',t)}catch(e){}}
 var th='dark';try{th=localStorage.getItem('hm-theme')||'dark'}catch(e){}
@@ -658,6 +665,65 @@ if(matchMedia('(prefers-reduced-motion:reduce)').matches||document.documentEleme
 var v=$('veil');v.classList.add('on');
 setTimeout(function(){if(id!==tk)return;show();document.documentElement.classList.remove('ready');window.scrollTo(0,0);v.classList.remove('on')},190)}
 window.addEventListener('hashchange',route);
+/* ===== LIVE DATA (Google Sheets, published CSV) ===== */
+var SHEET_BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vSEMq93U2bfRms7gsiMdir7M_7W99f9vodrt1ssAv-iLAO4taenIGGTEzMo4Y3geldce1CiDXK92_AA/pub?single=true&output=csv&gid=';
+var GID_LM='899028723',GID_KPI='248735701';
+var KPI_SECTIONS=['Jabar 1 & Parahyangan Kulon'];
+var LIVE_MS=300000;
+function csvParse(t){var R=[],r=[],f='',q=false,i=0,c;t=String(t||'').replace(/^\uFEFF/,'');
+for(;i<t.length;i++){c=t[i];
+if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+else if(c==='"')q=true;
+else if(c===','){r.push(f);f=''}
+else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;r.push(f);R.push(r);r=[];f=''}
+else f+=c}
+if(f!==''||r.length){r.push(f);R.push(r)}return R}
+function num(s){s=String(s==null?'':s).replace(/[^\d.\-]/g,'');return s===''||s==='-'||s==='.'?NaN:+s}
+function nkey(map,name,hues,hue){var l=name.toLowerCase(),k;
+for(k in map)if(String(map[k]).toLowerCase()===l)return k;
+k='x'+(++nkey.n);map[k]=name;if(hues)hues[k]=hue;return k}
+nkey.n=0;
+function titleCase(s){return s.toLowerCase().replace(/(^|[\s.])([a-z])/g,function(m,a,b){return a+b.toUpperCase()})}
+var CITY={'KOTA BANDUNG':'B','KAB. BANDUNG':'K','KAB. BANDUNG BARAT':'BB','KOTA CIMAHI':'C'};
+function hueOf(s){var h=0,i;for(i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+function lparse(R){var out=[];
+R.forEach(function(c){
+var h=(c[0]||'').trim();if(!h)return;
+var t=num(c[11]);if(isNaN(t))return;
+var bpom=(c[2]||'').trim(),city=(c[3]||'').trim().toUpperCase(),bpo=(c[4]||'').trim(),st=(c[5]||'').trim();
+var p=bpom?nkey(PN,bpom,HUE,hueOf(bpom)):'-';if(p==='-'&&!HUE['-'])HUE['-']=0;if(!PN['-'])PN['-']='-';
+var ck=CITY[city];if(!ck){ck=city||'-';if(!CM[ck])CM[ck]=city?titleCase(city):'-'}
+var pr=(c[12]||'').trim();
+out.push({h:h,p:p,c:ck,k:bpo?nkey(CN,bpo):'',s:(st&&st.toLowerCase()!=='no')?1:0,
+dm:num(c[7])||0,rp:num(c[8])||0,rd:num(c[9])||0,dd:num(c[10])||0,t:t,pr:pr===''||isNaN(num(pr))?null:num(pr)})});
+return out}
+function fillLB(){var el=$('lb'),v=el.value,seen={},h='<option value="">Semua PIC BPO</option>';
+LD.forEach(function(r){if(r.k&&!seen[r.k]){seen[r.k]=1;h+='<option value="'+esc(r.k)+'">'+esc(CN[r.k]||r.k)+'</option>'}});
+h+='<option value="-">Belum ada PIC BPO</option>';el.innerHTML=h;el.value=v;if(el.value!==v){el.value='';lb=''}}
+function kparse(R){var date='',secs=[],cur=null;
+R.forEach(function(c,i){var a=(c[0]||'').trim();
+if(!date&&/^\d{1,2}-[A-Za-z]{3}-\d{4}$/.test(a))date=a.replace(/-/g,' ');
+if(!a||/^keterangan$/i.test(a)||a.charAt(0)==='*')return;
+var hc=num(c[1]);
+if(isNaN(hc)){if(a!=='PIC'&&a!==date.replace(/ /g,'-')){cur={n:a,rows:[]};secs.push(cur)}return}
+if(!cur)return;
+var pct=parseFloat(String(c[9]||'').replace('%','').replace(',','.'));
+cur.rows.push([a,hc,[num(c[2])||0,num(c[3])||0,num(c[4])||0],[num(c[6])||0,num(c[7])||0,num(c[8])||0],isNaN(pct)?0:pct,(c[10]||'').trim()?num(c[10]):null,(c[11]||'').trim()])});
+var rows=[],names=[];
+secs.forEach(function(s){if(KPI_SECTIONS.indexOf(s.n)<0)return;names.push(s.n);
+var r=s.rows.slice();if(r.length&&r[r.length-1][5]===null)r.pop();rows=rows.concat(r)});
+return{date:date,rows:rows,names:names}}
+function liveMsg(id,ok){var el=$(id);if(!el)return;var d=new Date(),t=('0'+d.getHours()).slice(-2)+'.'+('0'+d.getMinutes()).slice(-2);
+el.className='lv'+(ok?' on':' off');el.textContent=ok?'Live dari Google Sheets, dimuat '+t:'Gagal memuat data live, menampilkan data terakhir yang tersimpan'}
+function getCSV(gid){return fetch(SHEET_BASE+gid+'&_='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text()}).then(csvParse)}
+function liveLoad(){
+getCSV(GID_LM).then(function(R){var n=lparse(R);if(!n.length)throw new Error('kosong');LD=n;fillLB();lchips();ldraw();liveMsg('lstat',1)}).catch(function(){liveMsg('lstat',0)});
+getCSV(GID_KPI).then(function(R){var k=kparse(R);if(!k.rows.length)throw new Error('kosong');KD=k.rows;
+if(k.date&&$('ksub'))$('ksub').textContent=(k.names.join(' & ')||'KPI PIC')+', data per '+k.date;kdraw();liveMsg('kstat',1)}).catch(function(){liveMsg('kstat',0)})}
+setInterval(function(){if(!document.hidden)liveLoad()},LIVE_MS);
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-(liveLoad.t||0)>60000){liveLoad.t=Date.now();liveLoad()}});
+liveLoad.t=Date.now();
+
 chips();draw();lchips();ldraw();route();endIntro();setTimeout(endIntro,4000);
 </script>
 </body>
