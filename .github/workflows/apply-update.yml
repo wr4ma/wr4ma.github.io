@@ -1,0 +1,88 @@
+# Letakkan file ini di repo pada: .github/workflows/apply-update.yml
+#
+# Cara pakai:
+#   1. Unggah (commit) update.zip ke root repo, di branch main.
+#   2. Workflow ini otomatis mengekstrak semua file .html di dalamnya ke repo
+#      (menimpa file lama dengan nama yang sama), menghapus update.zip, lalu commit.
+#   3. GitHub Pages memperbarui situs setelah commit tersebut.
+name: Terapkan update.zip
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "update.zip"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: terapkan-update
+  cancel-in-progress: false
+
+jobs:
+  terapkan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Ambil repo
+        uses: actions/checkout@v4
+
+      - name: Cek update.zip
+        id: cek
+        run: |
+          if [ -f update.zip ]; then
+            echo "ada=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ada=false" >> "$GITHUB_OUTPUT"
+            echo "update.zip tidak ditemukan, tidak ada yang dikerjakan."
+          fi
+
+      - name: Ekstrak dan validasi
+        if: steps.cek.outputs.ada == 'true'
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/upd" && mkdir -p "$RUNNER_TEMP/upd"
+          unzip -q update.zip -d "$RUNNER_TEMP/upd"
+          rm -rf "$RUNNER_TEMP/upd/__MACOSX"
+          count=$(find "$RUNNER_TEMP/upd" -type f -name '*.html' | wc -l)
+          if [ "$count" -eq 0 ]; then
+            echo "::error::update.zip tidak berisi file .html"
+            exit 1
+          fi
+          while IFS= read -r f; do
+            if [ ! -s "$f" ] || ! grep -qi '<html' "$f"; then
+              echo "::error::File tidak valid atau kosong: $f"
+              exit 1
+            fi
+            if [ "$(stat -c%s "$f")" -gt 3000000 ]; then
+              echo "::error::File terlalu besar (maks 3 MB): $f"
+              exit 1
+            fi
+          done < <(find "$RUNNER_TEMP/upd" -type f -name '*.html')
+          echo "File yang akan diterapkan:"
+          (cd "$RUNNER_TEMP/upd" && find . -type f -name '*.html' | sort)
+
+      - name: Salin file HTML ke repo
+        if: steps.cek.outputs.ada == 'true'
+        run: |
+          cd "$RUNNER_TEMP/upd"
+          find . -type f -name '*.html' -exec cp --parents {} "$GITHUB_WORKSPACE" \;
+
+      - name: Hapus update.zip lalu commit
+        if: steps.cek.outputs.ada == 'true'
+        run: |
+          set -euo pipefail
+          rm -f update.zip
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan pada file."
+          else
+            git commit -q -m "Update halaman dari update.zip" -m "$(git diff --cached --name-status)"
+            git push
+          fi
