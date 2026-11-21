@@ -293,6 +293,9 @@ html.scrolling .orbs,html.scrolling .orbs i,html.scrolling .cp b,html.scrolling 
 .me .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 button.go{width:100%;box-sizing:border-box;font:inherit;font-weight:700;cursor:pointer}
 a.go.rt{margin-top:8px}
+.me .mh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.me .mt{flex-shrink:0;font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--gl2);background:var(--gl);color:var(--ink,var(--tx));cursor:pointer}
+.me.min iframe,.me.min #mego,.me.min .row,.me.min #mepg,.me.min #med{display:none}
 </style>
 </head>
 <body>
@@ -373,7 +376,7 @@ a.go.rt{margin-top:8px}
 <div class="chips" id="chips" role="group" aria-label="Filter PIC BPOM"></div>
 </div>
 <div class="me glass" id="me">
-<p class="t">Lokasi saya &amp; hub terdekat</p>
+<div class="mh"><p class="t">Lokasi saya &amp; hub terdekat</p><button type="button" class="mt" id="metg" aria-expanded="true" hidden>Sembunyikan</button></div>
 <p class="cour" id="med">Aktifkan lokasi untuk melihat posisimu dan mengurutkan hub dari yang terdekat.</p>
 <div id="mebody" hidden>
 <iframe id="memap" title="Peta lokasi saya" loading="lazy"></iframe>
@@ -690,7 +693,8 @@ var v=$('veil');v.classList.add('on');
 setTimeout(function(){if(id!==tk)return;show();document.documentElement.classList.remove('ready');window.scrollTo(0,0);v.classList.remove('on')},190)}
 window.addEventListener('hashchange',route);
 /* ===== LOKASI SAYA & JARAK ===== */
-var ME=null,HC={},GEO={},geoBusy=0;
+var ME=null,HC={},GEO={},geoBusy=0,MIN=false;
+try{MIN=localStorage.getItem('hm-memin')==='1'}catch(e){}
 try{GEO=JSON.parse(localStorage.getItem('hm-geo')||'{}')}catch(e){}
 function hav(a,b,c,d){var p=Math.PI/180,x=Math.sin((c-a)*p/2),y=Math.sin((d-b)*p/2),h=x*x+Math.cos(a*p)*Math.cos(c*p)*y*y;return 12742*Math.asin(Math.sqrt(h))}
 function fk(d){return d<1?Math.round(d*1000)+' m':d.toFixed(1).replace('.',',')+' km'}
@@ -701,7 +705,8 @@ function hcoord(r){var c=hexact(r);if(c)return c;var g=GEO[hbase(r[1])];return g
 function setDist(){D.forEach(function(r){var c=hcoord(r);r.d=ME&&c?hav(ME.lat,ME.lng,c.lat,c.lng):null;r.ap=c?c.ap:0})}
 function dl(r){return ME&&r.d!=null?'<p class="dist">≈ '+fk(r.d)+' dari lokasimu'+(r.ap?' (perkiraan)':'')+'</p>':''}
 function rt(r){if(!ME)return '';var c=hexact(r),dst=c?c.lat+','+c.lng:encodeURIComponent(r[1]+' '+r[3]);return '<a class="go rt" href="https://www.google.com/maps/dir/?api=1&origin='+ME.lat+','+ME.lng+'&destination='+dst+'" target="_blank" rel="noopener">Rute dari lokasi saya</a>'}
-function mep(){if(!ME){$('mebody').hidden=true;$('meoff').hidden=true;$('mebtn').textContent='Gunakan lokasi saya';$('mepg').textContent='';$('med').textContent='Aktifkan lokasi untuk melihat posisimu dan mengurutkan hub dari yang terdekat.';return}
+function mep(){var mn=!!ME&&MIN;$('me').classList.toggle('min',mn);$('metg').hidden=!ME;$('metg').textContent=mn?'Tampilkan':'Sembunyikan';$('metg').setAttribute('aria-expanded',String(!mn));
+if(!ME){$('mebody').hidden=true;$('meoff').hidden=true;$('mebtn').textContent='Gunakan lokasi saya';$('mepg').textContent='';$('med').textContent='Aktifkan lokasi untuk melihat posisimu dan mengurutkan hub dari yang terdekat.';return}
 var la=ME.lat.toFixed(6),lo=ME.lng.toFixed(6),d=0.012,src='https://www.openstreetmap.org/export/embed.html?bbox='+(ME.lng-d)+','+(ME.lat-d*.6)+','+(ME.lng+d)+','+(ME.lat+d*.6)+'&layer=mapnik&marker='+ME.lat+','+ME.lng;
 if($('memap').getAttribute('src')!==src)$('memap').setAttribute('src',src);
 $('med').textContent='Hub diurutkan dari yang terdekat dengan lokasimu.';
@@ -724,6 +729,7 @@ navigator.geolocation.getCurrentPosition(function(p){ME={lat:p.coords.latitude,l
 function(e){ME=null;mep();$('med').textContent=e&&e.code===1?'Izin lokasi ditolak. Izinkan lokasi untuk situs ini di pengaturan browser, lalu coba lagi.':'Lokasi belum bisa didapat. Pastikan GPS aktif lalu coba lagi.'},
 {enableHighAccuracy:true,timeout:20000,maximumAge:30000})}
 $('mebtn').onclick=meGet;
+$('metg').onclick=function(){MIN=!MIN;try{localStorage.setItem('hm-memin',MIN?'1':'0')}catch(e){}mep()};
 $('meoff').onclick=function(){ME=null;hp.p=1;mep();draw()};
 /* ===== LIVE DATA (Google Sheets, published CSV) ===== */
 var SHEET_BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vSEMq93U2bfRms7gsiMdir7M_7W99f9vodrt1ssAv-iLAO4taenIGGTEzMo4Y3geldce1CiDXK92_AA/pub?single=true&output=csv&gid=';
