@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preload" as="image" href="forms-banner-dark.PNG" media="(prefers-color-scheme: dark)">
+<link rel="preload" as="image" href="forms-banner-light.PNG" media="(prefers-color-scheme: light)">
 <link rel="icon" type="image/png" sizes="48x48" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAYFBMVEUJFCkHDBwgZ6IkfcYAFxcUPWQ0lNUAAGNAp+c1hboIDiAhUXkJEyoGCxgyp/0HDiFDtv4AAAE7sv5Kwv4aSnUuicsJEyopebYqm/YJEywQKEcUNVgECBIMGTMbVYknZJPLYggOAAAAIHRSTlPnXf//C///Av//rv/+/v/+/wH/////sf//W///sQr//4ScxsYAAAHVSURBVHjalZaJkoMgDECx53Y3IYiiVtv6/3+5EfDEg2amnXHmPRIkAiK18X4WAnZCFM+3I4X9T3Zp7ySD8C4gKoqLFe6xvDPEPY3m2egyPOGLSFLx/gInolSsJSBE4h+GPCQinAFB05bGlG0DuOAJXuECUH5TWZYplalbTjjjOa8Ihn90sA2tlBE45bnMhUD1T4+zoKWWNc74IMOM15INm2PgFwI9Rl4xzKENTvm5QNeel8ZIJW3oHGHkF4LxQstLASftjNtk/LlAtR8/t2Vj7o0GYeBnAv65BMa/SizdLD4IuC602Zige3YpdLkplE5oeqFxNZ2R9gS9zLAjtE5YzEGeNkvKfT/kSPYtuZckNyfNjWT7QesTE/DxPLcTrgtcQ98P3Ur7VZAGt4VG9aPqHpfyOp3zovnwNBg+KlnidgYOoxeGgV2B4KZ3+SAD1vMENe5nYOOjJxP44FEGNs564M8YxIoAY0EiRoC+JSqZBwWtCLy7YblZUCh02yFCZQ2IEOz3Dnh1BYlDwe8P3CLdV4CHGcb9BKr1glgo1njC5rrOvyYHymy/2opkPLKieBwPxTg+GY7dOP5lbwKX4gveXh28EcVPLidHwuRy0sXzV+zSr8SD/yvueWnOZKuMAAAAAElFTkSuQmCC">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Cdefs%3E%3ClinearGradient id=%22b%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%230d1a3a%22/%3E%3Cstop offset=%221%22 stop-color=%22%2305070d%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22p%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%2364d2ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%230a84ff%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2264%22 height=%2264%22 rx=%2215%22 fill=%22url%28%23b%29%22/%3E%3Cpath d=%22M32 11c-8.6 0-15.5 6.7-15.5 15 0 11.8 15.5 27 15.5 27s15.5-15.2 15.5-27c0-8.3-6.9-15-15.5-15z%22 fill=%22url%28%23p%29%22/%3E%3Ccircle cx=%2232%22 cy=%2226%22 r=%226.2%22 fill=%22%2305070d%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://script.google.com">
@@ -113,17 +115,26 @@ section.inl{animation:inl .35s ease}
 @media(prefers-reduced-motion:reduce){.okmark .c,.okmark .t{stroke-dashoffset:0}}
 #testbar{margin-top:12px;padding:8px 12px;border-radius:10px;border:1px dashed var(--line);background:var(--soft);color:var(--mut);font-size:13px;text-align:center}
 .opt:has(input:disabled){opacity:.45;cursor:not-allowed}
+.bn{display:block;width:min(100%,520px);height:auto}
+#bnfb{display:contents}#bnfb[hidden]{display:none}
 </style>
 </head>
 <body>
 <main>
 <header class="hero">
+ <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="forms-banner-dark.PNG">
+  <img id="bn" class="bn" src="forms-banner-light.PNG" alt="MyRobin x SPX Express - Rekrutmen Kurir" decoding="async" fetchpriority="high" onerror="this.hidden=true;document.getElementById('bnfb').hidden=false">
+ </picture>
+ <script>(function(){var t=document.documentElement.getAttribute("data-theme");if(t==="light"||t==="dark"){var i=document.getElementById("bn"),s=i.parentNode.querySelector("source");if(s)s.remove();i.src="forms-banner-"+t+".PNG"}})()</script>
+ <div id="bnfb" hidden>
  <div class="lockup" role="img" aria-label="MyRobin x SPX Express">
   <div class="lg lg-my"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 30 2 38l4 3 9-5z" fill="#3f4d63"/><ellipse cx="24" cy="28" rx="14" ry="13" fill="#5a6b82"/><circle cx="30" cy="16" r="9" fill="#5a6b82"/><ellipse cx="30" cy="26" rx="8" ry="9" fill="#f26a3d"/><ellipse cx="21" cy="28" rx="8" ry="5" transform="rotate(-20 21 28)" fill="#3f4d63"/><path d="m38 15 7 2-7 2z" fill="#f2b134"/><circle cx="33" cy="14" r="1.9" fill="#fff"/><circle cx="33.4" cy="14" r=".9" fill="#111"/><path d="M22 40v5M28 40v5" stroke="#b27b3a" stroke-width="2" stroke-linecap="round"/></svg><span class="wm">my<b>Robin</b></span></div>
   <span class="x">&times;</span>
   <div class="lg lg-spx"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6l18 8-18 8-18-8z" fill="#f2c58a"/><path d="M6 14l18 8v20L6 34z" fill="#d9a35f"/><path d="M42 14 24 22v20l18-8z" fill="#c28a46"/><path d="M15 10l18 8" stroke="#f6e3c4" stroke-width="5"/><path d="m10 24 8 3.6V34l-8-3.5z" fill="#ee4d2d"/></svg><span class="wm"><b>SPX</b> Express</span></div>
  </div>
  <p>Rekrutmen Kurir</p>
+ </div>
 </header>
 <div id="testbar" hidden>Mode tes: data yang diisi tidak dikirim</div>
 <div id="closed" class="card" hidden>

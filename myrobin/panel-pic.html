@@ -115,6 +115,8 @@ button.ib svg{width:20px;height:20px;display:block}
 @keyframes tabl{from{opacity:0;transform:translateX(34px)}}
 @keyframes tabr{from{opacity:0;transform:translateX(-34px)}}
 .tl{animation:tabl .42s cubic-bezier(.2,.8,.2,1) backwards}.tr{animation:tabr .42s cubic-bezier(.2,.8,.2,1) backwards}}
+main{overflow-x:clip}
+@supports not (overflow:clip){.tl,.tr{animation:none!important}.lens i.pop{animation:none!important}}
 </style>
 </head>
 <body>
