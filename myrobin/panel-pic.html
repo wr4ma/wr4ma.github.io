@@ -101,6 +101,20 @@ button.ib{width:42px;height:42px;padding:0;flex:none}
 button.ib svg{width:20px;height:20px;display:block}
 #refresh.busy svg{animation:sp .8s linear infinite}
 .who small#lastLoad{margin-top:1px;font-size:11px;opacity:.85}
+.lens{position:absolute;left:0;width:0;pointer-events:none;z-index:3}
+.lens.nt{transition:none!important}
+.lens i{display:block;width:100%;height:100%;border-radius:999px;background:radial-gradient(120% 150% at 28% 0%,rgba(255,255,255,.3),rgba(255,255,255,.07) 55%,rgba(255,255,255,.16));-webkit-backdrop-filter:blur(.8px) saturate(210%) brightness(1.22) contrast(1.06);backdrop-filter:blur(.8px) saturate(210%) brightness(1.22) contrast(1.06);border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 1px rgba(255,255,255,.75),inset 0 -3px 8px rgba(255,255,255,.14),-1px 0 0 rgba(255,90,130,.22),1px 0 0 rgba(80,200,255,.24),0 10px 26px rgba(0,0,0,.38)}
+@media(prefers-reduced-motion:no-preference){.lens{transition:transform .55s cubic-bezier(.34,1.35,.64,1),width .55s cubic-bezier(.34,1.35,.64,1)}
+@keyframes lpop{0%{transform:scale(1,1)}35%{transform:scale(1.2,.9)}70%{transform:scale(.97,1.06)}100%{transform:scale(1,1)}}
+.lens i.pop{animation:lpop .6s cubic-bezier(.3,1.2,.5,1)}}
+.tabs{position:relative}
+.tabs .lens{top:-4px;bottom:-4px}
+.tabs button{position:relative;z-index:1}
+.tabs button.on{background:transparent;box-shadow:none}
+@media(prefers-reduced-motion:no-preference){.tabs button{transition:color .25s,transform .45s cubic-bezier(.34,1.56,.64,1)}.tabs button.on{transform:scale(1.07)}
+@keyframes tabl{from{opacity:0;transform:translateX(34px)}}
+@keyframes tabr{from{opacity:0;transform:translateX(-34px)}}
+.tl{animation:tabl .42s cubic-bezier(.2,.8,.2,1) backwards}.tr{animation:tabr .42s cubic-bezier(.2,.8,.2,1) backwards}}
 </style>
 </head>
 <body>
@@ -109,7 +123,7 @@ button.ib svg{width:20px;height:20px;display:block}
 <header class="top"><div><b>Panel Responses</b><small>MyRobin × SPX Express</small></div><button id="out" class="ib" type="button" aria-label="Keluar" title="Keluar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button></header>
 <div id="stickPanel" hidden>
  <div class="who glass"><div><b id="whoName"></b><small id="whoSub"></small><small id="lastLoad"></small></div><button id="refresh" class="ib" type="button" aria-label="Muat ulang" title="Muat ulang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button></div>
- <div class="tabs" id="tabs"><button data-tab="list" class="on">Pendaftar</button><button data-tab="sum">Ringkasan</button><button data-tab="cfg" id="tabCfgBtn" hidden>Pengaturan</button></div>
+ <div class="tabs" id="tabs"><i class="lens" id="tlens"><i></i></i><button data-tab="list" class="on">Pendaftar</button><button data-tab="sum">Ringkasan</button><button data-tab="cfg" id="tabCfgBtn" hidden>Pengaturan</button></div>
 </div>
 </div>
 
@@ -235,15 +249,28 @@ function show(j){
   $("#whoName").textContent = a[0]; $("#whoSub").textContent = a[1];
   if (ADMIN && !areaInit) { $("#fArea").value = AREAS[j.pic] ? j.pic : ""; areaInit = true; }
   view();
+  requestAnimationFrame(() => tabLens(0));
 }
 const DN = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"], DL = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"], MN = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
 const p2 = x => String(x).padStart(2,"0"), dkey = d => d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());
 const doneDay = r => String(r.done_at || r.timestamp || "").slice(0,10);
 const nowStr = () => { const d = new Date(); return dkey(d)+" "+p2(d.getHours())+":"+p2(d.getMinutes())+":"+p2(d.getSeconds()); };
-function setTab(t){
-  ["list","sum","cfg"].forEach(k => { $("#tab-"+k).hidden = k !== t; });
-  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === t));
+let TAB = "list"; const TORD = ["list","sum","cfg"];
+function tabLens(anim){
+  const l = $("#tlens"), a = document.querySelector("#tabs button.on"); if (!l || !a || !a.offsetWidth) return;
+  const nt = !anim || !l._p; if (nt) l.classList.add("nt");
+  l.style.width = a.offsetWidth + "px"; l.style.transform = "translateX(" + a.offsetLeft + "px)";
+  if (nt){ void l.offsetWidth; l.classList.remove("nt"); } else { const g = l.firstElementChild; g.classList.remove("pop"); void g.offsetWidth; g.classList.add("pop"); }
+  l._p = 1;
 }
+function setTab(t){
+  const f = TAB; TAB = t;
+  TORD.forEach(k => { $("#tab-"+k).hidden = k !== t; });
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === t));
+  tabLens(1);
+  if (f !== t){ const e = $("#tab-"+t); e.classList.remove("tl","tr"); void e.offsetWidth; e.classList.add(TORD.indexOf(t) > TORD.indexOf(f) ? "tl" : "tr"); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove("tl","tr"), 480); }
+}
+window.addEventListener("resize", () => tabLens(0));
 function drawSum(){
   const sc = scoped().filter(isDone), days = [];
   for (let i = 5; i >= 0; i--){ const d = new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()-i); const k = dkey(d); days.push({d, n:sc.filter(r => doneDay(r) === k).length, today:i === 0}); }
@@ -345,7 +372,7 @@ async function enter(key, silent){
   $("#err").textContent = ""; $("#go").disabled = true; $("#go").classList.add("busy"); $("#login").classList.add("busy"); $("#go .lbl").textContent = "Memeriksa kode akses…";
   try{
     const j = await call({action:"list", key}); KEY = key; show(j); setTab("list");
-    $("#login").hidden = true; $("#panel").hidden = false; $("#stickPanel").hidden = false; $("#out").hidden = false;
+    $("#login").hidden = true; $("#panel").hidden = false; $("#stickPanel").hidden = false; $("#out").hidden = false; tabLens(0);
     try{ sessionStorage.setItem("pk", key); }catch(e){}
     clearInterval(timer); timer = setInterval(refresh, 60000);
   }catch(e){ if (!silent) $("#err").textContent = e.message || "Gagal terhubung"; try{ sessionStorage.removeItem("pk"); }catch(_){} }
