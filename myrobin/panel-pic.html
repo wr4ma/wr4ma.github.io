@@ -92,6 +92,8 @@ button:disabled{opacity:.5}
 @keyframes sh{to{background-position:-200% 0}}
 .pager{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;color:var(--mut);font-size:13px}
 .pager button{padding:9px 14px}
+.stats.ld .stat b{width:56px;border-radius:8px;color:transparent;user-select:none;background:linear-gradient(110deg,rgba(255,255,255,.06) 30%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.06) 70%);background-size:200% 100%;animation:sh 1.2s linear infinite}
+#list.hide{display:none}
 </style>
 </head>
 <body>
@@ -344,7 +346,9 @@ function logout(){
 }
 $("#go").onclick = () => { const k = $("#key").value.trim(); if (k) enter(k); };
 $("#key").addEventListener("keydown", e => { if (e.key === "Enter") $("#go").click(); });
-$("#refresh").onclick = async e => { const b = e.currentTarget; b.disabled = true; await refresh(); b.disabled = false; };
+function setLoad(on){ document.querySelector(".stats").classList.toggle("ld", on); $("#list").classList.toggle("hide", on); $("#list").setAttribute("aria-busy", on ? "true" : "false"); }
+$("#refresh").onclick = async e => { const b = e.currentTarget; b.disabled = true; setLoad(true);
+  try{ await Promise.all([refresh(), new Promise(r => setTimeout(r, 600))]); } finally { setLoad(false); b.disabled = false; } };
 $("#out").onclick = logout;
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (b) setTab(b.dataset.tab); });
 ["input","change"].forEach(ev => { const r0 = () => { page = 0; render(); }; $("#q").addEventListener(ev, r0); $("#fHub").addEventListener(ev, r0); $("#fCat").addEventListener(ev, r0); $("#fArea").addEventListener(ev, () => { page = 0; view(); }); $("#fStat").addEventListener(ev, r0); });
