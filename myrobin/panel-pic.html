@@ -95,7 +95,8 @@ button:disabled{opacity:.5}
 .stats.ld .stat b{width:56px;border-radius:8px;color:transparent;user-select:none;background:linear-gradient(110deg,rgba(255,255,255,.06) 30%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.06) 70%);background-size:200% 100%;animation:sh 1.2s linear infinite}
 #list.hide{display:none}
 #stick{position:sticky;top:0;z-index:30;margin:0 -14px;padding:0 14px 8px}
-#stick::before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,rgba(5,7,13,.94),rgba(5,7,13,.82));-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+#stick::before{content:"";position:absolute;z-index:-1;inset:0;opacity:0;transition:opacity .2s;pointer-events:none;background:linear-gradient(180deg,rgba(5,7,13,.72),rgba(5,7,13,.5))}
+#stick.on::before{opacity:1;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
 button.ib{width:42px;height:42px;padding:0;flex:none}
 button.ib svg{width:20px;height:20px;display:block}
 #refresh.busy svg{animation:sp .8s linear infinite}
@@ -358,6 +359,9 @@ function logout(){
 }
 $("#go").onclick = () => { const k = $("#key").value.trim(); if (k) enter(k); };
 $("#key").addEventListener("keydown", e => { if (e.key === "Enter") $("#go").click(); });
+const stickEl = $("#stick");
+function stk(){ stickEl.classList.toggle("on", window.scrollY > 6); }
+window.addEventListener("scroll", stk, {passive:true}); stk();
 let LAST = "";
 function drawLast(){ $("#lastLoad").textContent = LAST ? "Terakhir dimuat: " + LAST : ""; }
 function setLoad(on){ if (on) $("#lastLoad").textContent = "Memuat data…"; else drawLast(); $("#refresh").classList.toggle("busy", on); if (on && window.scrollY > 0) window.scrollTo({top:0, behavior:"smooth"}); document.querySelector(".stats").classList.toggle("ld", on); $("#list").classList.toggle("hide", on); $("#list").setAttribute("aria-busy", on ? "true" : "false"); }
