@@ -184,15 +184,13 @@ function dls(r){
   return '<div class="dls"><span>Unduh foto</span><div class="dg">' + r.fotos.split(",").map(f => '<button data-dl="'+f+'" data-id="'+esc(r.id)+'">'+(PHOTO_LABEL[f]||f)+'</button>').join("") + '</div></div>';
 }
 function row(r){
-  const wa = r.wa.replace(/\D/g,"").replace(/^0/,"62"), id = esc(r.id), dn = isDone(r);
-  const nm = String(r.nama || "").toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-  const msg = encodeURIComponent("Halo "+nm+", terima kasih sudah berminat untuk bergabung menjadi kurir MyRobin untuk project SPX Express. Data kamu sudah dikirim ke SPX Express. Jika lolos untuk proses selanjutnya, akan dihubungi langsung oleh pihak SPX untuk melakukan onboarding.");
+  const id = esc(r.id), dn = isDone(r);
   return '<div class="card row'+(dn?' done':'')+'">'+
     '<div class="rh"><div class="who2"><div class="av'+((r.id in THUMBS) || !hasSelfie(r) ? '' : ' ld')+'" data-av="'+id+'">'+(THUMBS[r.id] ? '<img alt="Selfie" src="'+THUMBS[r.id]+'">' : (hasSelfie(r) && !(r.id in THUMBS) ? '' : PERSON))+'</div><div><h3>'+esc(r.nama)+'</h3><div class="t">'+esc(r.timestamp)+'</div></div></div>'+(ADMIN?'<span class="area">'+esc((AREAS[r.pic]||[r.pic])[0])+'</span>':'')+'</div>'+
     '<div class="chips"><span class="h">'+esc(r.hub)+'</span><span>'+esc(r.category)+'</span><span>'+esc(r.posisi)+'</span></div>'+
     '<div class="meta">'+esc(r.kota)+' · SIM '+esc(r.type_sim)+' · '+esc(r.kendaraan)+' '+esc(r.plat)+'</div>'+
     '<button class="btn pri block" data-form="'+id+'">Buka Form SPX</button>'+
-    '<div class="grid2"><a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/'+wa+'?text='+msg+'">'+WAI+'WhatsApp</a><button class="btn" data-copy="'+id+'">Salin Data</button></div>'+
+    '<div class="grid2"><button class="btn wa" data-wa="'+id+'">'+WAI+'WhatsApp</button><button class="btn" data-copy="'+id+'">Salin Data</button></div>'+
     dls(r)+
     '<div class="mk"><span>Status Form SPX</span><div class="seg"><button data-id="'+id+'" data-s="belum" class="'+(dn?'':'on')+'">Tidak done</button><button data-id="'+id+'" data-s="done" class="'+(dn?'on':'')+'">Done</button></div></div></div>';
 }
@@ -306,6 +304,29 @@ async function setCfg(patch){
   catch(e){ $("#cfgmsg").textContent = e.message || "Gagal menyimpan"; }
   drawCfg();
 }
+/* ===== PESAN WHATSAPP KE PENDAFTAR ===== */
+const tc = s => String(s || "").toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+const DET = {};
+async function getDet(id){ if (DET[id]) return DET[id]; const j = await call({action:"detail", key:KEY, id}); return (DET[id] = j.data || {}); }
+function waMsg(r, d){
+  const nm = tc(r.nama), v = x => String(x || "").trim() || "-", L = "━━━━━━━━━━━━━━━━━━";
+  return ["Halo *"+nm+"*,", "", "Terima kasih telah mendaftar sebagai *Kurir MyRobin – Project SPX Express.*", "", L, "*DATA PENDAFTARAN*", L, "",
+    "*Nama:* "+nm, "*NIK:* "+v(d.ktp), "*Alamat:* "+v(d.alamat), "*No. WhatsApp:* "+v(r.wa), "", L, "*STATUS PENDAFTARAN*", "",
+    "Data kamu telah kami kirimkan ke pihak *SPX Express*. Jika lolos seleksi, pihak SPX akan menghubungi kamu langsung untuk proses *onboarding*.", "",
+    "_Pastikan nomor WhatsApp kamu tetap aktif._", "", "Terima kasih.", "", "*MYROBIN | Recruitment Team*"].join("\n");
+}
+async function openWA(id, btn){
+  const r = DATA.find(x => String(x.id) === String(id)); if (!r) return;
+  const wa = String(r.wa || "").replace(/\D/g,"").replace(/^0/,"62");
+  btn.disabled = true;
+  const w = window.open("", "_blank"); if (w) w.opener = null;
+  try{
+    const d = (r.ktp !== undefined && r.alamat !== undefined) ? r : await getDet(id);
+    const url = "https://wa.me/"+wa+"?text="+encodeURIComponent(waMsg(r, d));
+    if (w) w.location.href = url; else location.href = url;
+  }catch(e){ if (w) w.close(); toast(e.message || "Gagal membuka WhatsApp"); }
+  btn.disabled = false;
+}
 async function enter(key, silent){
   $("#err").textContent = ""; $("#go").disabled = true; $("#go").classList.add("busy"); $("#login").classList.add("busy"); $("#go .lbl").textContent = "Memeriksa kode akses…";
   try{
@@ -318,7 +339,7 @@ async function enter(key, silent){
 }
 async function refresh(){ if (!KEY || document.hidden) return; try{ show(await call({action:"list", key:KEY})); }catch(e){} }
 function logout(){
-  KEY = ""; DATA = []; areaInit = false; Object.keys(THUMBS).forEach(k => delete THUMBS[k]); clearInterval(timer); try{ sessionStorage.removeItem("pk"); }catch(e){}
+  KEY = ""; DATA = []; Object.keys(DET).forEach(k => delete DET[k]); areaInit = false; Object.keys(THUMBS).forEach(k => delete THUMBS[k]); clearInterval(timer); try{ sessionStorage.removeItem("pk"); }catch(e){}
   $("#panel").hidden = true; $("#out").hidden = true; $("#login").hidden = false; $("#key").value = "";
 }
 $("#go").onclick = () => { const k = $("#key").value.trim(); if (k) enter(k); };
@@ -335,6 +356,7 @@ $("#list").addEventListener("click", e => {
   else if (t.dataset.dl) download(t.dataset.id, t.dataset.dl, t);
   else if (t.dataset.form) openForm(t.dataset.form, t);
   else if (t.dataset.copy) copyData(t.dataset.copy, t);
+  else if (t.dataset.wa) openWA(t.dataset.wa, t);
   else if (t.dataset.pg){ page += +t.dataset.pg; render(); $("#tab-list").scrollIntoView({behavior:"smooth"}); }
 });
 $("#copyclose").onclick = () => { $("#copybox").hidden = true; };
