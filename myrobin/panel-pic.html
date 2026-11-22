@@ -94,11 +94,23 @@ button:disabled{opacity:.5}
 .pager button{padding:9px 14px}
 .stats.ld .stat b{width:56px;border-radius:8px;color:transparent;user-select:none;background:linear-gradient(110deg,rgba(255,255,255,.06) 30%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.06) 70%);background-size:200% 100%;animation:sh 1.2s linear infinite}
 #list.hide{display:none}
+#stick{position:sticky;top:0;z-index:30;margin:0 -14px;padding:0 14px 8px}
+#stick::before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,rgba(5,7,13,.94),rgba(5,7,13,.82));-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+button.ib{width:42px;height:42px;padding:0;flex:none}
+button.ib svg{width:20px;height:20px;display:block}
+#refresh.busy svg{animation:sp .8s linear infinite}
+.who small#lastLoad{margin-top:1px;font-size:11px;opacity:.85}
 </style>
 </head>
 <body>
 <main>
-<header class="top"><div><b>Panel Responses</b><small>MyRobin × SPX Express</small></div><button id="out" hidden>Keluar</button></header>
+<div id="stick">
+<header class="top"><div><b>Panel Responses</b><small>MyRobin × SPX Express</small></div><button id="out" class="ib" type="button" aria-label="Keluar" title="Keluar" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button></header>
+<div id="stickPanel" hidden>
+ <div class="who glass"><div><b id="whoName"></b><small id="whoSub"></small><small id="lastLoad"></small></div><button id="refresh" class="ib" type="button" aria-label="Muat ulang" title="Muat ulang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button></div>
+ <div class="tabs" id="tabs"><button data-tab="list" class="on">Pendaftar</button><button data-tab="sum">Ringkasan</button><button data-tab="cfg" id="tabCfgBtn" hidden>Pengaturan</button></div>
+</div>
+</div>
 
 <section id="login" class="card">
  <h2>Masuk</h2>
@@ -109,8 +121,6 @@ button:disabled{opacity:.5}
 </section>
 
 <section id="panel" hidden>
- <div class="who glass"><div><b id="whoName"></b><small id="whoSub"></small></div><button id="refresh">Muat ulang</button></div>
- <div class="tabs" id="tabs"><button data-tab="list" class="on">Pendaftar</button><button data-tab="sum">Ringkasan</button><button data-tab="cfg" id="tabCfgBtn" hidden>Pengaturan</button></div>
  <select id="fArea" hidden class="areasel"><option value="">Semua area</option><option value="wildhan">Wildhan</option><option value="aqsal">Aqsal</option><option value="andhika">Andhika</option></select>
  <div id="tab-list">
   <div class="stats">
@@ -217,6 +227,7 @@ function view(){
 }
 function show(j){
   DATA = j.rows || [];
+  LAST = new Date().toLocaleString("id-ID", {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", second:"2-digit"}).replace(/\./g, ":").replace(",", ""); drawLast();
   ADMIN = !!j.admin; $("#tabCfgBtn").hidden = !ADMIN; $("#fArea").hidden = !ADMIN;
   if (ADMIN && j.config) { CFG = j.config; drawCfg(); }
   const a = AREAS[j.pic] || [j.pic, ""];
@@ -333,7 +344,7 @@ async function enter(key, silent){
   $("#err").textContent = ""; $("#go").disabled = true; $("#go").classList.add("busy"); $("#login").classList.add("busy"); $("#go .lbl").textContent = "Memeriksa kode akses…";
   try{
     const j = await call({action:"list", key}); KEY = key; show(j); setTab("list");
-    $("#login").hidden = true; $("#panel").hidden = false; $("#out").hidden = false;
+    $("#login").hidden = true; $("#panel").hidden = false; $("#stickPanel").hidden = false; $("#out").hidden = false;
     try{ sessionStorage.setItem("pk", key); }catch(e){}
     clearInterval(timer); timer = setInterval(refresh, 60000);
   }catch(e){ if (!silent) $("#err").textContent = e.message || "Gagal terhubung"; try{ sessionStorage.removeItem("pk"); }catch(_){} }
@@ -341,12 +352,15 @@ async function enter(key, silent){
 }
 async function refresh(){ if (!KEY || document.hidden) return; try{ show(await call({action:"list", key:KEY})); }catch(e){} }
 function logout(){
+  LAST = ""; drawLast();
   KEY = ""; DATA = []; Object.keys(DET).forEach(k => delete DET[k]); areaInit = false; Object.keys(THUMBS).forEach(k => delete THUMBS[k]); clearInterval(timer); try{ sessionStorage.removeItem("pk"); }catch(e){}
-  $("#panel").hidden = true; $("#out").hidden = true; $("#login").hidden = false; $("#key").value = "";
+  $("#panel").hidden = true; $("#stickPanel").hidden = true; $("#out").hidden = true; $("#login").hidden = false; $("#key").value = "";
 }
 $("#go").onclick = () => { const k = $("#key").value.trim(); if (k) enter(k); };
 $("#key").addEventListener("keydown", e => { if (e.key === "Enter") $("#go").click(); });
-function setLoad(on){ document.querySelector(".stats").classList.toggle("ld", on); $("#list").classList.toggle("hide", on); $("#list").setAttribute("aria-busy", on ? "true" : "false"); }
+let LAST = "";
+function drawLast(){ $("#lastLoad").textContent = LAST ? "Terakhir dimuat: " + LAST : ""; }
+function setLoad(on){ if (on) $("#lastLoad").textContent = "Memuat data…"; else drawLast(); $("#refresh").classList.toggle("busy", on); if (on && window.scrollY > 0) window.scrollTo({top:0, behavior:"smooth"}); document.querySelector(".stats").classList.toggle("ld", on); $("#list").classList.toggle("hide", on); $("#list").setAttribute("aria-busy", on ? "true" : "false"); }
 $("#refresh").onclick = async e => { const b = e.currentTarget; b.disabled = true; setLoad(true);
   try{ await Promise.all([refresh(), new Promise(r => setTimeout(r, 600))]); } finally { setLoad(false); b.disabled = false; } };
 $("#out").onclick = logout;
